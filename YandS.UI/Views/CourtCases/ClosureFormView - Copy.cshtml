@@ -1,0 +1,232 @@
+﻿@model IEnumerable<YandS.DAL.ClosureFormVM>
+@{
+    ViewBag.Title = "Y & S Associates - Closure Form";
+    Layout = null;
+}
+
+<style type="text/css">
+
+    table.MsoTableGrid {
+        border: solid windowtext 1.0pt;
+        font-size: 11.0pt;
+        font-family: "Calibri",sans-serif;
+    }
+
+    p.MsoNormal {
+        margin-top: 0in;
+        margin-right: 0in;
+        margin-bottom: 8.0pt;
+        margin-left: 0in;
+        line-height: 107%;
+        font-size: 11.0pt;
+        font-family: "Calibri",sans-serif;
+    }
+</style>
+<table border="1" cellpadding="0" cellspacing="0" class="MsoTableGrid" style="border-collapse:collapse;mso-table-layout-alt:fixed;border:none;
+ mso-border-alt:solid windowtext .5pt;mso-yfti-tbllook:1184;mso-padding-alt:
+ 0in 5.4pt 0in 5.4pt">
+    <tr style="mso-yfti-irow:0;mso-yfti-firstrow:yes;height:49.0pt">
+        <td colspan="6" style="width:467.5pt;border:solid windowtext 1.0pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:49.0pt" width="623">
+            <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:center;line-height:normal">
+                <span style="font-size:26.0pt;
+  font-family:Algerian">CLOSURE FORM<o:p></o:p></span>
+            </p>
+        </td>
+    </tr>
+    <tr style="mso-yfti-irow:1;height:.35in">
+        <td style="width:106.25pt;border:solid windowtext 1.0pt;border-top:
+  none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="102">
+            <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:
+  normal">
+                Date of Close<o:p></o:p>
+            </p>
+        </td>
+        <td colspan="2" style="width:100.45pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:.35in" width="174">
+            <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:
+  normal">
+                @Model.Select(s => s.DateOfClosure).FirstOrDefault()<o:p></o:p>
+            </p>
+        </td>
+        <td style="width:130.45pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:.35in" width="174">
+            <p align="right" class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; text-align: right; line-height: normal; width: 315px;">
+                Level<o:p></o:p>
+            </p>
+        </td>
+        <td colspan="2" style="width:130.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:.35in" width="174">
+            <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:
+  normal">
+                @Model.Select(s => s.CourtLevel).FirstOrDefault()<o:p></o:p>
+            </p>
+        </td>
+    </tr>
+    <tr style="mso-yfti-irow:1;height:.35in">
+        <td style="width:106.25pt;border:solid windowtext 1.0pt;border-top:
+  none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="102">
+            <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:
+  normal">
+                Next Case Level<o:p></o:p>
+            </p>
+        </td>
+        <td colspan="2" style="width:100.45pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:.35in" width="174">
+            <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:
+  normal">
+                @Model.Select(s => s.NextCaseLevel).FirstOrDefault()<o:p></o:p>
+            </p>
+        </td>
+        <td style="width:130.45pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:.35in" width="174">
+            <p align="right" class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; text-align: right; line-height: normal; width: 315px;">
+                Next Case Level Code<o:p></o:p>
+            </p>
+        </td>
+        <td colspan="2" style="width:130.35pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:.35in" width="174">
+            <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:
+  normal">
+                @Model.Select(s => s.NextCaseLevelCode).FirstOrDefault()<o:p></o:p>
+            </p>
+        </td>
+    </tr>
+    <tr style="mso-yfti-irow:2;height:.35in">
+        <td style="width:106.25pt;border:solid windowtext 1.0pt;border-top:
+  none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="102">
+            <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:
+  normal">
+                Employee No.<o:p></o:p>
+            </p>
+        </td>
+        <td colspan="5" style="width:361.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:.35in" width="522">
+            <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:
+  normal">
+                @Model.Select(s => s.ClosedBy).FirstOrDefault()<o:p></o:p>
+            </p>
+        </td>
+    </tr>
+    <tr style="mso-yfti-irow:3;height:33.25pt">
+        <td colspan="6" style="width:467.5pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:33.25pt" width="623">
+            <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:center;line-height:normal">
+                <b>
+                    <span style="font-size:16.0pt;
+  font-family:Times New Roman,serif;mso-ascii-theme-font:major-bidi;
+  mso-hansi-theme-font:major-bidi;mso-bidi-theme-font:major-bidi">FINANCE DETAILS ON THIS PART<o:p></o:p></span>
+                </b>
+            </p>
+        </td>
+    </tr>
+    <tr style="mso-yfti-irow:4;height:26.5pt">
+        <td style="width: 76.25pt; border: solid windowtext 1.0pt; border-top: none; mso-border-top-alt: solid windowtext .5pt; mso-border-alt: solid windowtext .5pt; background: #F2F2F2; mso-background-themecolor: background1; mso-background-themeshade: 242; padding: 0in 5.4pt 0in 5.4pt; height: 26.5pt" width="102">
+            <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:center;line-height:normal">
+                <span style="font-size:12.0pt">Date<o:p></o:p></span>
+            </p>
+        </td>
+        <td style="width: 94.55pt; border-top: none; border-left: none; border-bottom: solid windowtext 1.0pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext .5pt; mso-border-left-alt: solid windowtext .5pt; mso-border-alt: solid windowtext .5pt; background: #F2F2F2; mso-background-themecolor: background1; mso-background-themeshade: 242; padding: 0in 5.4pt 0in 5.4pt; height: 26.5pt" width="126">
+            <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:center;line-height:normal">
+                <span style="font-size:12.0pt">Invoice no<o:p></o:p></span>
+            </p>
+        </td>
+        <td colspan="3" style="width: 238.55pt; border-top: none; border-left: none; border-bottom: solid windowtext 1.0pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext .5pt; mso-border-left-alt: solid windowtext .5pt; mso-border-alt: solid windowtext .5pt; background: #F2F2F2; mso-background-themecolor: background1; mso-background-themeshade: 242; padding: 0in 5.4pt 0in 5.4pt; height: 26.5pt" width="318">
+            <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:center;line-height:normal">
+                <span style="font-size:12.0pt">Type of fees<o:p></o:p></span>
+            </p>
+        </td>
+        <td style="width: 58.15pt; border-top: none; border-left: none; border-bottom: solid windowtext 1.0pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext .5pt; mso-border-left-alt: solid windowtext .5pt; mso-border-alt: solid windowtext .5pt; background: #F2F2F2; mso-background-themecolor: background1; mso-background-themeshade: 242; padding: 0in 5.4pt 0in 5.4pt; height: 26.5pt" width="78">
+            <p align="center" class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; text-align: center; line-height: normal; width: 168px;">
+                <span style="font-size:12.0pt">Status<o:p></o:p></span>
+            </p>
+        </td>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr style="mso-yfti-irow:5;height:22.0pt">
+            <td style="width:76.25pt;border:solid windowtext 1.0pt;border-top:
+  none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:22.0pt" width="102">
+                <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:center;line-height:normal">
+                    @item.InvoiceDate <o:p></o:p>
+                </p>
+            </td>
+            <td style="width:94.55pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:22.0pt" width="126">
+                <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:center;line-height:normal">
+                    @item.InvoiceNumber<o:p></o:p>
+                </p>
+            </td>
+            <td colspan="3" style="width:238.55pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:22.0pt" width="318">
+                <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:
+  normal">
+                    @item.TypeOfFees<o:p></o:p>
+                </p>
+            </td>
+            <td style="width:58.15pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:22.0pt" width="78">
+                <p align="center" class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; text-align: center; line-height: normal; width: 170px;">
+                    @item.InvoiceStatus<o:p></o:p>
+                </p>
+            </td>
+        </tr>
+    }
+    <tr style="mso-yfti-irow:6;height:40.0pt">
+        <td colspan="6" style="width:467.5pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:40.0pt" width="623">
+            <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
+  text-align:center;line-height:normal">
+                <span style="font-size:14.0pt;
+  font-family:&quot;Arial&quot;,sans-serif;mso-ascii-theme-font:minor-bidi;mso-hansi-theme-font:
+  minor-bidi;mso-bidi-font-family:Arial;mso-bidi-theme-font:minor-bidi">ADMIN DECISION<o:p></o:p></span>
+            </p>
+        </td>
+    </tr>
+    <tr style="mso-yfti-irow:7;mso-yfti-lastrow:yes;height:85.0pt">
+        <td colspan="6" style="width:467.5pt;border:solid windowtext 1.0pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
+  padding:0in 5.4pt 0in 5.4pt;height:85.0pt" valign="top" width="623">
+            <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:
+  normal">
+                <o:p>&nbsp;</o:p>
+            </p>
+        </td>
+    </tr>
+</table>
+<script type="text/javascript">
+    window.addEventListener("load", window.print());
+</script>

@@ -1,0 +1,73 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        
+        $(".deleteRow").on("click", function () {
+            $(this).parents(".caseinvoicefeeRow:first").remove();
+            CollectionCount = CollectionCount - 1;
+            return false;
+        });
+    });
+
+</script>
+@model YandS.UI.Models.CaseInvoiceFee
+
+@using (Html.BeginCollectionItem("FeeId"))
+{
+    <div class="caseinvoicefeeRow">
+        @Html.HiddenFor(model => model.FeeId)
+        @Html.HiddenFor(model => model.InvoiceId)
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-10">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label text-right">  Invoice Classification</label>
+                                    <div class="col-sm-6">
+                                        @Html.DropDownList("InvClassification", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label text-right">  Case Level</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("CaseLevel", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group row">
+                                    <label class="col-sm-5 col-form-label text-right">  Court Fee Type</label>
+                                    <div class="col-sm-7">
+                                        @Html.DropDownList("FeeTypeId", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                <div class="col-sm-2">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <div class="form-group row">
+                                    <label class="col-sm-5 col-form-label">  Amount</label>
+                                    <div class="col-sm-7">
+                                        @Html.EditorFor(model => model.FeeAmount, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.FeeAmount, "", new { @class = "text-danger" })
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <a href="#" id="deleteRow" class="btn btn-danger deleteRow"><i class="fas fa-trash"></i> </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

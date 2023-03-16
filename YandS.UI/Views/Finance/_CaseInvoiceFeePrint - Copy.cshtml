@@ -1,0 +1,23 @@
+﻿@model YandS.UI.Models.CaseInvoiceFee
+@{
+    YandS.UI.Models.RBACDbContext db = new YandS.UI.Models.RBACDbContext();
+    var FeeName = db.MasterSetup.Where(w => w.MstParentId == (int)YandS.UI.Models.MASTER_S.FeesType && w.Mst_Value == Model.FeeTypeId).FirstOrDefault().Mst_Desc;
+    var CaseLevelName = db.MasterSetup.Where(m => m.MstParentId == (int)YandS.UI.Models.MASTER_S.CaseLevel && m.Mst_Value == Model.CaseLevel).FirstOrDefault().Mst_Desc;
+    string DetailNumber = Model.FeeTypeDetail == "" ? "" : " - " + Model.FeeTypeDetail;
+    var FeesDescription = string.Format("{0} - {1}{2}", CaseLevelName, FeeName, DetailNumber);
+    var FeeAmount = Model.FeeAmount.ToString("0.000");
+
+}
+<tr style="mso-yfti-irow:7;height:.4in">
+    <td colspan="3" style="width:283.75pt;border:solid windowtext 1.5pt;border-top:none;mso-border-top-alt:solid windowtext 1.5pt;padding:0in 5.4pt 0in 5.4pt;height:.4in" width="378">
+        <p align="left" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;text-align:left;line-height:normal">
+            <span style="font-size:12.0pt"><o:p>@FeesDescription</o:p></span>
+        </p>
+    </td>
+    <td style="width:183.75pt;border-top:none;border-left:none;border-bottom:solid windowtext 1.5pt;border-right:solid windowtext 1.5pt;mso-border-top-alt:solid windowtext 1.5pt;mso-border-left-alt:solid windowtext 1.5pt;padding:0in 5.4pt 0in 5.4pt;height:.4in" width="245">
+        <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;text-align:center;line-height:normal">
+            <span style="font-size:12.0pt"><o:p>@FeeAmount OMR</o:p></span>
+            @*<span style="font-size:12.0pt"><o:p>@Html.DisplayFor(model => model.FeeAmount)</o:p></span>*@
+        </p>
+    </td>
+</tr>

@@ -1,0 +1,165 @@
+﻿<script type="text/javascript">
+
+    $(document).ready(function () {
+        console.log("_CourtPView_Enforcement Partial Page Loaded");
+        jQuery(function ($) {
+            $.validator.addMethod('date',
+                function (value, element) {
+                    $.culture = Globalize.culture("en-AU");
+                    var date = Globalize.parseDate(value, "dd/MM/yyyy", "en-AU");
+                    return this.optional(element) ||
+                        !/Invalid|NaN/.test(new Date(date).toString());
+                });
+        });
+
+        $('.datepicker').datepicker({
+            format: "dd/mm/yyyy",
+            todayBtn: "linked",
+            clearBtn: true,
+            autoclose: true,
+            orientation: "bottom auto"
+        });
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        console.log("#Enforcement_CaseId");
+        console.log($("#Enforcement_CaseId").val());
+
+        console.log("#Enforcement_Courtid");
+        console.log($("#Enforcement_Courtid").val());
+
+        console.log("P_CaseId");
+        console.log(P_CaseId);
+        console.log("P_Courtid");
+        console.log(P_Courtid);
+
+
+        P_Detail = parseInt($("#Enforcement_DetailId").val());
+
+        if (P_Detail == 0) {
+            console.log("No Court Detail found! :: _CourtPView_Enforcement Partial Page");
+        }
+
+        LoadHearings(P_Detail);
+
+        var form = CourtDetailContainer.closest("form");
+        form.removeData('validator');
+        form.removeData('unobtrusiveValidation');
+        $.validator.unobtrusive.parse(form);
+
+        $('#Add_Enforcement_CourtDetail').click(function () {
+            console.log("Add_Enforcement_CourtDetail");
+            var form = $("#frm_Enforcement_CourtDetail");
+            console.log(form);
+
+            //console.log("TODO:// Check either Supreme court Data Saved or not");
+            //console.log("Total Court Found " + ArrayCourts.length);
+
+            return false;
+
+            $.ajax({
+                url: CreateEnforcementCourtDetailURL,
+                method: "POST",  // post
+                data: form.serialize(),
+                success: function (partialResult) {
+                    LoadPartialView(partialResult, CourtDetailContainer);
+
+                    P_Detail = parseInt($("#Enforcement_DetailId").val());
+
+                    if (P_Detail == 0) {
+                        console.log("No Court Detail found! :: #Add_Enforcement_CourtDetail Function");
+                    }
+                    else {
+                        if (ArrayCourts.indexOf("4") == -1)
+                            ArrayCourts.push("4");
+
+                        LoadHearings(P_Detail);
+                    }
+
+                }
+            });
+        });
+    });
+</script>
+@model YandS.UI.Models.EnforcementCourtViewModal
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frm_Enforcement_CourtDetail" }))
+{
+    <div class="card @ViewBag.CourtClass">
+        <div class="card-header">
+            <h3 class="card-title">@ViewBag.CourtName</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="form-horizontal">
+                @Html.HiddenFor(model => model.Enforcement_CaseId)
+                @Html.HiddenFor(model => model.Enforcement_DetailId)
+                @Html.HiddenFor(model => model.Enforcement_Courtid)
+                @Html.HiddenFor(model => model.Enforcement_CaseLevelCode)
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Enforcement_CourtRefNo, "Enforcement Court No.")
+                            @Html.EditorFor(model => model.Enforcement_CourtRefNo, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Enforcement_CourtRefNo, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Enforcement_RegistrationDate)
+                            @Html.EditorFor(model => model.Enforcement_RegistrationDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                            @Html.ValidationMessageFor(model => model.Enforcement_RegistrationDate, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Enforcement_CourtDepartment)
+                            @Html.DropDownList("Enforcement_CourtDepartment", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Enforcement_JudgementReceivingDate)
+                            @Html.EditorFor(model => model.Enforcement_JudgementReceivingDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                            @Html.ValidationMessageFor(model => model.Enforcement_JudgementReceivingDate, "", new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+                    <div class="col-6">
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Enforcement_CourtLocationid)
+                            @Html.DropDownList("Enforcement_CourtLocationid", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Enforcement_CaseLevelCode)
+                            @*@Html.DropDownList("Enforcement_CaseLevelCode", null, htmlAttributes: new { @class = "form-control select2bs4", @disabled = "disabled" })*@
+                            <span class="form-control">@ViewBag.Enforcement_CaseLevelCode</span>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Enforcement_JudgementDate)
+                            @Html.EditorFor(model => model.Enforcement_JudgementDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                            @Html.ValidationMessageFor(model => model.Enforcement_JudgementDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Enforcement_JudgementDetails)
+                            @Html.TextAreaFor(model => model.Enforcement_JudgementDetails, 3, 200, new { @class = "form-control" })
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input class="btn btn-warning" type="button" id="Add_Enforcement_CourtDetail" value="Add Court Detail" />
+
+        </div>
+    </div>
+
+}
+
+
+
+

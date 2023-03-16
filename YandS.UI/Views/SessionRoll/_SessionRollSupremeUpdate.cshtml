@@ -1,0 +1,527 @@
+﻿<script type="text/javascript">
+            var GetSessionRollURL = '@Url.Action("GetTab", "SessionRoll", new { area = string.Empty })';
+
+    function ShowPartialViewDetail(PartialViewName) {
+
+        var _PartialViewName = PartialViewName;
+        DetailViewName = PartialViewName;
+        $("#PartialViewName").val(DetailViewName);
+        P_CaseId = parseInt($("#CaseId").val());
+        P_SessionRollId = parseInt($("#SessionRollId").val());
+
+        var _Mode = "C";
+
+        var PartialContainer = $("#DIV_UPDATE_DETAIL");
+        _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
+
+        GetTabFromSessionRoll(PartialContainer, GetSessionRollURL, _parameters);
+    }
+    function LoadPrintRequirementForm(PartialViewName) {
+        var _PartialViewName = PartialViewName;
+        P_CaseId = parseInt($("#hid_CaseId").val());
+        P_SessionRollId = parseInt($("#SessionRollId").val());
+        var _Mode = "C";
+
+        var PartialContainer = $("#div_PrintRequirementForm");
+        PartialContainer.empty();
+
+        _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
+
+
+        $.ajax({
+            url: GetSessionRollURL,
+            type: "POST",
+            data: _parameters,
+            success: function (data, textStatus, jqXHR) {
+                PartialContainer.html(data);
+                //window.clipboardData.setData('text', '');
+                Swal.fire({
+                    type: 'success',
+                    title: '',
+                    width: 700,
+                    html: $("#ContentDIV").html()
+                }).then(function () {
+                    CopyToClipboard('swal2-content');
+                    console.log("Table Copied");
+
+                    P_CaseId = parseInt($("#hid_CaseId").val());
+                    console.log(P_CaseId);
+
+                    //ReloadTable();
+                    var RedirectURL = "/CourtCases/ManageCourtDetail?CaseId=" + P_CaseId + "&Courtid=3";
+                    //$("#div-CourtDetail").html(result);
+                    window.location = RedirectURL;
+                });
+            }
+        });
+    }
+
+    function submitForm() {
+        var data = new FormData(jQuery('#frm_SessionRollSupremeUpdate')[0]);
+        //console.log(data);
+        $.ajax({
+            type: "POST",
+            url: SubmitFormURL,
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (result) {
+                if (result.errorMessage) {
+                    console.log("result.errorMessage");
+                    Swal.fire({
+                        type: 'error',
+                        title: 'ERROR...',
+                        html: result.errorMessage
+                    });
+
+                    return false;
+                }
+
+                if (result.redirectTo) {
+                    var RedirectURL = "/CaseRegistration/IndexMain/" + result.id;
+                    window.location = RedirectURL;
+                }
+                else {
+                    ResetHiddenItems();
+                    LoadPrintRequirementForm("SaveResult");
+                }
+            },
+            error: function () {
+
+            }
+        });
+    }
+
+    $(document).ready(function () {
+
+        P_CaseId = parseInt($("#hid_CaseId").val());
+        P_Courtid = $("#hid_Courtid").val();
+        P_Detail = parseInt($("#hid_DetailId").val());
+        P_SessionRollId = parseInt($("#SessionRollId").val());
+
+        console.log(P_CaseId);
+        console.log(P_SessionRollId);
+
+        $('.datepicker').datepicker({
+            format: "dd/mm/yyyy",
+            todayBtn: "linked",
+            clearBtn: true,
+            autoclose: true,
+            orientation: "bottom auto"
+        });
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+        $('.AddNewMaster').on("click", function () {
+            console.log(this.id);
+            console.log($(this).val());
+            var ModalTitle = "";
+            $("#MstParentId").val(this.id);
+
+            if (this.id == "4") {
+                ModalTitle = "Add Location";
+                DDLToAppend = $("#PASCourtLocationid");
+            }
+
+            $("#ModalTitle").text(ModalTitle);
+
+            $('#modal-AddMasterValue').modal('show');
+
+        });
+
+        $('#btnSubmitForm').on("click", function () {
+            ValidationMessage = "";
+            NotValid = false;
+
+            NotValid = ValidateMain();
+
+            if (NotValid) {
+                Swal.fire({
+                    type: "error",
+                    title: 'ERROR...',
+                    html: ValidationMessage
+                });
+                return false;
+            }
+
+            if (DetailViewName == "_SessionFollowSupreme")
+                NotValid = Validate_SessionFollowSupreme();
+            else if (DetailViewName == "_SessionUpdateSupreme")
+                NotValid = Validate_SessionUpdate();
+            else if (DetailViewName == "_SessionJudgementSupreme")
+                NotValid = Validate_SessionJudgementSupreme();
+            else if (DetailViewName == "_SessionClose")
+                NotValid = Validate_SessionClose();
+
+            if (NotValid) {
+                Swal.fire({
+                    type: "error",
+                    title: 'ERROR...',
+                    html: ValidationMessage
+                });
+                return false;
+            }
+
+            console.log("SubmitForm");
+            console.log("SessionRollId :: " + $("#SessionRollId").val());
+            console.log("SessionRollId :: " + $("#DetailId").val());
+
+            console.log($("#hidCourtDecisionChange").val());
+            console.log($("#CurrentHearingDate").val());
+            console.log($("#hidCurrentHearingDate").val());
+            ShowPreSubmit();
+            /*
+            Swal.fire({
+                title: 'CLIENT REPLY',
+                html: 'WAITING FOR THE CLIENT’S RESPONSE',
+                type: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم YES',
+                cancelButtonText: 'لا NO',
+            }).then((result) => {
+                if (result.value) {
+                    console.log(result.value);
+
+                    NotValid = ValidateUpdateDate();
+
+                    if (NotValid) {
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            html: ValidationMessage,
+                            type: 'info',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'تغييرالتاريخ والحفظ CHANGE',
+                            cancelButtonText: 'حفظ بدون تغيير CONTUNUE',
+                        }).then((result) => {
+                            if (result.value) {
+
+                                $("#CurrentHearingDate").datepicker("setDate", new Date).datepicker({
+                                    format: 'dd/mm/yyyy',
+                                    autoclose: true
+                                });
+
+                                ValidationMessage = "";
+                                NotValid = false;
+
+                                NotValid = ValidateNextHearingDate();
+
+                                if (NotValid) {
+                                    Swal.fire({
+                                        title: 'Are you sure?',
+                                        html: ValidationMessage,
+                                        type: 'info',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'SAVE حفظ',
+                                        cancelButtonText: 'BACK عودة',
+                                    }).then((result) => {
+                                        if (result.value) {
+                                            submitForm();
+                                        }
+                                        else {
+                                            return false;
+                                        }
+                                    });
+                                }
+                                else {
+                                    submitForm();
+                                }
+                            }
+                            else {
+                                submitForm();
+                            }
+                        });
+                    }
+                    else {
+                        NotValid = ValidateNextHearingDate();
+
+                        if (NotValid) {
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                html: ValidationMessage,
+                                type: 'info',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'SAVE حفظ',
+                                cancelButtonText: 'BACK عودة',
+                            }).then((result) => {
+                                if (result.value) {
+                                    submitForm();
+                                }
+                                else {
+                                    return false;
+                                }
+                            });
+                        }
+                        else {
+                            submitForm();
+                        }
+                    }
+
+                }
+                else {
+                    $("#ClientReply").val("").trigger('change');
+                    $("#Requirements").val("");
+                    $("#FirstEmailDate").val("");
+
+                    NotValid = ValidateUpdateDate();
+
+                    if (NotValid) {
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            html: ValidationMessage,
+                            type: 'info',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'تغييرالتاريخ والحفظ CHANGE',
+                            cancelButtonText: 'حفظ بدون تغيير CONTUNUE',
+                        }).then((result) => {
+                            if (result.value) {
+
+                                $("#CurrentHearingDate").datepicker("setDate", new Date).datepicker({
+                                    format: 'dd/mm/yyyy',
+                                    autoclose: true
+                                });
+
+                                ValidationMessage = "";
+                                NotValid = false;
+
+                                NotValid = ValidateNextHearingDate();
+
+                                if (NotValid) {
+                                    Swal.fire({
+                                        title: 'Are you sure?',
+                                        html: ValidationMessage,
+                                        type: 'info',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'SAVE حفظ',
+                                        cancelButtonText: 'BACK عودة',
+                                    }).then((result) => {
+                                        if (result.value) {
+                                            submitForm();
+                                        }
+                                        else {
+                                            return false;
+                                        }
+                                    });
+                                }
+                                else {
+                                    submitForm();
+                                }
+                            }
+                            else {
+                                submitForm();
+                            }
+                        });
+                    }
+                    else {
+                        NotValid = ValidateNextHearingDate();
+
+                        if (NotValid) {
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                html: ValidationMessage,
+                                type: 'info',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'SAVE حفظ',
+                                cancelButtonText: 'BACK عودة',
+                            }).then((result) => {
+                                if (result.value) {
+                                    submitForm();
+                                }
+                                else {
+                                    return false;
+                                }
+                            });
+                        }
+                        else {
+                            submitForm();
+                        }
+                    }
+
+                }
+            });
+            */
+        });
+
+        $('.btn-Detail').on("click", function () {
+            console.log(this.id);
+            if (this.id == "btnPVCreate") {
+                var _PartialViewName = "_PayVoucherCreate";
+                var PartialContainer = $("#PVCreateForm");
+                _parameters = { Mode: "C", PartialViewName: _PartialViewName, CaseId: 0, SessionRollId: 0 };
+
+                GetTabFromSessionRoll(PartialContainer, GetSessionRollURL, _parameters);
+                $('#modal-PVForm').modal('show');
+                $("#modalPVFormoverlay").removeClass("overlay");
+                $("#modalPVFormoverlay").removeClass("AppHidden").addClass("AppHidden");
+            }
+            else if (this.id == "btn_DefendentTRansfer") {
+                var _PartialViewName = "_DefendentTRansfer";
+                var PartialContainer = $("#DIV_UPDATE_DETAIL");
+                _parameters = { Mode: "C", PartialViewName: _PartialViewName, CaseId: 0, SessionRollId: 0 };
+
+                GetTabFromSessionRoll(PartialContainer, GetSessionRollURL, _parameters);
+                //$("#div_DefendentTRansfer").removeClass("AppHidden");
+            }
+            else {
+                ShowPartialViewDetail(this.id);
+                //var _PartialViewName = this.id;
+                //DetailViewName = this.id;
+                //$("#PartialViewName").val(DetailViewName);
+                //P_CaseId = parseInt($("#CaseId").val());
+                //P_SessionRollId = parseInt($("#SessionRollId").val());
+
+                //var _Mode = "C";
+
+                //var PartialContainer = $("#DIV_UPDATE_DETAIL");
+                //_parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
+
+                //GetTab(PartialContainer, GetSessionRollURL, _parameters);
+            }
+        });
+
+        $('#btnEnfReset').on("click", function () {
+            $("#DivClearable input").each(function () {
+                this.value = "";
+            });
+
+            //$("#EnforcementlevelId").select2("val", "0");
+            //$("#Courtid").select2("val", "0");
+            $("#PASCourtLocationid").val("").trigger('change');
+            $("#ApealByWho").val("0").trigger('change');
+
+        });
+
+
+        ShowPartialViewDetail("_SessionUpdateSupreme");
+    });
+</script>
+@model YandS.UI.Models.SessionsRollVM
+@{
+    ViewBag.OFB_ClientName = Model.ClientName;
+    ViewBag.OFB_Defendant = Model.Defendant;
+    ViewBag.OFB_OfficeFileNo = Model.OfficeFileNo;
+    ViewBag.OFB_SessionRollClientName = Model.SessionRollClientName;
+    ViewBag.OFB_SessionRollDefendentName = Model.SessionRollDefendentName;
+
+}
+<div class="card">
+    <div class="col-sm-12">
+        @*<div style="padding-bottom:0px;padding-top:10px;" class="row  CaseInformationBar">
+            <div class="col-sm-12 text-center"><h3 style="float:none !important"><span id="spanOfficeFileNo">@Html.DisplayFor(model => model.OfficeFileNo)</span><span class="YandSTitleSpacing">-</span><span id="spanClientName">@Html.DisplayFor(model => model.ClientName)</span><span class="YandSTitleSpacing">-</span><span id="spanDefendant">@Html.DisplayFor(model => model.Defendant)</span></h3></div>
+        </div>*@
+        @Html.Partial("_OfficeFileInfoBanner")
+        <div class="text-sm-right">
+            <button type="button" id="btnEnfReset" class="btn btn-danger"><i class="fas fa-edit"></i> Clear</button>
+        </div>
+    </div>
+
+
+    @using (Html.BeginForm("Index", "SessionRoll", FormMethod.Post, new { id = "frm_SessionRollSupremeUpdate" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="card-body">
+            <div class="form-horizontal">
+                @Html.HiddenFor(model => model.DetailId)
+                @Html.HiddenFor(model => model.Courtid)
+                @Html.HiddenFor(model => model.CaseLevelCode)
+                @Html.HiddenFor(model => model.SessionLevel)
+                @Html.HiddenFor(model => model.SessionRollId)
+                @Html.HiddenFor(model => model.CaseId)
+                @Html.HiddenFor(model => model.PartialViewName)
+                <div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>
+
+                <div id="DivClearable" class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>CASE LEVEL</label>
+                            <span class="form-control" disabled="disabled">@ViewBag.CaseLevelCode</span>
+                        </div>
+                        <div class="form-group">
+                            <label>@ViewBag.CourtRefNo</label>
+                            @Html.EditorFor(model => model.CourtRefNo, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>
+                                SUPREME BY
+                            </label>
+                            @Html.DropDownList("ApealByWho", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <label>COURT</label>
+                                <div class="input-group mb-3">
+                                    @Html.DropDownList("PASCourtLocationid", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-info AddNewMaster" id="4">
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>REGISTRATION DATE</label>
+                            @Html.EditorFor(model => model.RegistrationDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                        </div>
+                        <div class="form-group">
+                            <label>SUPREME STAGE مرحلة العليا</label>
+                            @Html.DropDownList("CourtDepartment", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                        </div>
+                    </div>
+                </div>
+                <div style="padding-top:10px !important;padding-bottom:10px !important; color: black !important;" class="col-lg-12 text-center">
+                    <div class="row">
+                        <div class="col">
+                            <button style="font-size:1.25rem !important; " type="button" id="_SessionFollowSupreme" class="btn btn-block btn-lg btn-Detail">FOLLOW UP المتابعة</button>
+                        </div>
+                        <div class="col">
+                            <button style="font-size:1.25rem !important; " type="button" id="_SessionUpdateSupreme" class="btn btn-block btn-lg btn-Detail">UPDATE التحديث</button>
+                        </div>
+                        <div class="col">
+                            <button style="font-size:1.25rem !important; " type="button" id="_SessionJudgementSupreme" class="btn btn-block btn-lg btn-Detail">SUPREME JUDGEMENT حكم العليا</button>
+                        </div>
+                        <div class="col">
+                            <button style="font-size:1.25rem !important; " type="button" id="btn_DefendentTRansfer" class="btn btn-block btn-lg btn-Detail">DEFENDANT TRANSFER</button>
+                        </div>
+                        <div class="col">
+                            <button style="font-size:1.25rem !important; " type="button" id="btnPVCreate" class="btn btn-block btn-lg btn-Detail">EXPENSES  طلب تحويل مبالغ</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button style="font-size:1.25rem !important; " type="button" id="_SessionClose" class="btn btn-block btn-lg btn-Detail">CLOSURE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="DIV_UPDATE_DETAIL">
+
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <button id="btnSubmitForm" type="button" class="btn btn-secondary"><i class="fas fa-save"></i> SAVE</button>
+            <button title="Back to Case List" class="btn btn-secondary" onclick="location.href='@Url.Action("Index","CourtCases")';return false;" id=@Model.CaseId><i class="fas fa-home"></i> BACK TO LIST</button>
+            <button id=@Model.CaseId title="Primary Court Management" class="btn btn-secondary" onclick="location.href='@Url.Action("ManageCourtDetail", "CourtCases", new { CaseId = Model.CaseId, Courtid = "1" })';return false;"><i class="fas fa-globe-europe"></i> TO PRIMARY</button>
+            <button id=@Model.CaseId title="Apeal Court Management" class="btn btn-secondary" onclick="location.href='@Url.Action("ManageCourtDetail", "CourtCases", new { CaseId = Model.CaseId, Courtid = "2" })';return false;"><i class="fas fa-globe-europe"></i> TO APPEAL</button>
+            <button id=@Model.CaseId title="Supreme Court Management" class="btn btn-secondary" onclick="location.href='@Url.Action("ManageCourtDetail", "CourtCases", new { CaseId = Model.CaseId, Courtid = "3" })';return false;"><i class="fas fa-globe-europe"></i> TO SUPREME</button>
+            <button id=@Model.CaseId title="Enforcement Management" class="btn btn-secondary" onclick="location.href='@Url.Action("ManageEnforcementDetail", "CourtCases", new { CaseId = Model.CaseId })';return false;"><i class="fas fa-globe-europe"></i> TO ENFORCEMENT</button>
+            <button id=@Model.CaseId title="Create Invoice" class="btn btn-secondary" onclick="location.href='@Url.Action("InvoiceCreate", "Finance", new { id = Model.CaseId })';return false;"><i class="fas fa-file-invoice-dollar"></i> ADD INVOICE</button>
+        </div>
+    }
+</div>

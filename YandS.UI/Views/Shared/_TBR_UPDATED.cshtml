@@ -1,0 +1,138 @@
+﻿@model YandS.UI.Models.CaseRegistrationVM
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        $('.datepicker').datepicker({
+            format: "dd/mm/yyyy",
+            todayBtn: "linked",
+            clearBtn: true,
+            autoclose: true,
+            orientation: "bottom auto"
+        });
+
+        $("#hidNextHearingDate").val($("#NextHearingDate").val());
+        $("#hidCurrentHearingDate").val($("#CurrentHearingDate").val());
+
+        $('#CourtDecision').bind('input propertychange', function () {
+            $("#hidCourtDecisionChange").val("N");
+
+            if (this.value.length) {
+                $("#hidCourtDecisionChange").val("Y");
+            }
+        });
+
+        $("#CurrentHearingDate").datepicker({
+            todayBtn: 1,
+            autoclose: true,
+            format: "dd/mm/yyyy",
+        }).on('changeDate', function (selected) {
+            if ($("#hidCurrentHearingDate").val() == $("#CurrentHearingDate").val()) {
+
+            }
+            else {
+                if ($('#TransportationFee').val() == "1") {
+                    $("#TransportationSource").val("0").trigger('change');
+                }
+            }
+        });
+
+    });
+</script>
+<div id="DIV_UPDATE">
+    <div class="col-sm-12">
+        <div style="padding-bottom:0px !important;padding-top:10px;" class="UpdateBoxBar">
+            <div class="row">
+                <div class="col-sm-12 text-center"><h3>UPDATE التحديث</h3></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row AppHidden sessionDetail">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label style="color:brown" for="Session_FileStatusName">FILE STATUS حالة الملف</label>
+                        @Html.EditorFor(model => model.Session_FileStatusName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @Value = "RUNNING CASE متداول" } })
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="Session_CaseType">CASE TYPE القاعة</label>
+                        @Html.DropDownList("Session_CaseType", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="Session_LawyerId">DESIGNATED LAWYER المحامي المكلف</label>
+                        @Html.DropDownList("Session_LawyerId", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="CurrentHearingDate">UPDATE DATE تاريخ التحديث</label>
+                        @Html.EditorFor(model => model.CurrentHearingDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="CourtDecision">COURT DECISION قرار المحكمة</label>
+                        <div class="form-group">
+                            @Html.TextAreaFor(model => model.CourtDecision, 1, 200, new { @class = "form-control", @dir = "auto" })
+                        </div>
+                    </div>
+                </div>
+                <div id="DIV_NEXT_HEARING_DATE" class="col-sm-3 AppHidden">
+                    <div class="form-group">
+                        <label for="NextHearingDate">NEXT HEARING DATE موعد الجلسة القادمة</label>
+                        @Html.EditorFor(model => model.NextHearingDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row AppHidden sessionDetail">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="SessionRemarks">LAWYER SCHEDULE توجيهات إلى المحامي</label>
+                        <div class="form-group">
+                            @Html.TextAreaFor(model => model.SessionRemarks, 1, 200, new { @class = "form-control", @dir = "auto" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ClientReply)
+                        @Html.DropDownList("ClientReply", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group" id="txtRequirement">
+                        <label for="Requirements">REQUIREMENT المطلوب من الموكل</label>
+                        <div class="form-group">
+                            @Html.TextAreaFor(model => model.Requirements, 1, 200, new { @class = "form-control", @dir = "auto" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group" id="txtFirstEmailDate">
+                        @Html.LabelFor(model => model.FirstEmailDate)
+                        @Html.EditorFor(model => model.FirstEmailDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div id="DIV_TRSOURCE" class="form-group">
+                        @Html.LabelFor(model => model.TransportationSource)
+                        @Html.DropDownList("TransportationSource", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

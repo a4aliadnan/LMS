@@ -1,0 +1,248 @@
+﻿<script type="text/javascript">
+    var CreateMasterTableDetailURL = '@Url.Action("CreateMasterTableDetail", "CommonTask", new { area = string.Empty })';
+    function ProcessAddClient() {
+        if ($("#MstDesc").val() != "") {
+            console.log(parseInt($("#MstParentId").val()));
+            console.log($("#MstDesc").val());
+            var _MstDesc = $("#MstDesc").val();
+            var _MstParentId = parseInt($("#MstParentId").val());
+
+            _parameters = { Mst_Desc: _MstDesc, MstParentId: _MstParentId };
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: JSON.stringify(_parameters),
+                url: CreateMasterTableDetailURL,
+                success: function (Result) {
+
+                    if (Result.Message == "Success") {
+                        var newOption = new Option(Result.name, Result.id, true, true);
+                        DDLToAppend.append(newOption).trigger('change');
+                        $('#modal-AddMasterValue').modal('hide');
+
+                    }
+                    else {
+                        $('#modal-AddMasterValue').modal('hide');
+                        Swal.fire({
+                            type: "error",
+                            title: 'Error...',
+                            html: Result.ErrorMessage
+                        });
+                    }
+                }
+            });
+        }
+        else {
+            // Failed show errors
+            console.log("Failed errors");
+            Swal.fire({
+                type: "error",
+                title: 'Error...',
+                html: 'Please Enter Description of List'
+            });
+        }
+    }
+
+    $(document).ready(function () {
+
+        console.log("_CourtPView Partial Page Loaded");
+
+        $('.datepicker').datepicker({
+            format: "dd/mm/yyyy",
+            todayBtn: "linked",
+            clearBtn: true,
+            autoclose: true,
+            orientation: "bottom auto"
+        });
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        $('.AddNewMaster').on("click", function () {
+            console.log(this.id);
+            console.log($(this).val());
+            var ModalTitle = "";
+            $("#MstParentId").val(this.id);
+
+            if (this.id == "4") {
+                ModalTitle = "Add Location";
+                DDLToAppend = $("#CourtLocationid");
+            }
+
+            $("#ModalTitle").text(ModalTitle);
+
+            $('#modal-AddMasterValue').modal('show');
+
+        });
+
+        //console.log("#CaseId");
+        //console.log($("#hid_CaseId").val());
+
+        //console.log("#Courtid");
+        //console.log($("#hid_Courtid").val());
+
+        //console.log("P_CaseId");
+        //console.log(P_CaseId);
+        //console.log("P_Courtid");
+        //console.log(P_Courtid);
+
+
+        P_Detail = parseInt($("#hid_DetailId").val());
+
+        if (P_Detail == 0) {
+            console.log("No Court DetailId found! :: _CourtPView Partial Page");
+        }
+
+        LoadHearings(P_Detail);
+
+        var form = $("#frm_CourtDetail");
+        //console.log(form);
+        //console.log(CourtDetailContainer);
+        form.removeData('validator');
+        form.removeData('unobtrusiveValidation');
+        $.validator.unobtrusive.parse(form);
+
+        $('#Add_CourtDetail').on('click', function () {
+            console.log("Add_CourtDetail");
+            var $form = $("#frm_CourtDetail");
+            //console.log($form);
+            ProcessCourtDetail($form);
+            
+        });
+    });
+</script>
+@model YandS.UI.Models.CourtCasesDetailVM
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frm_CourtDetail" }))
+{
+<div class="card @ViewBag.CourtClass">
+    <div class="card-header">
+        @*<h3 class="card-title">@ViewBag.CourtName</h3>*@
+        <div class="text-center">
+            <h4>@ViewBag.OfficeFileNo<span class="YandSTitleSpacing">-</span>@ViewBag.ClientName<span class="YandSTitleSpacing">-</span>@ViewBag.Defendant</h4>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <div class="form-horizontal">
+            @Html.HiddenFor(model => model.CaseId)
+            @Html.HiddenFor(model => model.DetailId, new { @Value = ViewBag.hid_DetailId })
+            @Html.HiddenFor(model => model.Courtid)
+            @Html.HiddenFor(model => model.CaseLevelCode)
+            @Html.HiddenFor(model => model.CourtDepartment)
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CaseLevelCode)
+                        <span class="form-control" disabled="disabled">@ViewBag.CaseLevelCode</span>
+                    </div>
+                    <div class="form-group">
+                        <label>@ViewBag.CourtRefNo</label>
+                        @Html.EditorFor(model => model.CourtRefNo, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CourtRefNo, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <label>Claim Amount</label>
+                        <span class="form-control" disabled="disabled">@ViewBag.ClaimAmount</span>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ClosureDate)
+                        @Html.EditorFor(model => model.ClosureDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                        @Html.ValidationMessageFor(model => model.ClosureDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    @if (Model.CaseLevelCode == "3")
+                    {
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <span class="form-control" disabled="disabled"></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <label>Case Against</label>
+                            <span class="form-control" disabled="disabled">@ViewBag.AgainstName</span>
+                        </div>
+                    }
+                    <div class="col-sm-12">
+                        <div class="row">
+                            @Html.LabelFor(model => model.CourtLocationid)
+                            <div class="input-group mb-3">
+                                @Html.DropDownList("CourtLocationid", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-info AddNewMaster" id="4">
+                                        Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.JudgementDate)
+                        @Html.EditorFor(model => model.JudgementDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                        @Html.ValidationMessageFor(model => model.JudgementDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    @if (Model.CaseLevelCode == "3")
+                    {
+                    <div class="form-group">
+                        <label>Case Against</label>
+                        <span class="form-control" disabled="disabled">@ViewBag.AgainstName</span>
+                    </div>                    
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ApealByWho)
+                            @Html.DropDownList("ApealByWho", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                        </div>
+                    }
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.RegistrationDate)
+                        @Html.EditorFor(model => model.RegistrationDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                        @Html.ValidationMessageFor(model => model.RegistrationDate, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.JudgementReceivingDate)
+                        @Html.EditorFor(model => model.JudgementReceivingDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                        @Html.ValidationMessageFor(model => model.JudgementReceivingDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.JudgementDetails)
+                        @Html.TextAreaFor(model => model.JudgementDetails, 3, 200, new { @class = "form-control" })
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.YandSNotesUpdate)
+                        @Html.TextAreaFor(model => model.YandSNotesUpdate, 5, 200, new { @class = "form-control" })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer text-center">
+        <button type="button" id="Add_CourtDetail" class="btn btn-secondary"><i class="fas fa-save"></i> SAVE</button>
+        <button title="Back to Case List" class="btn btn-secondary" onclick="location.href='@Url.Action("Index","CourtCases")';return false;" id=@Model.CaseId><i class="fas fa-home"></i> BACK TO LIST</button>
+        <button id=@Model.CaseId title="Primary Court Management" class="btn btn-secondary" onclick="location.href='@Url.Action("ManageCourtDetail", "CourtCases", new { CaseId = Model.CaseId, Courtid = "1" })';return false;"><i class="fas fa-globe-europe"></i> TO PRIMARY</button>
+        <button id=@Model.CaseId title="Apeal Court Management" class="btn btn-secondary" onclick="location.href='@Url.Action("ManageCourtDetail", "CourtCases", new { CaseId = Model.CaseId, Courtid = "2" })';return false;"><i class="fas fa-globe-europe"></i> TO APPEAL</button>
+        <button id=@Model.CaseId title="Supreme Court Management" class="btn btn-secondary" onclick="location.href='@Url.Action("ManageCourtDetail", "CourtCases", new { CaseId = Model.CaseId, Courtid = "3" })';return false;"><i class="fas fa-globe-europe"></i> TO SUPREME</button>
+        <button id=@Model.CaseId title="Enforcement Management" class="btn btn-secondary" onclick="location.href='@Url.Action("ManageEnforcementDetail", "CourtCases", new { CaseId = Model.CaseId })';return false;"><i class="fas fa-globe-europe"></i> TO ENFORCEMENT</button>
+        <button id=@Model.CaseId title="Create Invoice" class="btn btn-secondary" onclick="location.href='@Url.Action("InvoiceCreate", "Finance", new { id = Model.CaseId })';return false;"><i class="fas fa-file-invoice-dollar"></i> ADD INVOICE</button>
+        <button id=@Model.CaseId title="Form Closure" class="btn btn-secondary" onclick="location.href='@Url.Action("ClosureFormView", "CourtCases", new { CaseId = Model.CaseId, Courtid = Model.CaseLevelCode,ClosureDate = Model.ClosureDate })';return false;"><i class="fas fa-file-invoice-dollar"></i> FORM CLOSURE</button>
+    </div>
+    
+</div>
+}

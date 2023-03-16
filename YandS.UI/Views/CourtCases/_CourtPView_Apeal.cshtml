@@ -1,0 +1,170 @@
+﻿<script type="text/javascript">
+
+    $(document).ready(function () {
+        console.log("_CourtPView_Apeal Partial Page Loaded");
+        jQuery(function ($) {
+            $.validator.addMethod('date',
+                function (value, element) {
+                    $.culture = Globalize.culture("en-AU");
+                    var date = Globalize.parseDate(value, "dd/MM/yyyy", "en-AU");
+                    return this.optional(element) ||
+                        !/Invalid|NaN/.test(new Date(date).toString());
+                });
+        });
+
+        $('.datepicker').datepicker({
+            format: "dd/mm/yyyy",
+            todayBtn: "linked",
+            clearBtn: true,
+            autoclose: true,
+            orientation: "bottom auto"
+        });
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        console.log("#Apeal_CaseId");
+        console.log($("#Apeal_CaseId").val());
+
+        console.log("#Apeal_Courtid");
+        console.log($("#Apeal_Courtid").val());
+
+        console.log("P_CaseId");
+        console.log(P_CaseId);
+        console.log("P_Courtid");
+        console.log(P_Courtid);
+
+
+
+        P_Detail = parseInt($("#Apeal_DetailId").val());
+
+        if (P_Detail == 0) {
+            console.log("No Court Detail found! :: _CourtPView_Apeal Partial Page");
+        }
+
+        LoadHearings(P_Detail);
+
+        var form = CourtDetailContainer.closest("form");
+        form.removeData('validator');
+        form.removeData('unobtrusiveValidation');
+        $.validator.unobtrusive.parse(form);
+
+        $('#Add_Apeal_CourtDetail').click(function () {
+            console.log("Add_Apeal_CourtDetail");
+            var form = $("#frm_Apeal_CourtDetail");
+            console.log(form);
+
+            //console.log("TODO:// Check either Supreme court Data Saved or not");
+            //console.log("Total Court Found " + ArrayCourts.length);
+
+            //if (ArrayCourts.length > 0) {
+            //    console.log("Max value is: " + ArrayCourts.max() + "\nMin value is: " + ArrayCourts.min());
+            //    if (ArrayCourts.max() > 2) {
+            //        Swal.fire({
+            //            type: "error",
+            //            title: 'Error...',
+            //            html: 'Apeal Court Information Data Entry/Modification are not Allowed after Supreme Court OR Enforcement Creation'
+            //        });
+            //        return false;
+            //    }
+            //}
+
+            $.ajax({
+                url: CreateApealCourtDetailURL,
+                method: "POST",  // post
+                data: form.serialize(),
+                success: function (partialResult) {
+                    LoadPartialView(partialResult, CourtDetailContainer);
+                    P_Detail = parseInt($("#Apeal_DetailId").val());
+
+                    if (P_Detail == 0) {
+                        console.log("No Court Detail found! :: #Add_Apeal_CourtDetail Function");
+                    }
+                    else {
+                        if (ArrayCourts.indexOf("2") == -1)
+                            ArrayCourts.push("2");
+
+                        LoadHearings(P_Detail);
+                    }
+                }
+            });
+        });
+    });
+</script>
+@model YandS.UI.Models.ApealCourtViewModal
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frm_Apeal_CourtDetail" }))
+{
+    <div class="card @ViewBag.CourtClass">
+        <div class="card-header">
+            <h3 class="card-title">@ViewBag.CourtName</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="form-horizontal">
+                @Html.HiddenFor(model => model.Apeal_CaseId)
+                @Html.HiddenFor(model => model.Apeal_DetailId)
+                @Html.HiddenFor(model => model.Apeal_Courtid)
+                @Html.HiddenFor(model => model.Apeal_CaseLevelCode)
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Apeal_CourtRefNo, "Apeal Court No.")
+                            @Html.EditorFor(model => model.Apeal_CourtRefNo, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Apeal_CourtRefNo, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Apeal_RegistrationDate)
+                            @Html.EditorFor(model => model.Apeal_RegistrationDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                            @Html.ValidationMessageFor(model => model.Apeal_RegistrationDate, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Apeal_CourtDepartment)
+                            @Html.DropDownList("Apeal_CourtDepartment", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Apeal_JudgementReceivingDate)
+                            @Html.EditorFor(model => model.Apeal_JudgementReceivingDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                            @Html.ValidationMessageFor(model => model.Apeal_JudgementReceivingDate, "", new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+                    <div class="col-6">
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Apeal_CourtLocationid)
+                            @Html.DropDownList("Apeal_CourtLocationid", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Apeal_CaseLevelCode)
+                            @*@Html.DropDownList("Apeal_CaseLevelCode", null, htmlAttributes: new { @class = "form-control select2bs4", @disabled = "disabled" })*@
+                            <span class="form-control">@ViewBag.Apeal_CaseLevelCode</span>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Apeal_JudgementDate)
+                            @Html.EditorFor(model => model.Apeal_JudgementDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                            @Html.ValidationMessageFor(model => model.Apeal_JudgementDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Apeal_JudgementDetails)
+                            @Html.TextAreaFor(model => model.Apeal_JudgementDetails, 3, 200, new { @class = "form-control" })
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input class="btn btn-warning" type="button" id="Add_Apeal_CourtDetail" value="Add Court Detail" />
+
+        </div>
+    </div>
+
+}

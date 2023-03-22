@@ -46,3 +46,14 @@ C:\Working\Git\YandS\YandS.DAL\obj\Debug\YandS.DAL.csproj.CoreCompileInputs.cach
 C:\Working\Git\YandS\YandS.DAL\obj\Debug\YandS.DAL.csproj.CopyComplete
 C:\Working\Git\YandS\YandS.DAL\obj\Debug\YandS.DAL.dll
 C:\Working\Git\YandS\YandS.DAL\obj\Debug\YandS.DAL.pdb
+C:\Working\Git\a4aliadnan@gmail.com\LMS\YandS.DAL\bin\Debug\YandS.DAL.dll
+C:\Working\Git\a4aliadnan@gmail.com\LMS\YandS.DAL\bin\Debug\YandS.DAL.pdb
+C:\Working\Git\a4aliadnan@gmail.com\LMS\YandS.DAL\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Working\Git\a4aliadnan@gmail.com\LMS\YandS.DAL\bin\Debug\DocumentFormat.OpenXml.xml
+C:\Working\Git\a4aliadnan@gmail.com\LMS\YandS.DAL\bin\Debug\EPPlus.xml
+C:\Working\Git\a4aliadnan@gmail.com\LMS\YandS.DAL\bin\Debug\TemplateEngine.Docx.pdb
+C:\Working\Git\a4aliadnan@gmail.com\LMS\YandS.DAL\obj\Debug\YandS.DAL.csprojAssemblyReference.cache
+C:\Working\Git\a4aliadnan@gmail.com\LMS\YandS.DAL\obj\Debug\YandS.DAL.csproj.CoreCompileInputs.cache
+C:\Working\Git\a4aliadnan@gmail.com\LMS\YandS.DAL\obj\Debug\YandS.DAL.csproj.CopyComplete
+C:\Working\Git\a4aliadnan@gmail.com\LMS\YandS.DAL\obj\Debug\YandS.DAL.dll
+C:\Working\Git\a4aliadnan@gmail.com\LMS\YandS.DAL\obj\Debug\YandS.DAL.pdb

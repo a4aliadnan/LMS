@@ -94,11 +94,61 @@
 
         public string Value { get; private set; }
 
-        public static OfficeFileStatus Trace { get { return new OfficeFileStatus("Trace"); } }
-        public static OfficeFileStatus Debug { get { return new OfficeFileStatus("Debug"); } }
-        public static OfficeFileStatus Info { get { return new OfficeFileStatus("Info"); } }
-        public static OfficeFileStatus Warning { get { return new OfficeFileStatus("Warning"); } }
-        public static OfficeFileStatus Error { get { return new OfficeFileStatus("Error"); } }
+        public static OfficeFileStatus Transfer { get { return new OfficeFileStatus("OFS-1"); } }
+        public static OfficeFileStatus LegalNotice { get { return new OfficeFileStatus("OFS-2"); } }
+        public static OfficeFileStatus WritingSubmission { get { return new OfficeFileStatus("OFS-3"); } }
+        public static OfficeFileStatus SubmissionApproval { get { return new OfficeFileStatus("OFS-4"); } }
+        public static OfficeFileStatus ApprovalForAppeal { get { return new OfficeFileStatus("OFS-10"); } }
+        public static OfficeFileStatus ApprovalForSupreme { get { return new OfficeFileStatus("OFS-11"); } }
+        public static OfficeFileStatus CompletingDocs { get { return new OfficeFileStatus("OFS-13"); } }
+        public static OfficeFileStatus ReceiptOfFees { get { return new OfficeFileStatus("OFS-14"); } }
+        public static OfficeFileStatus Translation { get { return new OfficeFileStatus("OFS-15"); } }
+        public static OfficeFileStatus Scanned { get { return new OfficeFileStatus("OFS-5"); } }
+        public static OfficeFileStatus OnlineRegTBR { get { return new OfficeFileStatus("OFS-6"); } }
+        public static OfficeFileStatus CourtMsg { get { return new OfficeFileStatus("OFS-7"); } }
+        public static OfficeFileStatus ForPayment { get { return new OfficeFileStatus("OFS-8"); } }
+        public static OfficeFileStatus WithLawyer { get { return new OfficeFileStatus("OFS-12"); } }
+        public static OfficeFileStatus Registered { get { return new OfficeFileStatus("OFS-9"); } }
+        public static OfficeFileStatus RunningCase { get { return new OfficeFileStatus("OFS-16"); } }
+        public static OfficeFileStatus JudgIssued { get { return new OfficeFileStatus("OFS-17"); } }
+        public static OfficeFileStatus ToKnowSessionDate { get { return new OfficeFileStatus("OFS-18"); } }
+        public static OfficeFileStatus RequestMeetJudge { get { return new OfficeFileStatus("OFS-19"); } }
+        public static OfficeFileStatus Dispute { get { return new OfficeFileStatus("OFS-20"); } }
+        public static OfficeFileStatus AuctionSession { get { return new OfficeFileStatus("OFS-21"); } }
+        public static OfficeFileStatus OnlineRegENF { get { return new OfficeFileStatus("OFS-22"); } }
+        public static OfficeFileStatus Announcement { get { return new OfficeFileStatus("OFS-23"); } }
+        public static OfficeFileStatus ContactingAuthorities { get { return new OfficeFileStatus("OFS-24"); } }
+        public static OfficeFileStatus JudicalSale { get { return new OfficeFileStatus("OFS-25"); } }
+        public static OfficeFileStatus ArrestApplication { get { return new OfficeFileStatus("OFS-26"); } }
+        public static OfficeFileStatus ArrestOrder { get { return new OfficeFileStatus("OFS-27"); } }
+        public static OfficeFileStatus Suspendfd { get { return new OfficeFileStatus("OFS-28"); } }
+        public static OfficeFileStatus RecoveryRedStamp_Close { get { return new OfficeFileStatus("OFS-29"); } }
+        public static OfficeFileStatus RecoveryRedStamp_Re_Open { get { return new OfficeFileStatus("OFS-30"); } }
+        public static OfficeFileStatus MeetJudge { get { return new OfficeFileStatus("OFS-31"); } }
+        public static OfficeFileStatus AssigningJudge { get { return new OfficeFileStatus("OFS-32"); } }
+        public static OfficeFileStatus JudgStamp { get { return new OfficeFileStatus("OFS-33"); } }
+        public static OfficeFileStatus CorrectingJudg { get { return new OfficeFileStatus("OFS-34"); } }
+        public static OfficeFileStatus PeriodOfAppeal { get { return new OfficeFileStatus("OFS-35"); } }
+        public static OfficeFileStatus RedStamp { get { return new OfficeFileStatus("OFS-36"); } }
+        public static OfficeFileStatus EnfcApproval { get { return new OfficeFileStatus("OFS-37"); } }
+        public static OfficeFileStatus Refundable3_4 { get { return new OfficeFileStatus("OFS-38"); } }
+        public static OfficeFileStatus FileReview { get { return new OfficeFileStatus("OFS-39"); } }
+        public static OfficeFileStatus OPP { get { return new OfficeFileStatus("OFS-40"); } }
+        public static OfficeFileStatus ROP { get { return new OfficeFileStatus("OFS-41"); } }
+        public static OfficeFileStatus MOL { get { return new OfficeFileStatus("OFS-42"); } }
+        public static OfficeFileStatus PACP { get { return new OfficeFileStatus("OFS-43"); } }
+        public static OfficeFileStatus MOCI { get { return new OfficeFileStatus("OFS-44"); } }
+        public static OfficeFileStatus EstablishingCompanies { get { return new OfficeFileStatus("OFS-45"); } }
+        public static OfficeFileStatus Arbition { get { return new OfficeFileStatus("OFS-46"); } }
+        public static OfficeFileStatus AttendAssociation { get { return new OfficeFileStatus("OFS-47"); } }
+        public static OfficeFileStatus WrittingContracts { get { return new OfficeFileStatus("OFS-48"); } }
+        public static OfficeFileStatus ReviewingContracts { get { return new OfficeFileStatus("OFS-49"); } }
+        public static OfficeFileStatus LegalServices { get { return new OfficeFileStatus("OFS-50"); } }
+        public static OfficeFileStatus Closing_Settelment { get { return new OfficeFileStatus("OFS-51"); } }
+        public static OfficeFileStatus Closing_Payments { get { return new OfficeFileStatus("OFS-52"); } }
+        public static OfficeFileStatus Closing_AgainstClient { get { return new OfficeFileStatus("OFS-53"); } }
+        public static OfficeFileStatus Closing_Consultants { get { return new OfficeFileStatus("OFS-54"); } }
+        public static OfficeFileStatus Closing_Others { get { return new OfficeFileStatus("OFS-55"); } }
 
         public override string ToString()
         {

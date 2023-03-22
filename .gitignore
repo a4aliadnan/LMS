@@ -11,6 +11,7 @@
 
 # Secrets
 *.secrets
+*.config
 
 # Build results
 [Dd]ebug/

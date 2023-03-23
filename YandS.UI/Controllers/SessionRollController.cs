@@ -19,6 +19,9 @@ namespace YandS.UI.Controllers
         private RBACDbContext db = new RBACDbContext();
         private SessionsRoll ExistingModelData = new SessionsRoll();
         private string PartialViewName = "";
+        private const string OfficeFileFilter = "[SR]";
+        private string[] FileStatusCodes = new[] { "OFS-16", "OFS-17", "OFS-18" };
+
         public ActionResult Index(int? id)
         {
             if (User.IsInRole("VoucherApproval") || User.IsSysAdmin())
@@ -161,10 +164,12 @@ namespace YandS.UI.Controllers
 
                     mapSessionRollVM(modal.CaseId, modal.SessionRollId, ref modal);
 
+                    
+
 
                     ViewBag.CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc", modal.CaseType);
                     ViewBag.LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", modal.LawyerId);
-                    ViewBag.SessionFileStatus = new SelectList(Helper.GetSessionFileStatus(), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                    ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilter, modal.CaseLevelCode == "6" ? FileStatusCodes : null), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
 
 
                     ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", modal.FollowerId);
@@ -2068,12 +2073,11 @@ namespace YandS.UI.Controllers
                 ViewBag.SessionRollId = modal.SessionRollId;
                 ViewBag.HFCaseId = modal.CaseId;
 
-                string[] FileStatusCodes = new[] { "0", "1", "2", "3", "4"};
 
                 ViewBag.CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc", modal.CaseType);
                 ViewBag.LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", modal.LawyerId);
-                ViewBag.SessionFileStatus = new SelectList(Helper.GetSessionFileStatus(FileStatusCodes), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
-
+                //ViewBag.SessionFileStatus = new SelectList(Helper.GetSessionFileStatus(FileStatusCodes), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilter, modal.CaseLevelCode == "6" ? FileStatusCodes : null), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
 
                 ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", modal.FollowerId);
                 ViewBag.SuspendedFollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", modal.SuspendedFollowerId);
@@ -2413,8 +2417,8 @@ namespace YandS.UI.Controllers
                 mapSessionRollVM(CaseId, SessionRollId, ref modal);
 
                 ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", modal.SessionClientId);
-                ViewBag.SessionFileStatus = new SelectList(Helper.GetSessionFileStatus(), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
-
+                //ViewBag.SessionFileStatus = new SelectList(Helper.GetSessionFileStatus(), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilter, modal.CaseLevelCode == "6" ? FileStatusCodes : null), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
                 return PartialView(PartialViewName, modal);
             }
             else if (PartialViewName == "_SessionJudgementEnforcement")
@@ -2599,7 +2603,8 @@ namespace YandS.UI.Controllers
                 mapSessionRollVM(CaseId, SessionRollId, ref modal);
 
                 ViewBag.SessionLevel = new SelectList(Helper.GetCaseLevelList("C"), "Mst_Value", "Mst_Desc", modal.SessionLevel);
-                ViewBag.SessionFileStatus = new SelectList(Helper.GetSessionFileStatus(), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                //ViewBag.SessionFileStatus = new SelectList(Helper.GetSessionFileStatus(), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilter, modal.CaseLevelCode == "6" ? FileStatusCodes : null), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
 
                 return PartialView(PartialViewName, modal);
             }

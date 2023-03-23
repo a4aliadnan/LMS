@@ -2070,16 +2070,6 @@ namespace YandS.UI.Controllers
 
                 string[] FileStatusCodes = new[] { "0", "1", "2", "3", "4"};
 
-                //if(int.Parse(modal.CaseLevelCode) >= 3 && int.Parse(modal.CaseLevelCode) <= 5)
-                //{
-                //    if (modal.SessionFileStatus == "3")
-                //        FileStatusCodes = new[] { "0", "1", "2", "3" };
-                //    else
-                //        FileStatusCodes = new[] { "0", "1", "2" };
-                //}
-                //else if (int.Parse(modal.CaseLevelCode) == 6)
-                //    FileStatusCodes = new[] { "0", "1", "2", "3", "4" };
-
                 ViewBag.CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc", modal.CaseType);
                 ViewBag.LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", modal.LawyerId);
                 ViewBag.SessionFileStatus = new SelectList(Helper.GetSessionFileStatus(FileStatusCodes), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);

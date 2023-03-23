@@ -2950,5 +2950,16 @@ namespace YandS.UI
 
             return strJudgementDate;
         }
+        public static List<MasterSetups> GetOfficeFileStatus(string[] FilterCode = null)
+        {
+            RBACDbContext db = new RBACDbContext();
+
+            if (FilterCode == null)
+                return db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OfficeFileStatus && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList();
+            else
+                return db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OfficeFileStatus && m.Active_Flag == true && FilterCode.Contains(m.Remarks)).OrderBy(o => o.DisplaySeq).ToList();
+
+
+        }
     }
 }

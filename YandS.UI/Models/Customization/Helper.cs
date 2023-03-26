@@ -2950,16 +2950,22 @@ namespace YandS.UI
 
             return strJudgementDate;
         }
-        public static List<MasterSetups> GetOfficeFileStatus(string[] FilterCode = null)
+        public static List<MasterSetups> GetOfficeFileStatus(string FileStatusFilter, string[] FilterCode = null)
         {
             RBACDbContext db = new RBACDbContext();
+            List<MasterSetups> lst = db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OfficeFileStatus && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList();
+            List<MasterSetups> lstReturn = new List<MasterSetups>();
 
             if (FilterCode == null)
-                return db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OfficeFileStatus && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList();
+            {
+                lstReturn = lst.Where(m => m.Remarks.Contains(FileStatusFilter)).OrderBy(o => o.DisplaySeq).ToList();
+            }
             else
-                return db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OfficeFileStatus && m.Active_Flag == true && FilterCode.Contains(m.Remarks)).OrderBy(o => o.DisplaySeq).ToList();
+            {
+                lstReturn = lst.Where(m => m.Remarks.Contains(FileStatusFilter) && FilterCode.Contains(m.Mst_Value)).OrderBy(o => o.DisplaySeq).ToList();
+            }
 
-
+            return lstReturn;
         }
     }
 }

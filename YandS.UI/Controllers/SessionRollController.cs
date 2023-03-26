@@ -20,7 +20,7 @@ namespace YandS.UI.Controllers
         private SessionsRoll ExistingModelData = new SessionsRoll();
         private string PartialViewName = "";
         private const string OfficeFileFilter = "[SR]";
-        private string[] FileStatusCodes = new[] { "OFS-16", "OFS-17", "OFS-18" };
+        private string[] FileStatusCodes = new[] { "0", "OFS-16", "OFS-17", "OFS-18" };
 
         public ActionResult Index(int? id)
         {

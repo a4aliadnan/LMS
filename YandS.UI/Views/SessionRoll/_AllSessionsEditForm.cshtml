@@ -55,17 +55,17 @@
                 ActiveButton = RetainActivebtnName;
                 return false;
                 break;
-            case "1":
+            case "OFS-16":
                 _PartialViewName = "_SessionRunningDIV";
                 ActiveButton = "btn_AllSessions";
                 //$("#" + ActiveButton).trigger("click");
                 break;
-            case "3":
+            case "OFS-18":
                 _PartialViewName = "_SessionOnHoldDIV";
                 ActiveButton = "btn_SessionOnHold";
                 //$("#" + ActiveButton).trigger("click");
                 break;
-            case "2":
+            case "OFS-17":
                 _PartialViewName = "_SessionJudgementDIV";
                 ActiveButton = "btn_SessionJudgement";
                 $('.clsJudIssued').removeClass("AppHidden").addClass("AppHidden");
@@ -208,7 +208,7 @@
     }
 
     function ValidateSessionResult() {
-        if (parseInt($("#SessionFileStatus").val()) == 3) {
+        if ($("#SessionFileStatus").val() == "OFS-18") {
             if ($("#SessionOnHoldUntill").val() == "") {
                 ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER SR HOLD UNTILL DATE" : ValidationMessage + "<br />" + "PLEASE ENTER SR HOLD UNTILL DATE";
                 NotValid = true;
@@ -221,7 +221,7 @@
 
 
         }
-        else if (parseInt($("#SessionFileStatus").val()) == 1) {
+        else if ($("#SessionFileStatus").val() == "OFS-16") {
             if ($("#NextHearingDate").val() == "") {
                 ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER NEXT HEARING DATE" : ValidationMessage + "<br />" + "PLEASE ENTER NEXT HEARING DATE";
                 NotValid = true;
@@ -234,7 +234,7 @@
                 }
             }
         }
-        else if (parseInt($("#SessionFileStatus").val()) == 2) {
+        else if ($("#SessionFileStatus").val() == "OFS-17") {
             if ($("#JudgementLevel").val() == "0") {
                 ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT JUDGMENT" : ValidationMessage + "<br />" + "PLEASE SELECT JUDGMENT";
                 NotValid = true;
@@ -401,7 +401,8 @@
             $(".AddNewMaster").prop("disabled", true);
         }
 
-        LoadFileStatusPV($('#SessionFileStatus').val());
+        if ($('#SessionFileStatus').val() != undefined)
+            LoadFileStatusPV($('#SessionFileStatus').val());
 
         $('#SessionFileStatus').on("change", function () {
             LoadFileStatusPV($('#SessionFileStatus').val());

@@ -181,3 +181,5 @@ logs/
 # NUKE
 .nuke/temp
 
+# DBScriptsCompare
+DBScriptsCompare/

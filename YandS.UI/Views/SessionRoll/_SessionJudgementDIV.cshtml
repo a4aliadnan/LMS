@@ -6,10 +6,11 @@
         _parameters = "";
         _PartialViewName = "";
         PartialContainer = $("#DIV_JudgementLevel");
+        $("#DIV_JudgementLevel").empty();
+        $("#DIV_JudgementNotFav").empty();
 
         switch (JudgementLevelId) {
             case "0":
-                $("#DIV_JudgementLevel").empty();
                 return false;
                 break;
             case "1":

@@ -642,6 +642,10 @@
     <Compile Include="Migrations\202211151034202_AddedJudgementLevelColumn.Designer.cs">
       <DependentUpon>202211151034202_AddedJudgementLevelColumn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202303230748255_ResizeSessionFileStstus.cs" />
+    <Compile Include="Migrations\202303230748255_ResizeSessionFileStstus.Designer.cs">
+      <DependentUpon>202303230748255_ResizeSessionFileStstus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\CaseInvoiceFeeCalculation.cs" />
     <Compile Include="Models\CaseInvoiceFee.cs" />
     <Compile Include="Models\CaseInvoice.cs" />
@@ -4468,6 +4472,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202211151034202_AddedJudgementLevelColumn.resx">
       <DependentUpon>202211151034202_AddedJudgementLevelColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303230748255_ResizeSessionFileStstus.resx">
+      <DependentUpon>202303230748255_ResizeSessionFileStstus.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

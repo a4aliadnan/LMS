@@ -601,6 +601,8 @@
         public string SupremePlaintNo { get; set; }
         [Display(Name = "SUPREME PLAINT COURT")]
         public string SupremePlaintCourt { get; set; }
+        [Display(Name = "DISPUTE LEVEL مرحلة منازعة التنفيذ")]
+        public string CurrentDisputeLevelandType { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? MoneyTrRequestDate { get; set; }

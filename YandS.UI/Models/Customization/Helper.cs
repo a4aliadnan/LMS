@@ -2967,5 +2967,10 @@ namespace YandS.UI
 
             return lstReturn;
         }
+        public static List<MasterSetups> GetDisputeLevelandTypes()
+        {
+            RBACDbContext db = new RBACDbContext();
+            return db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.DisputeLevelandTypes && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList();
+        }
     }
 }

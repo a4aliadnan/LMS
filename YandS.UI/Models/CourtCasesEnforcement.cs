@@ -252,6 +252,8 @@
         public DateTime? DEF_VisitDate { get; set; }
         [StringLength(2)]
         public string CourtDepartment { get; set; } //Dropdown 
+        [StringLength(2)]
+        public string CurrentDisputeLevelandType { get; set; } //Dropdown 
 
         public CourtCasesEnforcement()
         {

@@ -252,6 +252,7 @@
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime ActionDate { get; set; }
         public string DisputeLevel { get; set; }
+        public DateTime? DisputrRegisterDate { get; set; }
         #endregion
 
         [Display(Name = "JUDGMENT الحكم")]

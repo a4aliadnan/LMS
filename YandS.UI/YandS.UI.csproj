@@ -111,7 +111,7 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Twilio.Api">
-      <HintPath>..\Resources\Twilio.Api.dll</HintPath>
+      <HintPath>..\..\Resources\Twilio.Api.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -645,6 +645,10 @@
     <Compile Include="Migrations\202303230748255_ResizeSessionFileStstus.cs" />
     <Compile Include="Migrations\202303230748255_ResizeSessionFileStstus.Designer.cs">
       <DependentUpon>202303230748255_ResizeSessionFileStstus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303280621265_AddedDisputeandTypes.cs" />
+    <Compile Include="Migrations\202303280621265_AddedDisputeandTypes.Designer.cs">
+      <DependentUpon>202303280621265_AddedDisputeandTypes.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\CaseInvoiceFeeCalculation.cs" />
     <Compile Include="Models\CaseInvoiceFee.cs" />
@@ -4475,6 +4479,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202303230748255_ResizeSessionFileStstus.resx">
       <DependentUpon>202303230748255_ResizeSessionFileStstus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303280621265_AddedDisputeandTypes.resx">
+      <DependentUpon>202303280621265_AddedDisputeandTypes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

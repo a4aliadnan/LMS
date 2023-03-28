@@ -301,18 +301,18 @@ namespace YandS.UI.Controllers
                 {
                     UpdateSessionClientDefendent(modal.CaseId, modal.SessionClientId, modal.SessionRollDefendentName);
 
-                    if (int.Parse(modal.SessionFileStatus) == 1) // Running
+                    if (modal.SessionFileStatus == OfficeFileStatus.RunningCase.ToString()) // Running
                     {
                         UpdateNextHearingDate(modal.CaseId, modal.NextHearingDate);
                         db.Entry(ModelToSave).Entity.SessionOnHold = "0";
                         db.Entry(ModelToSave).Entity.SessionOnHoldUntill = null;
 
                     }
-                    else if (int.Parse(modal.SessionFileStatus) == 2) // Judgement Issued
+                    else if (modal.SessionFileStatus == OfficeFileStatus.JudgIssued.ToString()) // Judgement Issued
                     {
                         //UpdateJudgementDetail(modal, ref ModelToSave);
                     }
-                    else if (int.Parse(modal.SessionFileStatus) == 3) // On Hold
+                    else if (modal.SessionFileStatus == OfficeFileStatus.ToKnowSessionDate.ToString()) // On Hold
                     {
                         UpdateNextHearingDate(modal.CaseId, (DateTime?)null);
                         db.Entry(ModelToSave).Entity.SessionOnHold = modal.SessionOnHold;
@@ -789,21 +789,21 @@ namespace YandS.UI.Controllers
                 else
                     CreateCaseDetail(modal);
 
-                if (int.Parse(modal.SessionFileStatus) == 1) // Running
+                if (modal.SessionFileStatus == OfficeFileStatus.RunningCase.ToString()) // Running
                 {
                     UpdateNextHearingDate(modal.CaseId, modal.NextHearingDate);
                     db.Entry(ModelToSave).Entity.SessionOnHold = "0";
                     db.Entry(ModelToSave).Entity.SessionOnHoldUntill = null;
 
                 }
-                else if (int.Parse(modal.SessionFileStatus) == 2) // Judgement Issued
+                else if (modal.SessionFileStatus == OfficeFileStatus.JudgIssued.ToString()) // Judgement Issued
                 {
                     UpdateNextHearingDate(modal.CaseId, (DateTime?)null);
                     UpdateJudhmentIssued(modal, ref ModelToSave);
                     db.Entry(ModelToSave).Entity.SessionOnHold = "0";
                     db.Entry(ModelToSave).Entity.SessionOnHoldUntill = null;
                 }
-                else if (int.Parse(modal.SessionFileStatus) == 3) // On Hold
+                else if (modal.SessionFileStatus == OfficeFileStatus.ToKnowSessionDate.ToString()) // On Hold
                 {
                     UpdateNextHearingDate(modal.CaseId, (DateTime?)null);
                     db.Entry(ModelToSave).Entity.SessionOnHold = modal.SessionOnHold;
@@ -891,13 +891,13 @@ namespace YandS.UI.Controllers
                 db.Entry(ModelToSave).Entity.LawyerId = modal.LawyerId;
                 db.Entry(ModelToSave).Entity.SessionFileStatus = modal.SessionFileStatus;
 
-                if (int.Parse(modal.SessionFileStatus) == 1) // Running
+                if (modal.SessionFileStatus == OfficeFileStatus.RunningCase.ToString()) // Running
                 {
                     db.Entry(ModelToSave).Entity.SessionOnHold = "0";
                     db.Entry(ModelToSave).Entity.SessionOnHoldUntill = null;
 
                 }
-                else if (int.Parse(modal.SessionFileStatus) == 2) // Judgement Issued
+                else if (modal.SessionFileStatus == OfficeFileStatus.JudgIssued.ToString()) // Judgement Issued
                 {
                     db.Entry(ModelToSave).Entity.SessionOnHold = "0";
                     db.Entry(ModelToSave).Entity.SessionOnHoldUntill = null;
@@ -913,7 +913,7 @@ namespace YandS.UI.Controllers
                         db.Entry(ModelToSave).Entity.DeletedBy = User.Identity.GetUserId();
                     }
                 }
-                else if (int.Parse(modal.SessionFileStatus) == 3) // On Hold
+                else if (modal.SessionFileStatus == OfficeFileStatus.ToKnowSessionDate.ToString()) // On Hold
                 {
                     UpdateNextHearingDate(modal.CaseId, (DateTime?)null);
                     db.Entry(ModelToSave).Entity.SessionOnHold = modal.SessionOnHold;
@@ -1262,6 +1262,7 @@ namespace YandS.UI.Controllers
                     ModalToReturn.FileStatusRemarks = caseRegister.FileStatusRemarks;
                     ModalToReturn.ActionDate = caseRegister.ActionDate;
                     ModalToReturn.DisputeLevel = caseRegister.DisputeLevel;
+                    ModalToReturn.DisputrRegisterDate = caseRegister.DisputrRegisterDate;
                     ModalToReturn.CaseRegistrationId = caseRegister.CaseRegistrationId;
                 }
             }
@@ -1307,7 +1308,7 @@ namespace YandS.UI.Controllers
             db.Entry(courtCases).Entity.CommissioningDate = modal.CommissioningDate;
             db.Entry(courtCases).Entity.CourtFollowRequirement = modal.CourtFollowRequirement;
 
-            if(modal.SessionFileStatus == "2")
+            if (modal.SessionFileStatus == OfficeFileStatus.JudgIssued.ToString())
                 db.Entry(courtCases).Entity.ClaimSummary = modal.ClaimSummary;
 
             db.Entry(courtCases).State = EntityState.Modified;
@@ -1858,6 +1859,7 @@ namespace YandS.UI.Controllers
                         caseRegistration.EnforcementDispute = "1";
                         caseRegistration.CourtRegistration = "0";
                         caseRegistration.DisputeLevel = modal.DisputeLevel;
+                        caseRegistration.DisputrRegisterDate = modal.DisputrRegisterDate;
                     }
                 }
 
@@ -1919,6 +1921,7 @@ namespace YandS.UI.Controllers
                     db.Entry(caseRegistration).Entity.EnforcementDispute = "1";
                     db.Entry(caseRegistration).Entity.CourtRegistration = "0";
                     db.Entry(caseRegistration).Entity.DisputeLevel = modal.DisputeLevel;
+                    db.Entry(caseRegistration).Entity.DisputrRegisterDate = modal.DisputrRegisterDate;
                 }
 
                 if (RedirectToCaseRegister)

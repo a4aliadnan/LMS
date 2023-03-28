@@ -78,7 +78,8 @@
         DisputeLevel = 1450,
         DisputeType = 1451,
         JudgementLevel = 1465,
-        OfficeFileStatus = 1573
+        OfficeFileStatus = 1573,
+        DisputeLevelandTypes = 1632
     }
     public enum Courts : ushort
     {

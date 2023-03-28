@@ -363,6 +363,7 @@ namespace YandS.UI.Controllers
                         }
                         else if (modal.EnforcementlevelId == "11") //DISPUTE منازعة تنفيذ
                         {
+                            _ModalToSave.CurrentDisputeLevelandType = modal.CurrentDisputeLevelandType;
                             _ModalToSave.PrimaryObjectionNo = modal.PrimaryObjectionNo;
                             _ModalToSave.PrimaryObjectionCourt = modal.PrimaryObjectionCourt;
                             _ModalToSave.ApealObjectionNo = modal.ApealObjectionNo;
@@ -467,6 +468,7 @@ namespace YandS.UI.Controllers
                         }
                         else if (modal.EnforcementlevelId == "11") //DISPUTE منازعة تنفيذ
                         {
+                            db.Entry(_ModalToSave).Entity.CurrentDisputeLevelandType = modal.CurrentDisputeLevelandType;
                             db.Entry(_ModalToSave).Entity.PrimaryObjectionNo = modal.PrimaryObjectionNo;
                             db.Entry(_ModalToSave).Entity.PrimaryObjectionCourt = modal.PrimaryObjectionCourt;
                             db.Entry(_ModalToSave).Entity.ApealObjectionNo = modal.ApealObjectionNo;
@@ -813,6 +815,7 @@ namespace YandS.UI.Controllers
                                 ViewModal.CauseOfRecoveryId = courtCasesEnforcement.CauseOfRecoveryId;
                                 ViewModal.DateOfInstruction = courtCasesEnforcement.DateOfInstruction;
 
+                                ViewModal.CurrentDisputeLevelandType = courtCasesEnforcement.CurrentDisputeLevelandType;
                                 ViewModal.PrimaryObjectionNo = courtCasesEnforcement.PrimaryObjectionNo;
                                 ViewModal.PrimaryObjectionCourt = courtCasesEnforcement.PrimaryObjectionCourt;
                                 ViewModal.ApealObjectionNo = courtCasesEnforcement.ApealObjectionNo;
@@ -2845,6 +2848,7 @@ namespace YandS.UI.Controllers
                         }
                         else if (PartialViewName == "ENF_LVL_DISPUTE")
                         {
+                            ViewBag.CurrentDisputeLevelandType = new SelectList(Helper.GetDisputeLevelandTypes(), "Mst_Value", "Mst_Desc", ViewModal.CurrentDisputeLevelandType);
                             ViewBag.PrimaryObjectionCourt = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc", ViewModal.PrimaryObjectionCourt);
                             ViewBag.ApealObjectionCourt = new SelectList(Helper.GetCourtLocationList("2"), "Mst_Value", "Mst_Desc", ViewModal.ApealObjectionCourt);
                             ViewBag.SupremeObjectionCourt = new SelectList(Helper.GetCourtLocationList("3"), "Mst_Value", "Mst_Desc", ViewModal.SupremeObjectionCourt);

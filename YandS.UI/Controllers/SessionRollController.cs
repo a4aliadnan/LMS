@@ -1852,15 +1852,12 @@ namespace YandS.UI.Controllers
 
                 if (modal.EnforcementIsFavorable == "N")
                 {
-                    if (string.IsNullOrEmpty(ModelToSave.EnforcementCrtInRegInProgress))
-                    {
-                        RedirectToCaseRegister = true;
-                        caseRegistration.JudgementDate = modal.SupremeJudgementsDate;
-                        caseRegistration.EnforcementDispute = "1";
-                        caseRegistration.CourtRegistration = "0";
-                        caseRegistration.DisputeLevel = modal.DisputeLevel;
-                        caseRegistration.DisputrRegisterDate = modal.DisputrRegisterDate;
-                    }
+                    RedirectToCaseRegister = true;
+                    caseRegistration.JudgementDate = modal.SupremeJudgementsDate;
+                    caseRegistration.EnforcementDispute = "1";
+                    caseRegistration.CourtRegistration = "0";
+                    caseRegistration.DisputeLevel = modal.DisputeLevel;
+                    caseRegistration.DisputrRegisterDate = modal.DisputrRegisterDate;
                 }
 
                 if (RedirectToCaseRegister)

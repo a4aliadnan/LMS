@@ -91,37 +91,6 @@
 
     }
 
-    function LoadPrintRequirementForm(PartialViewName) {
-        var _PartialViewName = PartialViewName;
-        P_CaseId = parseInt($("#CaseId").val());
-        P_SessionRollId = parseInt($("#SessionRollId").val());
-        var _Mode = "C";
-
-        var PartialContainer = $("#div_PrintRequirementForm");
-        PartialContainer.empty();
-
-        _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
-
-
-        $.ajax({
-            url: GetSessionRollURL,
-            type: "POST",
-            data: _parameters,
-            success: function (data, textStatus, jqXHR) {
-                PartialContainer.html(data);
-                //window.clipboardData.setData('text', '');
-                Swal.fire({
-                    type: 'success',
-                    title: '',
-                    width: 700,
-                    html: $("#ContentDIV").html()
-                }).then(function () {
-                    CopyToClipboard('swal2-content');
-                    console.log("Table Copied");
-                });
-            }
-        });
-    }
 
     function onPreSubmit(item) {
         console.log($("#HFCaseId").val());
@@ -642,9 +611,6 @@
         <input type="hidden" id="hidUpdatedOn" value="@ViewBag.UpdatedOn" />
 
     </div>
-
-    <div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>
-
     <div class="card">
         <div class="card-body">
             @Html.Partial("_OfficeFileInfoBanner")

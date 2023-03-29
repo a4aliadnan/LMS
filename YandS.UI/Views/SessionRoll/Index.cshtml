@@ -98,6 +98,38 @@
     var searchFileNoToGo = "";
     var CaseIdToGo = 0;
     var SessionRollIdToGo = 0;
+    function LoadPrintRequirementForm(PartialViewName) {
+        var _PartialViewName = PartialViewName;
+        P_CaseId = parseInt($("#CaseId").val());
+        P_SessionRollId = parseInt($("#SessionRollId").val());
+        var _Mode = "C";
+
+        var PartialContainer = $("#div_PrintRequirementForm");
+        PartialContainer.empty();
+
+        _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
+
+
+        $.ajax({
+            url: GetSessionRollURL,
+            type: "POST",
+            data: _parameters,
+            success: function (data, textStatus, jqXHR) {
+                PartialContainer.html(data);
+                //window.clipboardData.setData('text', '');
+                Swal.fire({
+                    type: 'success',
+                    title: '',
+                    width: 700,
+                    html: $("#ContentDIV").html()
+                }).then(function () {
+                    CopyToClipboard('swal2-content');
+                    console.log("Table Copied");
+                });
+            }
+        });
+    }
+
     function sleep(time) {
         return new Promise((resolve) => setTimeout(resolve, time));
     }
@@ -266,11 +298,19 @@
                 }
                 else {
                     //console.log(result);
+                    var LoadPVData = true;
+                    if ($('#IsDelete').val() == "Y")
+                        LoadPVData = false;
+
                     ResetHiddenItems();
                     $("#ModificationContainer").empty();
                     $("#ModificationContainer").html(result);
+
                     LoadPrintRequirementForm("SaveResult");
                     ReloadTable();
+
+                    if (!LoadPVData)
+                        $("#ModificationContainer").empty();
                 }
             },
             error: function () {
@@ -1290,7 +1330,7 @@
                             $("#SPAN_RECORD_EXISTS_MESSAGE").html("ADDED BEFORE الملف مُضاف");
                             $(".clsGoToSession").removeClass("AppHidden");
                         }
-                        
+
                     }
                     else {
                         $("#OFB_ClientName").text(Result.ClientName);
@@ -1394,7 +1434,7 @@
                     $('#HtmlTable').DataTable().search(searchFileNoToGo).draw();
                 });
 
-                
+
                 sleep(1000).then(() => {
                     _PartialViewName = "";
                     var PartialContainer = $("#ModificationContainer");
@@ -1419,9 +1459,9 @@
                     GetTab(PartialContainer, GetSessionRollURL, _parameters);
                 });
 
-                
-                
-                
+
+
+
             }
         });
     }
@@ -1743,7 +1783,7 @@
     }
 
 </script>
-
+<div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">

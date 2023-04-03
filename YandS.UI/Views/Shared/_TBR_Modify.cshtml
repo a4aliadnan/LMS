@@ -55,37 +55,34 @@
                 return false;
             }
 
-            if ($("#FileStatus").val() == "1") {
+            if ($("#FileStatus").val() == OfficeFileStatus.Transfer) {
                 NotValid = ValidateTransferred();
             }
-            else if ($("#FileStatus").val() == "2") {
+            else if ($("#FileStatus").val() == OfficeFileStatus.LegalNotice) {
                 NotValid = ValidateLegalNotice();
             }
-            else if ($("#FileStatus").val() == "3") {
+            else if ($("#FileStatus").val() == OfficeFileStatus.WritingSubmission) {
                 NotValid = ValidateWritingSubmission();
             }
             else if ($("#FileStatus").val() == "4") {
                 NotValid = ValidateOnHold();
             }
-            else if ($("#FileStatus").val() == "5") {
+            else if ($("#FileStatus").val() == OfficeFileStatus.Scanned) {
                 NotValid = ValidateScanned();
             }
-            else if ($("#FileStatus").val() == "6") {
+            else if ($("#FileStatus").val() == OfficeFileStatus.OnlineReg) {
                 NotValid = ValidateOnlineSubmission();
             }
-            else if ($("#FileStatus").val() == "7") {
+            else if ($("#FileStatus").val() == OfficeFileStatus.CourtMsg) {
                 NotValid = ValidateCourtNotes();
             }
-            else if ($("#FileStatus").val() == "8") {
+            else if ($("#FileStatus").val() == OfficeFileStatus.ForPayment) {
                 NotValid = ValidatePayment();
             }
-            else if ($("#FileStatus").val() == "9") {
+            else if ($("#FileStatus").val() == OfficeFileStatus.Registered) {
                 NotValid = ValidateRegistered();
             }
-            else if ($("#FileStatus").val() == "11") {
-                NotValid = ValidateStopRegistration();
-            }
-            else if ($("#FileStatus").val() == "12") {
+            else if ($("#FileStatus").val() == OfficeFileStatus.WithLawyer) {
                 NotValid = ValidateWithLawyer();
             }
 
@@ -98,188 +95,7 @@
                 return false;
             }
             ShowPreSubmit();
-            /*
-            Swal.fire({
-                title: 'CLIENT REPLY',
-                html: 'WAITING FOR THE CLIENT’S RESPONSE',
-                type: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'نعم YES',
-                cancelButtonText: 'لا NO',
-            }).then((result) => {
-                if (result.value) {
-                    console.log(result.value);
-
-                    NotValid = ValidateUpdateDate();
-
-                    if (NotValid) {
-                        Swal.fire({
-                            title: 'Are you sure?',
-                            html: ValidationMessage,
-                            type: 'info',
-                            showCancelButton: true,
-                            confirmButtonColor: '#d33',
-                            cancelButtonColor: '#3085d6',
-                            confirmButtonText: 'تغييرالتاريخ والحفظ CHANGE',
-                            cancelButtonText: 'حفظ بدون تغيير CONTUNUE',
-                        }).then((result) => {
-                            if (result.value) {
-
-                                $("#CurrentHearingDate").datepicker("setDate", new Date).datepicker({
-                                    format: 'dd/mm/yyyy',
-                                    autoclose: true
-                                });
-
-                                ValidationMessage = "";
-                                NotValid = false;
-
-                                NotValid = ValidateNextHearingDate();
-
-                                if (NotValid) {
-                                    Swal.fire({
-                                        title: 'Are you sure?',
-                                        html: ValidationMessage,
-                                        type: 'info',
-                                        showCancelButton: true,
-                                        confirmButtonColor: '#3085d6',
-                                        cancelButtonColor: '#d33',
-                                        confirmButtonText: 'SAVE حفظ',
-                                        cancelButtonText: 'BACK عودة',
-                                    }).then((result) => {
-                                        if (result.value) {
-                                            submitForm();
-                                        }
-                                        else {
-                                            return false;
-                                        }
-                                    });
-                                }
-                                else {
-                                    submitForm();
-                                }
-                            }
-                            else {
-                                submitForm();
-                            }
-                        });
-                    }
-                    else {
-                        NotValid = ValidateNextHearingDate();
-
-                        if (NotValid) {
-                            Swal.fire({
-                                title: 'Are you sure?',
-                                html: ValidationMessage,
-                                type: 'info',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'SAVE حفظ',
-                                cancelButtonText: 'BACK عودة',
-                            }).then((result) => {
-                                if (result.value) {
-                                    submitForm();
-                                }
-                                else {
-                                    return false;
-                                }
-                            });
-                        }
-                        else {
-                            submitForm();
-                        }
-                    }
-
-                }
-                else {
-                    $("#ClientReply").val("").trigger('change');
-                    $("#Requirements").val("");
-                    $("#FirstEmailDate").val("");
-
-                    NotValid = ValidateUpdateDate();
-
-                    if (NotValid) {
-                        Swal.fire({
-                            title: 'Are you sure?',
-                            html: ValidationMessage,
-                            type: 'info',
-                            showCancelButton: true,
-                            confirmButtonColor: '#d33',
-                            cancelButtonColor: '#3085d6',
-                            confirmButtonText: 'تغييرالتاريخ والحفظ CHANGE',
-                            cancelButtonText: 'حفظ بدون تغيير CONTUNUE',
-                        }).then((result) => {
-                            if (result.value) {
-
-                                $("#CurrentHearingDate").datepicker("setDate", new Date).datepicker({
-                                    format: 'dd/mm/yyyy',
-                                    autoclose: true
-                                });
-
-                                ValidationMessage = "";
-                                NotValid = false;
-
-                                NotValid = ValidateNextHearingDate();
-
-                                if (NotValid) {
-                                    Swal.fire({
-                                        title: 'Are you sure?',
-                                        html: ValidationMessage,
-                                        type: 'info',
-                                        showCancelButton: true,
-                                        confirmButtonColor: '#3085d6',
-                                        cancelButtonColor: '#d33',
-                                        confirmButtonText: 'SAVE حفظ',
-                                        cancelButtonText: 'BACK عودة',
-                                    }).then((result) => {
-                                        if (result.value) {
-                                            submitForm();
-                                        }
-                                        else {
-                                            return false;
-                                        }
-                                    });
-                                }
-                                else {
-                                    submitForm();
-                                }
-                            }
-                            else {
-                                submitForm();
-                            }
-                        });
-                    }
-                    else {
-                        NotValid = ValidateNextHearingDate();
-
-                        if (NotValid) {
-                            Swal.fire({
-                                title: 'Are you sure?',
-                                html: ValidationMessage,
-                                type: 'info',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'SAVE حفظ',
-                                cancelButtonText: 'BACK عودة',
-                            }).then((result) => {
-                                if (result.value) {
-                                    submitForm();
-                                }
-                                else {
-                                    return false;
-                                }
-                            });
-                        }
-                        else {
-                            submitForm();
-                        }
-                    }
-                }
-            });
-            */
+            
         });
 
         if ($("#hidTBRRemarks").val() == "N")

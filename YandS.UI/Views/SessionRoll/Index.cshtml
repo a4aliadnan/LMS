@@ -98,6 +98,66 @@
     var searchFileNoToGo = "";
     var CaseIdToGo = 0;
     var SessionRollIdToGo = 0;
+    const OfficeFileStatus = {
+        PleaseSelect: "0",
+        Transfer: "OFS-1",
+        LegalNotice: "OFS-2",
+        WritingSubmission: "OFS-3",
+        SubmissionApproval: "OFS-4",
+        ApprovalForAppeal: "OFS-10",
+        ApprovalForSupreme: "OFS-11",
+        CompletingDocs: "OFS-13",
+        ReceiptOfFees: "OFS-14",
+        Translation: "OFS-15",
+        Scanned: "OFS-5",
+        OnlineReg: "OFS-6",
+        CourtMsg: "OFS-7",
+        ForPayment: "OFS-8",
+        WithLawyer: "OFS-12",
+        Registered: "OFS-9",
+        RunningCase: "OFS-16",
+        JudgIssued: "OFS-17",
+        ToKnowSessionDate: "OFS-18",
+        RequestMeetJudge: "OFS-19",
+        Dispute: "OFS-20",
+        AuctionSession: "OFS-21",
+        OnlineReg: "OFS-22",
+        Announcement: "OFS-23",
+        ContactingAuthorities: "OFS-24",
+        JudicalSale: "OFS-25",
+        ArrestApplication: "OFS-26",
+        ArrestOrder: "OFS-27",
+        Suspendfd: "OFS-28",
+        RecoveryRedStamp_Close: "OFS-29",
+        RecoveryRedStamp_Re_Open: "OFS-30",
+        MeetJudge: "OFS-31",
+        AssigningJudge: "OFS-32",
+        JudgStamp: "OFS-33",
+        CorrectingJudg: "OFS-34",
+        PeriodOfAppeal: "OFS-35",
+        RedStamp: "OFS-36",
+        EnfcApproval: "OFS-37",
+        Refundable3_4: "OFS-38",
+        FileReview: "OFS-39",
+        OPP: "OFS-40",
+        ROP: "OFS-41",
+        MOL: "OFS-42",
+        PACP: "OFS-43",
+        MOCI: "OFS-44",
+        EstablishingCompanies: "OFS-45",
+        Arbition: "OFS-46",
+        AttendAssociation: "OFS-47",
+        WrittingContracts: "OFS-48",
+        ReviewingContracts: "OFS-49",
+        LegalServices: "OFS-50",
+        Closing_Settelment: "OFS-51",
+        Closing_Payments: "OFS-52",
+        Closing_AgainstClient: "OFS-53",
+        Closing_Consultants: "OFS-54",
+        Closing_Others: "OFS-55",
+        BlueStamp: "OFS-56",
+        DifferentPanel: "OFS-57"
+    }
     function LoadPrintRequirementForm(PartialViewName) {
         var _PartialViewName = PartialViewName;
         P_CaseId = parseInt($("#CaseId").val());
@@ -908,7 +968,7 @@
                     }
                 }
 
-                if ($("#FileStatus").val() == "0") {
+                if ($("#FileStatus").val() == OfficeFileStatus.PleaseSelect) {
                     ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT FILE STATUS" : ValidationMessage + "<br />" + "PLEASE SELECT FILE STATUS";
                     NotValid = true;
                 }
@@ -1000,7 +1060,7 @@
                     }
                 }
 
-                if ($("#FileStatus").val() == "0") {
+                if ($("#FileStatus").val() == OfficeFileStatus.PleaseSelect) {
                     ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT FILE STATUS" : ValidationMessage + "<br />" + "PLEASE SELECT FILE STATUS";
                     NotValid = true;
                 }

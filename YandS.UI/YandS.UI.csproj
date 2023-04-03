@@ -650,6 +650,10 @@
     <Compile Include="Migrations\202303280621265_AddedDisputeandTypes.Designer.cs">
       <DependentUpon>202303280621265_AddedDisputeandTypes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202303290232273_AddedOfficeFileStatusColumn.cs" />
+    <Compile Include="Migrations\202303290232273_AddedOfficeFileStatusColumn.Designer.cs">
+      <DependentUpon>202303290232273_AddedOfficeFileStatusColumn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\CaseInvoiceFeeCalculation.cs" />
     <Compile Include="Models\CaseInvoiceFee.cs" />
     <Compile Include="Models\CaseInvoice.cs" />
@@ -3975,6 +3979,8 @@
     <Content Include="Views\Home\clientPOA.cshtml" />
     <Content Include="Views\Home\clientContact.cshtml" />
     <Content Include="Views\Home\clientTop20.cshtml" />
+    <Content Include="Views\SessionRoll\_CaseDetail_Modify.cshtml" />
+    <Content Include="Views\SessionRoll\_SessionJudgementSupreme_CaseDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4482,6 +4488,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202303280621265_AddedDisputeandTypes.resx">
       <DependentUpon>202303280621265_AddedDisputeandTypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303290232273_AddedOfficeFileStatusColumn.resx">
+      <DependentUpon>202303290232273_AddedOfficeFileStatusColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

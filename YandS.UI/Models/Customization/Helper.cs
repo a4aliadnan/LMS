@@ -2684,6 +2684,43 @@ namespace YandS.UI
 
             return new List<object>() { start, searchvalue, Length, sortcoloumnIndex, sortDirection };
         }
+        public static string getOfficeFileFilterTBR() { return "[TBR]"; }
+        public static string getOfficeFileFilterSR() { return "[SR]"; }
+        public static string getOfficeFileFilterENF() { return "[ENF]"; }
+        public static string getOfficeFileFilterSUP() { return "[SUP]"; }
+        public static string getOfficeFileFilterAJP() { return "[AJP]"; }
+        public static string getOfficeFileFilterCORP() { return "[CORP]"; }
+        public static string getOfficeFileFilterCLOSING() { return "[CLOSING]"; }
+        public static string[] getFileStatusCodesSR() {
+            return new[] 
+            {
+                OfficeFileStatus.PleaseSelect.ToString(),
+                OfficeFileStatus.RunningCase.ToString(),
+                OfficeFileStatus.JudgIssued.ToString(),
+                OfficeFileStatus.ToKnowSessionDate.ToString()
+            };
+        }
+        public static string[] getFileStatusCodesTBR() {
+            return new[] 
+            {
+                OfficeFileStatus.PleaseSelect.ToString(),
+                OfficeFileStatus.Transfer.ToString(),
+                OfficeFileStatus.WritingSubmission.ToString(),
+                OfficeFileStatus.SubmissionApproval.ToString(),
+                OfficeFileStatus.Scanned.ToString(),
+                OfficeFileStatus.OnlineRegTBR.ToString(),
+                OfficeFileStatus.CourtMsg.ToString(),
+                OfficeFileStatus.ForPayment.ToString(),
+                OfficeFileStatus.Registered.ToString(),
+                OfficeFileStatus.ApprovalForAppeal.ToString(),
+                OfficeFileStatus.ApprovalForSupreme.ToString(),
+                OfficeFileStatus.WithLawyer.ToString(),
+                OfficeFileStatus.CompletingDocs.ToString(),
+                OfficeFileStatus.ReceiptOfFees.ToString(),
+                OfficeFileStatus.Translation.ToString()
+            };
+        }
+
         public static DataTable getDataTable(string[] ParaName, object[] ParaValue, string procedureName = null)
         {
             List<SqlParameter> lstpar = new List<SqlParameter>();
@@ -2729,7 +2766,7 @@ namespace YandS.UI
                     ViewModal.UrgentCaseDays = caseRegistration.UrgentCaseDays;
                     ViewModal.EnforcementDispute = caseRegistration.EnforcementDispute;
                     ViewModal.CourtRegistration = caseRegistration.CourtRegistration;
-                    ViewModal.FileStatus = caseRegistration.FileStatus;
+                    //ViewModal.FileStatus = caseRegistration.FileStatus;
                     ViewModal.FileStatusRemarks = caseRegistration.FileStatusRemarks;
                     ViewModal.CourtMessage = caseRegistration.CourtMessage;
                     ViewModal.SendDate = caseRegistration.SendDate;
@@ -2823,7 +2860,7 @@ namespace YandS.UI
                         ViewModal.SessionRollClientName = SessionRollClientName;
                         ViewModal.CourtFollowRequirement = courtCases.CourtFollowRequirement;
                         ViewModal.StopEnfRequest = courtCases.StopEnfRequest;
-
+                        ViewModal.FileStatus = courtCases.OfficeFileStatus;
                         #region BEFORE COURT
 
                         //BEFORE COURT
@@ -2950,27 +2987,73 @@ namespace YandS.UI
 
             return strJudgementDate;
         }
-        public static List<MasterSetups> GetOfficeFileStatus(string FileStatusFilter, string[] FilterCode = null)
+        public static List<MasterSetups> GetOfficeFileStatus(string FileStatusFilter = null, string[] FilterCode = null)
         {
             RBACDbContext db = new RBACDbContext();
             List<MasterSetups> lst = db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OfficeFileStatus && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList();
             List<MasterSetups> lstReturn = new List<MasterSetups>();
 
-            if (FilterCode == null)
+            if (string.IsNullOrEmpty(FileStatusFilter))
             {
-                lstReturn = lst.Where(m => m.Remarks.Contains(FileStatusFilter)).OrderBy(o => o.DisplaySeq).ToList();
+                lstReturn = lst;
             }
             else
             {
-                lstReturn = lst.Where(m => m.Remarks.Contains(FileStatusFilter) && FilterCode.Contains(m.Mst_Value)).OrderBy(o => o.DisplaySeq).ToList();
+                if (FilterCode == null)
+                {
+                    lstReturn = lst.Where(m => m.Remarks.Contains(FileStatusFilter)).OrderBy(o => o.DisplaySeq).ToList();
+                }
+                else
+                {
+                    lstReturn = lst.Where(m => m.Remarks.Contains(FileStatusFilter) && FilterCode.Contains(m.Mst_Value)).OrderBy(o => o.DisplaySeq).ToList();
+                }
             }
-
             return lstReturn;
         }
         public static List<MasterSetups> GetDisputeLevelandTypes()
         {
             RBACDbContext db = new RBACDbContext();
             return db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.DisputeLevelandTypes && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList();
+        }
+        public static void UpdateNextHearingDate(int CaseId, DateTime? NextHearingDate)
+        {
+            using (var db = new RBACDbContext())
+            {
+                CourtCases courtCases = db.CourtCase.Find(CaseId);
+                db.Entry(courtCases).Entity.NextHearingDate = NextHearingDate;
+                db.Entry(courtCases).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+        }
+        public static void UpdateOfficeFileStatus(int CaseId, string OfficeFileStatus)
+        {
+            using (var db = new RBACDbContext())
+            {
+                CourtCases courtCases = db.CourtCase.Find(CaseId);
+                db.Entry(courtCases).Entity.OfficeFileStatus = OfficeFileStatus;
+                db.Entry(courtCases).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+        }
+        public static void UpdateRequirement(int CaseId, string strRequirement = null)
+        {
+            using (var db = new RBACDbContext())
+            {
+                CourtCases courtCases = db.CourtCase.Find(CaseId);
+                db.Entry(courtCases).Entity.Requirements = strRequirement;
+                db.Entry(courtCases).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+        }
+        public static void UpdateStopEnforcement(int CaseId, string StopEnfRequest)
+        {
+            using (var db = new RBACDbContext())
+            {
+                CourtCases courtCases = db.CourtCase.Find(CaseId);
+                db.Entry(courtCases).Entity.StopEnfRequest = StopEnfRequest;
+                db.Entry(courtCases).State = EntityState.Modified;
+                db.SaveChanges();
+            }
         }
     }
 }

@@ -227,6 +227,8 @@
         public string CourtFollowRequirement { get; set; }
         [StringLength(1)]
         public string StopEnfRequest { get; set; }
+        [StringLength(10)]
+        public string OfficeFileStatus { get; set; }
 
         public ICollection<CourtCasesDetail> DetailId { get; set; }
         public ICollection<CourtCasesEnforcement> EnforcementId { get; set; }

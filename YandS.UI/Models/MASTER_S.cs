@@ -96,6 +96,7 @@
 
         public string Value { get; private set; }
 
+        public static OfficeFileStatus PleaseSelect { get { return new OfficeFileStatus("0"); } }
         public static OfficeFileStatus Transfer { get { return new OfficeFileStatus("OFS-1"); } }
         public static OfficeFileStatus LegalNotice { get { return new OfficeFileStatus("OFS-2"); } }
         public static OfficeFileStatus WritingSubmission { get { return new OfficeFileStatus("OFS-3"); } }
@@ -151,6 +152,8 @@
         public static OfficeFileStatus Closing_AgainstClient { get { return new OfficeFileStatus("OFS-53"); } }
         public static OfficeFileStatus Closing_Consultants { get { return new OfficeFileStatus("OFS-54"); } }
         public static OfficeFileStatus Closing_Others { get { return new OfficeFileStatus("OFS-55"); } }
+        public static OfficeFileStatus BlueStamp { get { return new OfficeFileStatus("OFS-56"); } }
+        public static OfficeFileStatus DifferentPanel { get { return new OfficeFileStatus("OFS-57"); } }
 
         public override string ToString()
         {

@@ -21,7 +21,7 @@
         public string EnforcementDispute { get; set; }
         [StringLength(3)]
         public string CourtRegistration { get; set; }
-        [StringLength(3)]
+        [StringLength(10)]
         public string FileStatus { get; set; }
         [StringLength(255)]
         public string FileStatusRemarks { get; set; }

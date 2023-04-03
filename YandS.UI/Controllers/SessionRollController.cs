@@ -168,9 +168,6 @@ namespace YandS.UI.Controllers
 
                     mapSessionRollVM(modal.CaseId, modal.SessionRollId, ref modal);
 
-                    
-
-
                     ViewBag.CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc", modal.CaseType);
                     ViewBag.LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", modal.LawyerId);
                     ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterSR, modal.CaseLevelCode == "6" ? FileStatusCodesSR : null), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
@@ -235,12 +232,15 @@ namespace YandS.UI.Controllers
                         return Json(new { message = "OK" });
                     else
                     {
-                        if (modal.PartialViewName == "_SessionRollSupremeUpdate" || modal.PartialViewName == "_SessionJudgementSupreme" || modal.PartialViewName == "_SessionUpdateSupreme" || modal.PartialViewName == "_SessionUpdate" || modal.PartialViewName == "_SessionClose" || modal.PartialViewName == "_SessionFollowSupreme")
+                        if (modal.PartialViewName == "_SessionRollSupremeUpdate" || modal.PartialViewName == "_SessionJudgementSupreme" || modal.PartialViewName == "_SessionUpdateSupreme" || modal.PartialViewName == "_SessionUpdate" || modal.PartialViewName == "_SessionClose" || modal.PartialViewName == "_SessionFollowSupreme" || modal.PartialViewName == "_SessionJudgementSupreme_CaseDetail")
                         {
                             ViewBag.PASCourtLocationid = new SelectList(Helper.GetCourtLocationList("3"), "Mst_Value", "Mst_Desc");
                             ViewBag.ApealByWho = new SelectList(Helper.GetByWho(true), "Mst_Value", "Mst_Desc");
-                            ViewBag.CourtDepartment = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterSUP), "Mst_Value", "Mst_Desc");
-                            return PartialView("_SessionRollSupremeUpdate", modal);
+                            ViewBag.CourtDepartment = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterSUP), "Mst_Value", "Mst_Desc", modal.CourtDepartment);
+                            if (modal.PartialViewName == "_SessionJudgementSupreme_CaseDetail")
+                                return PartialView("_CaseDetail_Modify", modal);
+                            else
+                                return PartialView("_SessionRollSupremeUpdate", modal);
                         }
                         else
                             return PartialView(PartialViewName, modal);
@@ -447,7 +447,7 @@ namespace YandS.UI.Controllers
                     ModalToReturn.CountLocationName = "";
                 }
             }
-            else if (ModalToReturn.PartialViewName == "_SessionJudgementSupremeModal")
+            else if (ModalToReturn.PartialViewName == "_SessionJudgementSupremeModal" || ModalToReturn.PartialViewName == "_SessionJudgementSupreme_CaseDetail")
             {
                 courtCaseDetail = db.CourtCasesDetail.Where(w => w.CaseId == CaseId && w.CaseLevelCode == "5").FirstOrDefault();
                 if (courtCaseDetail != null)
@@ -1125,7 +1125,7 @@ namespace YandS.UI.Controllers
 
                 UpdateSessionClientDefendent(modal.CaseId, modal.SessionClientId, modal.SessionRollDefendentName);
             }
-            else if (modal.PartialViewName == "_SessionRollSupremeUpdate")
+            else if (modal.PartialViewName == "_SessionRollSupremeUpdate" || modal.PartialViewName == "_SessionJudgementSupreme_CaseDetail" || modal.PartialViewName == "_SessionUpdate_CaseDetail" || modal.PartialViewName == "_SessionOnHoldDIV_CaseDetail")
             {
                 if (modal.DetailId > 0)
                     UpdateCaseDetail(modal);
@@ -1133,6 +1133,7 @@ namespace YandS.UI.Controllers
                     CreateCaseDetail(modal);
 
                 modal.SessionFileStatus = modal.CourtDepartment;
+                db.Entry(ModelToSave).Entity.SessionFileStatus = modal.SessionFileStatus;
 
                 if (modal.CourtDepartment == OfficeFileStatus.RunningCase.ToString() || modal.CourtDepartment == OfficeFileStatus.AssigningJudge.ToString())
                 {
@@ -1492,6 +1493,9 @@ namespace YandS.UI.Controllers
             modal.Defendant = courtCases.Defendant;
             modal.SessionRollDefendentName = courtCases.SessionRollDefendentName;
 
+            modal.SessionFileStatus = courtCases.OfficeFileStatus;
+            modal.SessionFileStatusName = ExtensionMethods.IsNull(courtCases.OfficeFileStatus, "0") == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.OfficeFileStatus && w.Mst_Value == courtCases.OfficeFileStatus).FirstOrDefault().Mst_Desc;
+
             if (courtCases.AgainstCode == "3")
             {
                 modal.DEFENDANT_PLAINTIFF = "PLAINTIFF";
@@ -1549,18 +1553,17 @@ namespace YandS.UI.Controllers
                 {
                     sessionDataExists = true;
 
-                    modal.SessionFileStatus = sessionData.SessionFileStatus;
                     modal.SessionOnHold = sessionData.SessionOnHold;
                     modal.SessionOnHoldUntill = sessionData.SessionOnHoldUntill;
                     modal.SessionOnHoldName = ExtensionMethods.IsNull(sessionData.SessionOnHold, "0") == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.SessionOnHold && w.Mst_Value == sessionData.SessionOnHold).FirstOrDefault().Mst_Desc;
-                    modal.SessionFileStatusName = ExtensionMethods.IsNull(sessionData.SessionFileStatus, "0") == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.SessionFileStatus && w.Mst_Value == sessionData.SessionFileStatus).FirstOrDefault().Mst_Desc;
+
                     string templateSuffix = string.Empty;
 
-                    if (sessionData.SessionFileStatus == "1")
+                    if (sessionData.SessionFileStatus == OfficeFileStatus.RunningCase.ToString())
                         templateSuffix = "_RUNN";
-                    else if (sessionData.SessionFileStatus == "2")
+                    else if (sessionData.SessionFileStatus == OfficeFileStatus.JudgIssued.ToString())
                         templateSuffix = "_JUDG";
-                    else if (sessionData.SessionFileStatus == "3")
+                    else if (sessionData.SessionFileStatus == OfficeFileStatus.ToKnowSessionDate.ToString() || sessionData.SessionFileStatus == OfficeFileStatus.DifferentPanel.ToString())
                         templateSuffix = "_HOLD";
                     else if (sessionData.SessionFileStatus == "4")
                         templateSuffix = "_TEMP";
@@ -1590,7 +1593,7 @@ namespace YandS.UI.Controllers
                                 if (int.Parse(courtCases.CaseLevelCode) == 5)
                                 {
                                     formName = "_PrintRequirementFormSUP" + templateSuffix;
-                                    modal.SupremeStageName = ExtensionMethods.IsNull(courtCaseDetail.CourtDepartment, "0") == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.CourtDepartment && w.Mst_Value == courtCaseDetail.CourtDepartment).FirstOrDefault().Mst_Desc;
+                                    modal.SupremeStageName = ExtensionMethods.IsNull(courtCaseDetail.CourtDepartment, "0") == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.OfficeFileStatus && w.Mst_Value == courtCaseDetail.CourtDepartment).FirstOrDefault().Mst_Desc;
                                 }
 
                                 AppealByName = ExtensionMethods.IsNull(courtCaseDetail.ApealByWho, "0") == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.ApealByWho && w.Mst_Value == courtCaseDetail.ApealByWho).FirstOrDefault().Mst_Desc;
@@ -1663,7 +1666,7 @@ namespace YandS.UI.Controllers
                         if (int.Parse(courtCases.CaseLevelCode) == 5)
                         {
                             formName = "_PrintRequirementFormSUP";
-                            modal.SupremeStageName = ExtensionMethods.IsNull(courtCaseDetail.CourtDepartment, "0") == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.CourtDepartment && w.Mst_Value == courtCaseDetail.CourtDepartment).FirstOrDefault().Mst_Desc;
+                            modal.SupremeStageName = ExtensionMethods.IsNull(courtCaseDetail.CourtDepartment, "0") == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.OfficeFileStatus && w.Mst_Value == courtCaseDetail.CourtDepartment).FirstOrDefault().Mst_Desc;
                         }
 
                         AppealByName = ExtensionMethods.IsNull(courtCaseDetail.ApealByWho, "0") == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.ApealByWho && w.Mst_Value == courtCaseDetail.ApealByWho).FirstOrDefault().Mst_Desc;
@@ -2349,7 +2352,7 @@ namespace YandS.UI.Controllers
 
                 return PartialView(PartialViewName, modal);
             }
-            else if (PartialViewName == "_SessionJudgementSupremeModal" || PartialViewName == "_SessionJudgementSupreme_CaseDetail")
+            else if (PartialViewName == "_SessionJudgementSupremeModal")
             {
 
                 SessionsRollVM modal = new SessionsRollVM();
@@ -2358,6 +2361,21 @@ namespace YandS.UI.Controllers
                 ViewBag.HFCaseId = CaseId;
                 ViewBag.FrmMode = "E";
                 modal.PartialViewName = PartialViewName;
+
+                if (CaseId == 0)
+                    return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+
+                mapSessionRollVM(CaseId, SessionRollId, ref modal);
+                return PartialView(PartialViewName, modal);
+            }
+            else if (PartialViewName == "_SessionJudgementSupreme_CaseDetail")
+            {
+
+                SessionsRollVM modal = new SessionsRollVM();
+
+                ViewBag.SessionRollId = SessionRollId;
+                ViewBag.HFCaseId = CaseId;
+                ViewBag.FrmMode = "E";
 
                 if (CaseId == 0)
                     return new HttpStatusCodeResult(HttpStatusCode.NotFound);
@@ -2584,6 +2602,24 @@ namespace YandS.UI.Controllers
 
                 return PartialView(PartialViewName, modal);
             }
+            else if (PartialViewName == "_SessionUpdate_CaseDetail")
+            {
+                SessionsRollVM modal = new SessionsRollVM();
+
+                ViewBag.SessionRollId = SessionRollId;
+                ViewBag.HFCaseId = CaseId;
+                ViewBag.FrmMode = "E";
+
+                if (CaseId == 0)
+                    return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+
+                mapSessionRollVM(CaseId, SessionRollId, ref modal);
+
+                ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", modal.ClientReply);
+                ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", modal.TransportationSource);
+
+                return PartialView(PartialViewName, modal);
+            }
             else if (PartialViewName == "_SessionClose")
             {
                 SessionsRollVM modal = new SessionsRollVM();
@@ -2631,6 +2667,25 @@ namespace YandS.UI.Controllers
 
                 ViewBag.FrmMode = "E";
                 modal.PartialViewName = PartialViewName;
+
+                if (CaseId == 0)
+                    return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+
+                mapSessionRollVM(CaseId, SessionRollId, ref modal);
+                ViewBag.SessionRollId = modal.SessionRollId;
+                ViewBag.HFCaseId = modal.CaseId;
+
+                ViewBag.SessionOnHold = new SelectList(Helper.GetSessionOnHold(), "Mst_Value", "Mst_Desc", modal.SessionOnHold);
+                ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", modal.ClientReply);
+                ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", modal.TransportationSource);
+
+                return PartialView(PartialViewName, modal);
+            }
+            else if (PartialViewName == "_SessionOnHoldDIV_CaseDetail")
+            {
+                SessionsRollVM modal = new SessionsRollVM();
+
+                ViewBag.FrmMode = "E";
 
                 if (CaseId == 0)
                     return new HttpStatusCodeResult(HttpStatusCode.NotFound);

@@ -1,5 +1,9 @@
 ﻿<script type="text/javascript">
     var table;
+    var dataForTable = "CASE_MANAGEMENT";
+    var SP_NAME = "CASE_MANAGEMENT-GET_CASE_DETAIL";
+    var CASE_LEVEL = "5";
+
     $(document).ready(function () {
         if (typeof table != 'undefined')
             table.destroy();
@@ -18,14 +22,16 @@
                 "type": "POST",
                 "datatype": "json",
                 data: function (d) {
-                    d.DataTableName = "SUPREME";
+                    d.DataTableName = dataForTable;
+                    d.ProcedureName = SP_NAME;
+                    d.CaseLevel = CASE_LEVEL;
                     d.LocationId = $('#txtUserRole').val() == "VoucherApproval" ? $('input[name="rdoLocation"]:checked').val() : $('#txtLocationId').val();
                 }
             },
             "columns": [
                 { data: 'OfficeFileNo', name: 'OfficeFileNo', autoWidth: false },
                 { data: 'ClientName', name: 'ClientName', autoWidth: false },
-                { data: 'DefClientName', name: 'DefClientName', autoWidth: false },
+                { data: 'Defendant', name: 'Defendant', autoWidth: false },
                 { data: 'CourtRefNo', name: 'CourtRefNo', autoWidth: false, render: function (data) { if (data) return data.split("^ ").join("<br/>"); else return ""; } },
                 { data: 'AccountContractNo', name: 'AccountContractNo', autoWidth: false, render: function (data, type, row) { return FormatAccount_ClientFileNo(row); } },
                 { data: 'CurrentHearingDate', name: 'CurrentHearingDate', autoWidth: false },
@@ -34,9 +40,6 @@
                     data: null,
                     render: function (data, type, row) {
                         if (type === 'display') {
-                            console.log(data);
-                            console.log(data.CaseLevelCode);
-                            console.log(data.CaseStatus);
 
                             if (data.CaseStatus == "2") {
                                 if ($("#txtUserRole").val() == "AllowCloseCase") {
@@ -56,11 +59,9 @@
                                     }
                                 }
                                 else
-                                    return '<a class="btn btn-info btn-sm" title="" href="/CourtCases/ManageCourtDetail?CaseId=' + row.CaseId + '&amp;Courtid=3" id="' + row.CaseId + '" data-original-title="Supreme Court Management"><i class="fas fa-pencil-alt"></i></a>';
-                                    //return '<a style="color: black !important;" class="btn btn-sm btnLink" title="Modify and Add Case Details" id="E_' + row.CaseId + '" href="javascript:void(0)"><i class="fas fa-edit"></i></a> <a style="background-color: #b8d8a0 !important;color: black !important;" class="btn btn-sm" title="BEFORE COURT INFORMATION" href="/CourtCases/BeforeCourt?CaseId=' + row.CaseId + '" id="' + row.CaseId + '" ><strong>B</strong></a> <a style="background-color: #ffff8b !important;color: black !important;" class="btn btn-sm" title="Primary Court Management" href="/CourtCases/ManageCourtDetail?CaseId=' + row.CaseId + '&Courtid=1"><strong>P</strong></a> <a style="background-color:#f4b183 !important;color: black !important;" class="btn btn-sm" title="" href="/CourtCases/ManageCourtDetail?CaseId=' + row.CaseId + '&amp;Courtid=2" id="' + row.CaseId + '" data-original-title="Apeal Court Management"><strong>A</strong></a> <a style="background-color: #cc99ff !important;color: black !important;" class="btn btn-sm" title="" href="/CourtCases/ManageCourtDetail?CaseId=' + row.CaseId + '&amp;Courtid=3" id="' + row.CaseId + '" data-original-title="Supreme Court Management"><strong>S</strong></a> <a style="background-color: #69d8ff !important;color: black !important;" class="btn btn-sm btnLink" title="" id="M_' + row.CaseId + '" href="javascript:void(0)" data-original-title="Enforcement Management"><strong>E</strong></a>'; // <a style="background-color: #686868 !important;color: white !important;" class="btn btn-sm" title="" href="/CourtCases/FileClosure?CaseId=' + row.CaseId + '" id="' + row.CaseId + '" data-original-title="FILE CLOSURE"><strong>C</strong></a>
+                                    //return '<a class="btn btn-info btn-sm" title="" href="/CourtCases/ManageCourtDetail?CaseId=' + row.CaseId + '&amp;Courtid=3" id="' + row.CaseId + '" data-original-title="Supreme Court Management"><i class="fas fa-pencil-alt"></i></a>';
+                                    return '<a class="btn btn-info btn-sm btnLink" title="" id="CD_' + row.CaseId + '" href="javascript:void(0)"><i class="fas fa-pencil-alt" data-original-title="Supreme Court Management"></i></a>';
                             }
-                            //style="background-color: #8064A2 !important;"btn-secondary
-                            // <a style="background-color: #f2f2f2 !important; color: black !important;" class="btn btn-sm" title="TO BE REGISTER" href="/CourtCases/TobeReg?CaseId=' + row.CaseId + '" id="' + row.CaseId + '" ><strong>T</strong></a>   <a style="background-color: #fff2cc !important;color: black !important;" class="btn btn-sm" title="" href="/CourtCases/ManageEnforcementDetail?CaseId=' + row.CaseId + '" id="' + row.CaseId + '" data-original-title="SESSION ROLE"><strong>R</strong></a>
                         }
                         return data;
                     },
@@ -99,10 +100,8 @@
                     targets: 5
                 }
             ],
-            "createdRow": function (row, data, dataIndex) {
-                var rowColor = "";
-                
-                //$(row).addClass(rowColor);
+            "drawCallback": function (settings) {
+                $("#ModificationContainer").empty();
             },
             initComplete: function () {
                 console.log("DataTable Initiated !!");
@@ -115,23 +114,11 @@
                 var recordsTotal = table.ajax.json().recordsTotal;
 
 
-
-                console.log("MUSCAT TOTAL " + MCTRecords);
-                console.log("SALALAH TOTAL " + SLLRecords);
-                //$('#TTL').text(recordsTotal);
-
                 if ($("#txtUserRole").val() == "VoucherApproval") {
                     $('#MCTTTL').text("MUSCAT : " + MCTRecords);
                     $('#SLLTTL').text("SALALAH : " + SLLRecords);
                     $('#TTL').text(recordsTotal);
                 }
-                //else {
-                //    if ($('#txtLocationId').val() == "M")
-                //        $('#MCTTTL').text("MUSCAT : " + MCTRecords);
-                //    else
-                //        $('#MCTTTL').text("SALALAH : " + SLLRecords);
-                //}
-
 
                 $(".dataTables_filter input")
                     .unbind() // Unbind previous default bindings
@@ -154,12 +141,7 @@
         $('.table tbody').on('click', '.btnLink', function () {
             var _Mode = this.id.split('_')[0];
             var _id = parseInt(this.id.split('_')[1]);
-
             var data = table.row($(this).parents('tr')).data();
-
-            console.log(data);
-            console.log(_id);
-            console.log(data.CaseId);
 
             processbtnLinkClick(_Mode, data);
             return false;

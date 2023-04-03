@@ -40,6 +40,11 @@ namespace YandS.UI.Controllers
     public class CourtCasesController : Controller
     {
         private RBACDbContext db = new RBACDbContext();
+        private string OfficeFileFilterSR = Helper.getOfficeFileFilterSR();
+        private string OfficeFileFilterENF = Helper.getOfficeFileFilterENF();
+        private string OfficeFileFilterTBR = Helper.getOfficeFileFilterTBR();
+        private string[] FileStatusCodesSR = Helper.getFileStatusCodesSR();
+        private string[] FileStatusCodesTBR = Helper.getFileStatusCodesTBR();
 
         #region Private Method
 
@@ -627,7 +632,7 @@ namespace YandS.UI.Controllers
                     ViewModal.MainRemarks = caseRegistration.Remarks;
                     ViewModal.FormPrintLastDate = caseRegistration.FormPrintLastDate;
                     ViewModal.FormPrintWorkRequired = caseRegistration.FormPrintWorkRequired;
-                    ViewModal.FileStatus = caseRegistration.FileStatus;
+                    ViewModal.FileStatus = courtCases.OfficeFileStatus;
                 }
 
                 #endregion
@@ -1036,10 +1041,11 @@ namespace YandS.UI.Controllers
 
                     ModelToSave.FormPrintWorkRequired = RegModal.FormPrintWorkRequired;
                     ModelToSave.FormPrintLastDate = RegModal.FormPrintLastDate;
-                    ModelToSave.FileStatus = RegModal.FileStatus;
+                    //ModelToSave.FileStatus = RegModal.FileStatus;
 
                     db.CaseRegistration.Add(ModelToSave);
                     db.SaveChanges();
+                    Helper.UpdateOfficeFileStatus(courtCases.CaseId, RegModal.FileStatus);
                 }
                 else
                 {
@@ -1051,10 +1057,11 @@ namespace YandS.UI.Controllers
                     db.Entry(ModelToSave).Entity.Remarks = RegModal.MainRemarks;
                     db.Entry(ModelToSave).Entity.FormPrintWorkRequired = RegModal.FormPrintWorkRequired;
                     db.Entry(ModelToSave).Entity.FormPrintLastDate = RegModal.FormPrintLastDate;
-                    db.Entry(ModelToSave).Entity.FileStatus = RegModal.FileStatus;
+                    //db.Entry(ModelToSave).Entity.FileStatus = RegModal.FileStatus;
 
                     db.Entry(ModelToSave).State = EntityState.Modified;
                     db.SaveChanges();
+                    Helper.UpdateOfficeFileStatus(courtCases.CaseId, RegModal.FileStatus);
                 }
             }
             else if (courtCases.CaseLevelCode == "2")
@@ -1076,8 +1083,8 @@ namespace YandS.UI.Controllers
             ModelToSave.ActionDate = DateTime.UtcNow.AddHours(4);
             ModelToSave.ActionLevel = ActionLevel;
             ModelToSave.DisputeLevel = DisputeLevel;
-            ModelToSave.FileStatus = "0";
-
+            //ModelToSave.FileStatus = "0";
+            Helper.UpdateOfficeFileStatus(CaseId, "0");
             if (DisputeLevel == "0")
                 ModelToSave.EnforcementDispute = "0";
             else
@@ -1194,20 +1201,6 @@ namespace YandS.UI.Controllers
             }
 
             return View();
-            #region Slow Index Code
-            /*
-            string UserLocation = string.Empty;
-
-            if (User.IsInRole("CourtCasesViewAll") || User.IsSysAdmin())
-                UserLocation = string.Empty;
-            else
-                UserLocation = Helper.GetEmployeeLocation(User.Identity.Name);
-
-            List<CourtCases> ViewIndexList = GetCourtCasesList(UserLocation);
-
-            return View(ViewIndexList);
-            */
-            #endregion
         }
 
         [HttpPost]
@@ -1231,6 +1224,8 @@ namespace YandS.UI.Controllers
             var sortDirection = Request["order[0][dir]"] ?? "asc";
             var recordsTotal = 0;
             string DataFor = string.Empty;
+            string ProcedureName = string.Empty;
+
             string CaseLevel = string.Empty;
             DateTime DateFrom = DateTime.Now;
             DateTime DateTo = DateTime.Now;
@@ -1292,6 +1287,32 @@ namespace YandS.UI.Controllers
                     SLLRecords = Summarydt.Rows.Count > 0 ? int.Parse(Summarydt.Rows[0]["SLLRecords"].ToString()) : 0;
 
                     return Json(new { data = jsondata, recordsTotal = recordsTotal, recordsFiltered = recordsTotal, MuscatTotal = MCTRecords, SalalahTotal = SLLRecords }, JsonRequestBehavior.AllowGet);
+
+                }
+                else
+                {
+                    if (DataFor == "CASE_MANAGEMENT")
+                    {
+                        List<string> parName = Helper.getDefaultParNames();
+                        List<object> parValues = Helper.getDefaultParValues();
+                        ProcedureName = request.Params["ProcedureName"].ToString();
+
+                        parName.AddRange(new[] { "@UserName", "@DataFor", "@Location", "@CaseLevelCode" });
+                        parValues.AddRange(new[] { User.Identity.Name, DataFor, UserLocation, CaseLevel });
+
+                        var ds = Helper.getDataSet(parName.ToArray(), parValues.ToArray(), TableNames: new string[] { "data", "summary" }, procedureName: ProcedureName);
+                        DataTable dt = ds.Tables["data"];
+                        DataTable Summarydt = ds.Tables["summary"];
+
+                        var jsondata = dt.ToDictionary();
+
+                        recordsTotal = Summarydt.Rows.Count > 0 ? int.Parse(Summarydt.Rows[0]["recordsTotal"].ToString()) : 0;
+                        MCTRecords = Summarydt.Rows.Count > 0 ? int.Parse(Summarydt.Rows[0]["MCTRecords"].ToString()) : 0;
+                        SLLRecords = Summarydt.Rows.Count > 0 ? int.Parse(Summarydt.Rows[0]["SLLRecords"].ToString()) : 0;
+
+                        return Json(new { data = jsondata, recordsTotal = recordsTotal, recordsFiltered = recordsTotal, MuscatTotal = MCTRecords, SalalahTotal = SLLRecords }, JsonRequestBehavior.AllowGet);
+
+                    }
 
                 }
 
@@ -1437,18 +1458,11 @@ namespace YandS.UI.Controllers
                         ModelToSave.FormPrintWorkRequired = RegModal.FormPrintWorkRequired;
                         ModelToSave.FormPrintLastDate = RegModal.FormPrintLastDate;
 
-                        ModelToSave.FileStatus = RegModal.FileStatus ?? "0";
+                        //ModelToSave.FileStatus = RegModal.FileStatus ?? "0";
                         db.CaseRegistration.Add(ModelToSave);
                         db.SaveChanges();
 
-                        //Session["Message"] = new MessageVM
-                        //{
-                        //    Category = "Success",
-                        //    Message = "Data Save Successfully"
-                        //};
-
-                        //return RedirectToAction("IndexMain", "CaseRegistration", new RouteValueDictionary(new { id = ModelToSave.CaseRegistrationId }));
-
+                        Helper.UpdateOfficeFileStatus(courtCases.CaseId, RegModal.FileStatus ?? "0");
                     }
                     else if (courtCases.CaseLevelCode == "2")
                         UpdateBeforeCourt("CREATEBEFORECOURT", RegModal);
@@ -2200,8 +2214,6 @@ namespace YandS.UI.Controllers
                             ViewBag.DisputeLevelId = ViewModal.DisputeLevel;
                             ViewBag.DisputeTypeId = ViewModal.DisputeType;
 
-
-
                             if (ViewBag.DisputeTypeId == "1") //OBJ
                             {
                                 if (ViewBag.DisputeLevelId == "1") //PRI
@@ -2242,10 +2254,6 @@ namespace YandS.UI.Controllers
                                 }
                             }
                             ViewBag.CourtDepartment = new SelectList(Helper.GetSupremeStage(), "Mst_Value", "Mst_Desc", ViewModal.CourtDepartment);
-
-                            //ViewBag.DisputeLevel = new SelectList(Helper.GetDisputeLevel(), "Mst_Value", "Mst_Desc", ViewModal.DisputeLevel);
-                            //ViewBag.DisputeType = new SelectList(Helper.GetDisputeType(), "Mst_Value", "Mst_Desc", ViewModal.DisputeType);
-
                         }
 
                     }
@@ -2281,12 +2289,10 @@ namespace YandS.UI.Controllers
                 {
                     if (PartialViewName == "_TBR_Modify")
                     {
-                        string[] FileStatusCodes = new[] { "0", "1", "3", "4", "5", "6", "7", "8", "12", "9", "11" };
-
                         if (ViewModal.ActionLevel == "1")
-                            ViewBag.FileStatus = new SelectList(Helper.GetFileStatus(), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
+                            ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
                         else
-                            ViewBag.FileStatus = new SelectList(Helper.GetFileStatus(FileStatusCodes), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
+                            ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR, FileStatusCodesTBR), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
 
                         ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
                         ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
@@ -2305,12 +2311,11 @@ namespace YandS.UI.Controllers
 
                         ViewModal = new CaseRegistrationVM();
                         Helper.GetCaseRegistrationVM(caseRegistrationId, ref ViewModal);
-                        string[] FileStatusCodes = new[] { "0", "1", "3", "4", "5", "6", "7", "8", "12", "9", "11" };
 
                         if (ViewModal.ActionLevel == "1")
-                            ViewBag.FileStatus = new SelectList(Helper.GetFileStatus(), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
+                            ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
                         else
-                            ViewBag.FileStatus = new SelectList(Helper.GetFileStatus(FileStatusCodes), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
+                            ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR, FileStatusCodesTBR), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
 
                         ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
                         ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
@@ -2397,8 +2402,8 @@ namespace YandS.UI.Controllers
                     }
                     else if (PartialViewName == "_PartViewTobeReg")
                     {
-                        string[] FileCodes = new[] { "0", "1" };
-                        ViewBag.FileStatus = new SelectList(Helper.GetFileStatus(FileCodes), "Mst_Value", "Mst_Desc");
+                        string[] FileCodes = new[] { "0", "OFS-1" };
+                        ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR,FileCodes), "Mst_Value", "Mst_Desc");
                         return PartialView(PartialViewName, new ToBeRegisterVM());
                     }
                     else if (PartialViewName == "_PartViewPrimary")
@@ -2584,11 +2589,11 @@ namespace YandS.UI.Controllers
                             ViewModal = GetFilledPartailView(caseid, PartialViewName);
 
                             if (ViewModal.CaseRegistrationId > 0)
-                                ViewBag.FileStatus = new SelectList(Helper.GetFileStatus(), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
+                                ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
                             else
                             {
-                                string[] FileCodes = new[] { "0", "1" };
-                                ViewBag.FileStatus = new SelectList(Helper.GetFileStatus(FileCodes), "Mst_Value", "Mst_Desc");
+                                string[] FileCodes = new[] { "0", "OFS-1" };
+                                ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR, FileCodes), "Mst_Value", "Mst_Desc");
                             }
 
                         }

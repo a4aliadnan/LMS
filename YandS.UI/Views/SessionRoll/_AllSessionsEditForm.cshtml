@@ -50,31 +50,23 @@
         $('.clsJudIssued').removeClass("AppHidden");
 
         switch (FileStatusId) {
-            case "0":
+            case OfficeFileStatus.PleaseSelect:
                 $("#FileStatusDetail").empty();
                 ActiveButton = RetainActivebtnName;
                 return false;
                 break;
-            case "OFS-16":
+            case OfficeFileStatus.RunningCase:
                 _PartialViewName = "_SessionRunningDIV";
                 ActiveButton = "btn_AllSessions";
-                //$("#" + ActiveButton).trigger("click");
                 break;
-            case "OFS-18":
+            case OfficeFileStatus.ToKnowSessionDate:
                 _PartialViewName = "_SessionOnHoldDIV";
                 ActiveButton = "btn_SessionOnHold";
-                //$("#" + ActiveButton).trigger("click");
                 break;
-            case "OFS-17":
+            case OfficeFileStatus.JudgIssued:
                 _PartialViewName = "_SessionJudgementDIV";
                 ActiveButton = "btn_SessionJudgement";
                 $('.clsJudIssued').removeClass("AppHidden").addClass("AppHidden");
-                //$("#" + ActiveButton).trigger("click");
-                break;
-            case "4":
-                _PartialViewName = "_SessionTemporaryDIV";
-                ActiveButton = "btn_AllSessions";
-                //$("#" + ActiveButton).trigger("click");
                 break;
         }
 
@@ -87,8 +79,6 @@
         _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
 
         GetTab(PartialContainer, GetSessionRollURL, _parameters);
-
-
     }
 
 
@@ -166,7 +156,7 @@
         }
         
 
-        if ($("#SessionFileStatus").val() == "0") {
+        if ($("#SessionFileStatus").val() == OfficeFileStatus.PleaseSelect) {
             ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT FILE STATUS" : ValidationMessage + "<br />" + "PLEASE SELECT FILE STATUS";
             NotValid = true;
         }
@@ -177,7 +167,7 @@
     }
 
     function ValidateSessionResult() {
-        if ($("#SessionFileStatus").val() == "OFS-18") {
+        if ($("#SessionFileStatus").val() == OfficeFileStatus.ToKnowSessionDate) {
             if ($("#SessionOnHoldUntill").val() == "") {
                 ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER SR HOLD UNTILL DATE" : ValidationMessage + "<br />" + "PLEASE ENTER SR HOLD UNTILL DATE";
                 NotValid = true;
@@ -190,7 +180,7 @@
 
 
         }
-        else if ($("#SessionFileStatus").val() == "OFS-16") {
+        else if ($("#SessionFileStatus").val() == OfficeFileStatus.RunningCase) {
             if ($("#NextHearingDate").val() == "") {
                 ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER NEXT HEARING DATE" : ValidationMessage + "<br />" + "PLEASE ENTER NEXT HEARING DATE";
                 NotValid = true;
@@ -203,7 +193,7 @@
                 }
             }
         }
-        else if ($("#SessionFileStatus").val() == "OFS-17") {
+        else if ($("#SessionFileStatus").val() == OfficeFileStatus.JudgIssued) {
             if ($("#JudgementLevel").val() == "0") {
                 ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT JUDGMENT" : ValidationMessage + "<br />" + "PLEASE SELECT JUDGMENT";
                 NotValid = true;

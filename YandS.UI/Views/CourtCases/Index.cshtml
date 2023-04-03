@@ -34,7 +34,101 @@
     var bkCourtFollow_LawyerId = "";
     var bkCourtFollowRequirement = "";
     var bkCommissioningDate = "";
+    const OfficeFileStatus = {
+        PleaseSelect: "0",
+        Transfer: "OFS-1",
+        LegalNotice: "OFS-2",
+        WritingSubmission: "OFS-3",
+        SubmissionApproval: "OFS-4",
+        ApprovalForAppeal: "OFS-10",
+        ApprovalForSupreme: "OFS-11",
+        CompletingDocs: "OFS-13",
+        ReceiptOfFees: "OFS-14",
+        Translation: "OFS-15",
+        Scanned: "OFS-5",
+        OnlineReg: "OFS-6",
+        CourtMsg: "OFS-7",
+        ForPayment: "OFS-8",
+        WithLawyer: "OFS-12",
+        Registered: "OFS-9",
+        RunningCase: "OFS-16",
+        JudgIssued: "OFS-17",
+        ToKnowSessionDate: "OFS-18",
+        RequestMeetJudge: "OFS-19",
+        Dispute: "OFS-20",
+        AuctionSession: "OFS-21",
+        OnlineReg: "OFS-22",
+        Announcement: "OFS-23",
+        ContactingAuthorities: "OFS-24",
+        JudicalSale: "OFS-25",
+        ArrestApplication: "OFS-26",
+        ArrestOrder: "OFS-27",
+        Suspendfd: "OFS-28",
+        RecoveryRedStamp_Close: "OFS-29",
+        RecoveryRedStamp_Re_Open: "OFS-30",
+        MeetJudge: "OFS-31",
+        AssigningJudge: "OFS-32",
+        JudgStamp: "OFS-33",
+        CorrectingJudg: "OFS-34",
+        PeriodOfAppeal: "OFS-35",
+        RedStamp: "OFS-36",
+        EnfcApproval: "OFS-37",
+        Refundable3_4: "OFS-38",
+        FileReview: "OFS-39",
+        OPP: "OFS-40",
+        ROP: "OFS-41",
+        MOL: "OFS-42",
+        PACP: "OFS-43",
+        MOCI: "OFS-44",
+        EstablishingCompanies: "OFS-45",
+        Arbition: "OFS-46",
+        AttendAssociation: "OFS-47",
+        WrittingContracts: "OFS-48",
+        ReviewingContracts: "OFS-49",
+        LegalServices: "OFS-50",
+        Closing_Settelment: "OFS-51",
+        Closing_Payments: "OFS-52",
+        Closing_AgainstClient: "OFS-53",
+        Closing_Consultants: "OFS-54",
+        Closing_Others: "OFS-55",
+        BlueStamp: "OFS-56",
+        DifferentPanel: "OFS-57"
+    }
+    var _parameters = {};
+    var GetTabFromSessionRoll = function (divToLoad, p_url, p_parameters) {
+        divToLoad.empty();
+        divToLoad.append("Loading...");
 
+        $.ajax({
+            url: p_url,
+            type: "POST",
+            data: p_parameters,
+            success: function (data, textStatus, jqXHR) {
+
+                divToLoad.html(data);
+
+                $.fn.autoResize = function () {
+                    let r = e => {
+                        e.style.height = '';
+                        e.style.height = e.scrollHeight + 'px'
+                    };
+                    return this.each((i, e) => {
+                        e.style.overflow = 'hidden';
+                        r(e);
+                        $(e).bind('input', e => {
+                            r(e.target);
+                        })
+                    })
+                };
+
+                $('html, body').animate({
+                    scrollTop: divToLoad.offset().top
+                }, 1000);
+
+                $('textarea').autoResize();
+            }
+        });
+    };
     var GetTab = function (divToLoad, p_url, p_parameters) {
         divToLoad.empty();
         divToLoad.append("Loading...");
@@ -348,18 +442,6 @@
             $("#hidDefendentTransferId").val($DefendentTransferId);
             $("#PV_OFFICE_FILE_NO").val($OfficeFileNo);
 
-            //console.log(data.CaseId);
-            //console.log($CaseId);
-            //console.log($("#HFCaseId").val());
-
-            //console.log(data.OfficeFileNo);
-            //console.log($OfficeFileNo);
-            //console.log($("#PV_OFFICE_FILE_NO").val());
-
-            //console.log(data.DefendentTransferId);
-            //console.log($DefendentTransferId);
-            //console.log($("#hidDefendentTransferId").val());
-
             if (typeof tableName !== 'undefined')
                 $("#hidCurrentTableName").val(tableName);
 
@@ -385,6 +467,28 @@
             var PartialContainer = $("#TBR_ModificationContainer");
             _parameters = { ClassificationId: _PartialViewName, Mode: $("#HFCaseId").val(), DefendentTransfer: "", CaseRegistrationId: $CaseRegistrationId };
             GetTab(PartialContainer, GetClientClassificationURL, _parameters);
+        }
+        else if (_Mode == "CD") {
+            var $CaseId = data.CaseId;
+            var $OfficeFileNo = data.OfficeFileNo;
+            var $DetailId = data.DetailId;
+            var $CaseLevelCode = data.CaseLevelCode;
+            var $Courtid = parseInt(data.CaseLevelCode) - 2;
+            var $SessionRollId = parseInt(data.SessionRollId);
+            
+            $("#HFCaseId").val($CaseId);
+            $("#hid_DetailId").val($DetailId);
+            $("#hid_Courtid").val($Courtid);
+            $("#hid_CaseLevelCode").val($CaseLevelCode);
+            $("#hid_SessionRollId").val($SessionRollId);
+
+            if (typeof tableName !== 'undefined')
+                $("#hidCurrentTableName").val(tableName);
+
+            var _PartialViewName = "_CaseDetail_Modify";
+            var PartialContainer = $("#ModificationContainer");
+            _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: $CaseId, SessionRollId: $SessionRollId, CaseLevel: $CaseLevelCode };
+            GetTabFromSessionRoll(PartialContainer, GetSessionRollURL, _parameters);
         }
         else {
             if (tableName == "ToBeRegister") {
@@ -680,335 +784,7 @@
 
         return NotValid;
     }
-    //var AuctionProcessObj = {
-    //    "data": [
-    //        {
-    //            "Mst_Value": 1,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 1,
-    //            "From": 45,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 1,
-    //            "From": 30,
-    //            "To": 45,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 12,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 12,
-    //            "From": 40,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 12,
-    //            "From": 25,
-    //            "To": 40,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 2,
-    //            "From": 30,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 2,
-    //            "From": 20,
-    //            "To": 30,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 2,
-    //            "From": 10,
-    //            "To": 20,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 3,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 3,
-    //            "From": 30,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 3,
-    //            "From": 15,
-    //            "To": 30,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 13,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 13,
-    //            "From": 45,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 13,
-    //            "From": 30,
-    //            "To": 45,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 14,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 14,
-    //            "From": 45,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 14,
-    //            "From": 30,
-    //            "To": 45,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 4,
-    //            "From": 30,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 4,
-    //            "From": 20,
-    //            "To": 30,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 4,
-    //            "From": 15,
-    //            "To": 20,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 5,
-    //            "From": 35,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 5,
-    //            "From": 25,
-    //            "To": 35,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 5,
-    //            "From": 15,
-    //            "To": 25,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 6,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 6,
-    //            "From": 40,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 6,
-    //            "From": 20,
-    //            "To": 40,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 7,
-    //            "From": 35,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 7,
-    //            "From": 25,
-    //            "To": 35,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 7,
-    //            "From": 20,
-    //            "To": 25,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 15,
-    //            "From": 30,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 15,
-    //            "From": 20,
-    //            "To": 30,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 15,
-    //            "From": 10,
-    //            "To": 20,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 8,
-    //            "From": 40,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 8,
-    //            "From": 30,
-    //            "To": 40,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 8,
-    //            "From": 20,
-    //            "To": 30,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 9,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 9,
-    //            "From": 40,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 9,
-    //            "From": 30,
-    //            "To": 40,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 17,
-    //            "From": 30,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 17,
-    //            "From": 25,
-    //            "To": 30,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 17,
-    //            "From": 20,
-    //            "To": 25,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 16,
-    //            "From": 21,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 16,
-    //            "From": 14,
-    //            "To": 21,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 16,
-    //            "From": 7,
-    //            "To": 14,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 18,
-    //            "From": 28,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 18,
-    //            "From": 21,
-    //            "To": 28,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 18,
-    //            "From": 14,
-    //            "To": 21,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 11,
-    //            "From": 5,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 11,
-    //            "From": 3,
-    //            "To": 5,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 11,
-    //            "From": 2,
-    //            "To": 3,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 19,
-    //            "From": 30,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 19,
-    //            "From": 20,
-    //            "To": 30,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 19,
-    //            "From": 10,
-    //            "To": 20,
-    //            "ClassName": "tblThirdCondition"
-    //        }
-    //    ]
-    //};
-
+    
     var AuctionProcessObj = { "data": [{ "Mst_Value": 1, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 1, "From": 45, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 1, "From": 30, "To": 45, "ClassName": "tblThirdCondition" }, { "Mst_Value": 2, "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 2, "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "Mst_Value": 2, "From": 10, "To": 20, "ClassName": "tblThirdCondition" }, { "Mst_Value": 3, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 3, "From": 30, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 3, "From": 15, "To": 30, "ClassName": "tblThirdCondition" }, { "Mst_Value": 4, "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 4, "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "Mst_Value": 4, "From": 15, "To": 20, "ClassName": "tblThirdCondition" }, { "Mst_Value": 5, "From": 35, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 5, "From": 25, "To": 35, "ClassName": "tblSecondCondition" }, { "Mst_Value": 5, "From": 15, "To": 25, "ClassName": "tblThirdCondition" }, { "Mst_Value": 6, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 6, "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 6, "From": 20, "To": 40, "ClassName": "tblThirdCondition" }, { "Mst_Value": 7, "From": 35, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 7, "From": 25, "To": 35, "ClassName": "tblSecondCondition" }, { "Mst_Value": 7, "From": 20, "To": 25, "ClassName": "tblThirdCondition" }, { "Mst_Value": 8, "From": 40, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 8, "From": 30, "To": 40, "ClassName": "tblSecondCondition" }, { "Mst_Value": 8, "From": 20, "To": 30, "ClassName": "tblThirdCondition" }, { "Mst_Value": 9, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 9, "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 9, "From": 30, "To": 40, "ClassName": "tblThirdCondition" }, { "Mst_Value": 11, "From": 5, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 11, "From": 3, "To": 5, "ClassName": "tblSecondCondition" }, { "Mst_Value": 11, "From": 2, "To": 3, "ClassName": "tblThirdCondition" }, { "Mst_Value": 12, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 12, "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 12, "From": 25, "To": 40, "ClassName": "tblThirdCondition" }, { "Mst_Value": 13, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 13, "From": 45, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 13, "From": 30, "To": 45, "ClassName": "tblThirdCondition" }, { "Mst_Value": 14, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 14, "From": 45, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 14, "From": 30, "To": 45, "ClassName": "tblThirdCondition" }, { "Mst_Value": 15, "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 15, "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "Mst_Value": 15, "From": 10, "To": 20, "ClassName": "tblThirdCondition" }, { "Mst_Value": 16, "From": 21, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 16, "From": 14, "To": 21, "ClassName": "tblSecondCondition" }, { "Mst_Value": 16, "From": 7, "To": 14, "ClassName": "tblThirdCondition" }, { "Mst_Value": 17, "From": 28, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 17, "From": 21, "To": 28, "ClassName": "tblSecondCondition" }, { "Mst_Value": 17, "From": 14, "To": 21, "ClassName": "tblThirdCondition" }, { "Mst_Value": 18, "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 18, "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "Mst_Value": 18, "From": 10, "To": 20, "ClassName": "tblThirdCondition" }, { "Mst_Value": 19, "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 19, "From": 25, "To": 30, "ClassName": "tblSecondCondition" }, { "Mst_Value": 19, "From": 20, "To": 25, "ClassName": "tblThirdCondition" }, { "Mst_Value": 20, "From": 100, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 20, "From": 70, "To": 100, "ClassName": "tblSecondCondition" }, { "Mst_Value": 20, "From": 40, "To": 70, "ClassName": "tblThirdCondition" }] };
     var dtObjDataTable = { "data": [{ "dtTableName": "ENF-AGAINSUR", "From": 90, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-AGAINSUR", "From": 60, "To": 90, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-AGAINSUR", "From": 40, "To": 60, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-ANN", "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-ANN", "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-ANN", "From": 20, "To": 40, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-ARORD", "From": 120, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-ARORD", "From": 90, "To": 120, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-ARORD", "From": 70, "To": 90, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-ARREQ", "From": 50, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-ARREQ", "From": 30, "To": 50, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-ARREQ", "From": 15, "To": 30, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-COURTFOL", "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-COURTFOL", "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-COURTFOL", "From": "", "To": "", "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-DEFTRANS", "From": 90, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-DEFTRANS", "From": 60, "To": 90, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-DEFTRANS", "From": 30, "To": 60, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-INQ", "From": 120, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-INQ", "From": 90, "To": 120, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-INQ", "From": 60, "To": 90, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-ONLINEREG", "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-ONLINEREG", "From": 30, "To": 60, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-ONLINEREG", "From": 15, "To": 30, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-RECFRCOURT", "From": 100, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-RECFRCOURT", "From": 70, "To": 100, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-RECFRCOURT", "From": 40, "To": 70, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-SUSPEND", "From": "", "To": "", "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-SUSPEND", "From": "", "To": "", "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-SUSPEND", "From": "", "To": "", "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-FILEREV", "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-FILEREV", "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-FILEREV", "From": 20, "To": 40, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-TOMJUDG", "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-TOMJUDG", "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-TOMJUDG", "From": 20, "To": 40, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-NewCase", "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-NewCase", "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-NewCase", "From": 20, "To": 40, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-AppSubmissionY", "From": 11, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-AppSubmissionY", "From": 9, "To": 11, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-AppSubmissionY", "From": 5, "To": 9, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-AppSubmissionN", "From": 20, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-AppSubmissionN", "From": 15, "To": 20, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-AppSubmissionN", "From": 10, "To": 15, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-SupSubmission", "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-SupSubmission", "From": 25, "To": 30, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-SupSubmission", "From": 15, "To": 25, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-PriDispute", "From": 12, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-PriDispute", "From": 8, "To": 12, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-PriDispute", "From": 4, "To": 8, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-AplDispute", "From": 5, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-AplDispute", "From": 3, "To": 5, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-AplDispute", "From": 2, "To": 3, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-SupDispute", "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-SupDispute", "From": 25, "To": 30, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-SupDispute", "From": 15, "To": 25, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-TRansfer", "From": 22, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-TRansfer", "From": 14, "To": 22, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-TRansfer", "From": 7, "To": 14, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-LegalNotice", "From": 40, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-LegalNotice", "From": 20, "To": 40, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-LegalNotice", "From": 0, "To": 20, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-CompDocs", "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-CompDocs", "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-CompDocs", "From": 7, "To": 20, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-Translation", "From": 21, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-Translation", "From": 14, "To": 21, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-Translation", "From": 7, "To": 14, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-ClientApproval", "From": 24, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-ClientApproval", "From": 12, "To": 24, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-ClientApproval", "From": 7, "To": 12, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-Scanned", "From": 9, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-Scanned", "From": 5, "To": 9, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-Scanned", "From": 3, "To": 5, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-OnlineSubm", "From": 21, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-OnlineSubm", "From": 14, "To": 21, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-OnlineSubm", "From": 7, "To": 14, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-CourtRequest", "From": 2, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-CourtRequest", "From": 1, "To": 2, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-Payment", "From": 2, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-Payment", "From": 1, "To": 2, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-WithLawyer", "From": 21, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-WithLawyer", "From": 14, "To": 21, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-WithLawyer", "From": 7, "To": 14, "ClassName": "tblThirdCondition" }] };
     function GetAuctionClassName(p_Mst_Value, p_DaysPassed) {
@@ -1349,9 +1125,14 @@
                         </div>
                     </div>
                 </div>
-                <div style="padding-top:10px;" class="row">
-                    <div class="col-sm-12">
+                <div class="row">
+                    <div style="padding-bottom:10px;padding-top:10px;" class="col-sm-12">
                         <div id="PartialViewContainer" class="clsPVContainer">
+
+                        </div>
+                    </div>
+                    <div style="padding-bottom:10px;padding-top:10px;" class="col-sm-12">
+                        <div id="ModificationContainer" class="clsPVContainer">
 
                         </div>
                     </div>
@@ -1403,6 +1184,12 @@
     <input type="hidden" id="hidActionLevel" value="" />
     <input type="hidden" id="hidDisputeLevel" value="" />
     <input type="hidden" id="hidUserName" value="@User.Identity.Name" />
+
+    <input type="hidden" id="hid_Courtid" value="@ViewBag.hid_Courtid" />
+    <input type="hidden" id="hid_CaseLevelCode" value="@ViewBag.hid_CaseLevelCode" />
+    <input type="hidden" id="hid_DetailId" value="@ViewBag.hid_DetailId" />
+    <input type="hidden" id="hid_SessionRollId" value="@ViewBag.hid_SessionRollId" />
+
     @if (User.IsInRole("TBRRemarks"))
     {
         <input type="hidden" id="hidTBRRemarks" value="Y" />
@@ -1542,7 +1329,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
             console.log("Ajax Index CourtCases Document Page");
-            var _parameters = "";
             var bootstrapTooltip = $.fn.tooltip.noConflict();
             $.fn.bstooltip = bootstrapTooltip;
             $.fn.autoResize = function () {

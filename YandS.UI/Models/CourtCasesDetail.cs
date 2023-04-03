@@ -30,7 +30,7 @@
         public DateTime? RegistrationDate { get; set; }
 
         [Display(Name = "Court Department")]
-        [StringLength(2)]
+        [StringLength(10)]
         public string CourtDepartment { get; set; } //Dropdown 
 
         [Display(Name = "Case Level")]

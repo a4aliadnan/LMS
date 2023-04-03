@@ -31,7 +31,7 @@
 
 
         [Display(Name = "CURRENT ENFORCEMENT LEVEL مرحلة التنفيذ الحالية")]
-        [StringLength(3)]
+        [StringLength(10)]
         public string EnforcementlevelId { get; set; } //Dropdown EnforcementLevel 265
 
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]

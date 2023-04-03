@@ -129,24 +129,30 @@
         var num = 1;
         $("#DIV_UPDATE_DETAIL").empty();
         $("#DIV_UPDATE_DETAIL2").empty();
+        $("#DIV_UPDATE_DETAIL2").removeClass("AppHidden");
         switch (OfficeFileCode) {
             case OfficeFileStatus.PleaseSelect:
                 return false;
                 break;
             case OfficeFileStatus.AssigningJudge:
             case OfficeFileStatus.RunningCase:
-                _PartialViewName = "_SessionUpdateSupreme";
+                _PartialViewName = "_SessionUpdate_CaseDetail";
                 PartialContainer = $("#DIV_UPDATE_DETAIL2");
                 ShowPartialViewDetail(_PartialViewName, PartialContainer);
                 break;
             case OfficeFileStatus.JudgIssued:
-                _PartialViewName = "_SessionJudgementSupreme_CaseDetail";
-                PartialContainer = $("#DIV_UPDATE_DETAIL2");
-                ShowPartialViewDetail(_PartialViewName, PartialContainer);
+                $("#DIV_UPDATE_DETAIL2").addClass("AppHidden");
+                var _PartialViewArr = ["_SessionUpdate_CaseDetail", "_SessionJudgementSupreme_CaseDetail"];
+                var _PartialContainerArr = [$("#DIV_UPDATE_DETAIL2"), $("#DIV_UPDATE_DETAIL")];
+
+                for (var i = 0; i <= num; i++) {
+                    ShowPartialViewDetail(_PartialViewArr[i], _PartialContainerArr[i]);
+                }
+                
                 break;
             case OfficeFileStatus.ToKnowSessionDate:
             case OfficeFileStatus.DifferentPanel:
-                var _PartialViewArr = ["_SessionUpdateSupreme", "_SessionOnHoldDIV"];
+                var _PartialViewArr = ["_SessionUpdate_CaseDetail", "_SessionOnHoldDIV_CaseDetail"];
                 var _PartialContainerArr = [$("#DIV_UPDATE_DETAIL2"), $("#DIV_UPDATE_DETAIL")];
 
                 for (var i = 0; i <= num; i++) {
@@ -155,10 +161,6 @@
 
                 break;
         }
-
-
-        
-       
     }
 
     function ShowPartialViewDetail(PartialViewName, PartialContainer) {
@@ -177,7 +179,7 @@
     }
     function LoadPrintRequirementForm(PartialViewName) {
         var _PartialViewName = PartialViewName;
-        P_CaseId = parseInt($("#hid_CaseId").val());
+        P_CaseId = parseInt($("#HFCaseId").val());
         P_SessionRollId = parseInt($("#SessionRollId").val());
         var _Mode = "C";
 
@@ -203,13 +205,8 @@
                     CopyToClipboard('swal2-content');
                     console.log("Table Copied");
 
-                    P_CaseId = parseInt($("#hid_CaseId").val());
+                    P_CaseId = parseInt($("#HFCaseId").val());
                     console.log(P_CaseId);
-
-                    //ReloadTable();
-                    var RedirectURL = "/CourtCases/ManageCourtDetail?CaseId=" + P_CaseId + "&Courtid=3";
-                    //$("#div-CourtDetail").html(result);
-                    window.location = RedirectURL;
                 });
             }
         });
@@ -242,6 +239,7 @@
                     window.location = RedirectURL;
                 }
                 else {
+                    console.log("Supreme Updates Successfully");
                     ResetHiddenItems();
                     LoadPrintRequirementForm("SaveResult");
                 }
@@ -388,7 +386,6 @@
             @Html.HiddenFor(model => model.SessionRollId)
             @Html.HiddenFor(model => model.CaseId)
             @Html.HiddenFor(model => model.PartialViewName)
-            <div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>
 
             <div id="DivClearable" class="row">
                 <div class="col-sm-4">
@@ -439,7 +436,7 @@
         <div id="DIV_UPDATE_DETAIL2"></div>
         @Html.Partial("_SessionCommonTask", Model)
     </div>
-        <div class="card-footer text-center">
+        <div id="DIV_BASE" class="card-footer text-center">
             <button id="btnSubmitForm" type="button" class="btn btn-secondary"><i class="fas fa-save"></i> SAVE</button>
         </div>
     }

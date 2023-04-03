@@ -425,36 +425,6 @@
     }
 
     var GetDefaulterDetailURL = '@Url.Action("GetDefaulterDetail", "CourtCases", new { area = string.Empty })';
-    function LoadPrintRequirementForm(PartialViewName) {
-        var _PartialViewName = PartialViewName;
-        P_CaseId = parseInt($("#CaseId").val());
-        P_SessionRollId = 0;
-        var _Mode = "C";
-
-        var PartialContainer = $("#div_PrintRequirementForm");
-        PartialContainer.empty();
-
-        _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
-
-
-        $.ajax({
-            url: GetSessionRollURL,
-            type: "POST",
-            data: _parameters,
-            success: function (data, textStatus, jqXHR) {
-                PartialContainer.html(data);
-                Swal.fire({
-                    type: 'success',
-                    title: '',
-                    width: 700,
-                    html: $("#ContentDIV").html()
-                }).then(function () {
-                    CopyToClipboard('swal2-content');
-                    $("#btn_General").trigger('click');
-                });
-            }
-        });
-    }
 
     function submitForm() {
         var data = new FormData(jQuery('#frm_ModifyCase')[0]);
@@ -1251,6 +1221,5 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-<div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>
 <input type="hidden" id="hidAllowCloseCase" value="@ViewBag.AllowCloseCase" />
 <input type="hidden" id="hidAllowAddClient" value="@ViewBag.AllowAddClient" />

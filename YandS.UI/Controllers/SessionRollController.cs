@@ -1578,7 +1578,7 @@ namespace YandS.UI.Controllers
 
                         if (caseReg != null)
                         {
-                            modal.FileStatusName = caseReg.FileStatus == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.FileStatus && w.Mst_Value == caseReg.FileStatus).FirstOrDefault().Mst_Desc;
+                            modal.FileStatusName = caseReg.FileStatus == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.OfficeFileStatus && w.Mst_Value == courtCases.OfficeFileStatus).FirstOrDefault().Mst_Desc;
                         }
 
                     }
@@ -1622,7 +1622,7 @@ namespace YandS.UI.Controllers
                                 modal.CourtRefNo = courtEnforcementDetail.EnforcementNo;
                                 modal.RegistrationDate = courtEnforcementDetail.RegistrationDate;
                                 modal.CountLocationName = courtEnforcementDetail.CourtLocationid == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.Location && w.Mst_Value == courtEnforcementDetail.CourtLocationid).FirstOrDefault().Mst_Desc;
-                                modal.EnforcementStageName = courtEnforcementDetail.EnforcementlevelId == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.EnforcementLevel && w.Mst_Value == courtEnforcementDetail.EnforcementlevelId).FirstOrDefault().Mst_Desc;
+                                modal.EnforcementStageName = courtEnforcementDetail.EnforcementlevelId == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.OfficeFileStatus && w.Mst_Value == courtCases.OfficeFileStatus).FirstOrDefault().Mst_Desc;
                             }
 
 
@@ -1651,7 +1651,7 @@ namespace YandS.UI.Controllers
 
                     if (caseReg != null)
                     {
-                        modal.FileStatusName = caseReg.FileStatus == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.FileStatus && w.Mst_Value == caseReg.FileStatus).FirstOrDefault().Mst_Desc;
+                        modal.FileStatusName = caseReg.FileStatus == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.OfficeFileStatus && w.Mst_Value == courtCases.OfficeFileStatus).FirstOrDefault().Mst_Desc;
                     }
 
                 }
@@ -1697,7 +1697,7 @@ namespace YandS.UI.Controllers
                         modal.CourtRefNo = courtEnforcementDetail.EnforcementNo;
                         modal.RegistrationDate = courtEnforcementDetail.RegistrationDate;
                         modal.CountLocationName = courtEnforcementDetail.CourtLocationid == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.Location && w.Mst_Value == courtEnforcementDetail.CourtLocationid).FirstOrDefault().Mst_Desc;
-                        modal.EnforcementStageName = courtEnforcementDetail.EnforcementlevelId == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.EnforcementLevel && w.Mst_Value == courtEnforcementDetail.EnforcementlevelId).FirstOrDefault().Mst_Desc;
+                        modal.EnforcementStageName = courtEnforcementDetail.EnforcementlevelId == "0" ? "" : db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.OfficeFileStatus && w.Mst_Value == courtCases.OfficeFileStatus).FirstOrDefault().Mst_Desc;
                     }
 
                 }

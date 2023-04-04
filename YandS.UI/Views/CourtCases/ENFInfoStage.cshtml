@@ -67,76 +67,52 @@
         var PartialContainer = $("#EnforcementLevelContainer");
 
         switch (Enforcementlevel) {
-            case "0":
+            case OfficeFileStatus.PleaseSelect:
+            case OfficeFileStatus.RequestMeetJudge:
+            case OfficeFileStatus.MeetJudge:
+            case OfficeFileStatus.AuctionSession:
+            case OfficeFileStatus.OnlineReg:
+            case OfficeFileStatus.ArrestApplication:
+            case OfficeFileStatus.RecoveryRedStamp_Close:
+            case OfficeFileStatus.FileReview:
                 $("#EnforcementLevelContainer").empty();
                 return false;
                 break;
-            case "1":
-                $("#EnforcementLevelContainer").empty();
-                return false;
-                break;
-            case "2":
+            case OfficeFileStatus.Announcement:
                 _PartialViewName = partialViewPrefix + "ANNOUNCEMENT";
                 EnforcementLevelHeading = "ANNOUNCEMENT إعلان المنفذ ضده بالسند التنفيذي"
                 EnforcementLevelHeaderClass = "AnnouncementActive";
-
                 break;
-            case "3":
+            case OfficeFileStatus.ContactingAuthorities:
                 _PartialViewName = partialViewPrefix + "INQUIRY";
                 EnforcementLevelHeading = "INQUIRY ( الإستعلام ( مخاطبة الجهات"
                 EnforcementLevelHeaderClass = "InquiryActive";
                 break;
-            case "4":
+            case OfficeFileStatus.JudicalSale:
                 _PartialViewName = partialViewPrefix + "JUDICIALAUCTION";
                 EnforcementLevelHeading = "JUDICIAL AUCTION البيع القضائي"
                 EnforcementLevelHeaderClass = "InquiryActive";
                 break;
-            case "5":
-                $("#EnforcementLevelContainer").empty();
-                return false;
-                break;
-            case "6":
+            case OfficeFileStatus.ArrestOrder:
                 _PartialViewName = partialViewPrefix + "ARRESTORDER";
                 EnforcementLevelHeading = "ARREST ORDER تفاصيل أمر الحبس الصادر"
                 EnforcementLevelHeaderClass = "ArrestOrderActive";
                 break;
-            case "7":
+            case OfficeFileStatus.Suspendfd:
                 _PartialViewName = partialViewPrefix + "SUSPENDED";
                 EnforcementLevelHeading = "SUSPENDED تم وقف إجراءات التنفيذ بصفة مؤقتة"
                 EnforcementLevelHeaderClass = "SuspendedActive";
                 break;
-            case "8":
-                $("#EnforcementLevelContainer").empty();
-                return false;
-                break;
-            case "9":
+            case OfficeFileStatus.RecoveryRedStamp_Re_Open:
                 _PartialViewName = partialViewPrefix + "RECOVERYANDREOPEN";
                 EnforcementLevelHeading = "RECOVERY AND REOPEN استرداد الصيغة"
                 EnforcementLevelHeaderClass = "RecoveryFromCourtActive";
                 break;
-            case "10":
-                _PartialViewName = partialViewPrefix + "CLOSEFILE";
-                EnforcementLevelHeading = "CLOSE FILE تم غلق ملف التنفيذ"
-                EnforcementLevelHeaderClass = "GeneralActive";
-                break;
-            case "11":
+            case OfficeFileStatus.Dispute:
                 _PartialViewName = partialViewPrefix + "DISPUTE";
                 EnforcementLevelHeading = "DISPUTE منازعة تنفيذ"
                 EnforcementLevelHeaderClass = "GeneralActive";
                 break;
-            case "12":
-                $("#EnforcementLevelContainer").empty();
-                return false;
-                break;
-            case "13":
-                $("#EnforcementLevelContainer").empty();
-                return false;
-                break;
-            case "14":
-                $("#EnforcementLevelContainer").empty();
-                return false;
-                break;
-
         }
 
         //$("#EnforcementLevelText").text(EnforcementLevelHeading);

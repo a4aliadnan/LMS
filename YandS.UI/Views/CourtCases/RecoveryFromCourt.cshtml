@@ -145,15 +145,7 @@
                 if ($("#txtUserRole").val() == "VoucherApproval") {
                     $('#MCTTTL').text("MUSCAT : " + MCTRecords);
                     $('#SLLTTL').text("SALALAH : " + SLLRecords);
-                    //$('#TTL').text(recordsTotal);
                 }
-                //else {
-                //    if ($('#txtLocationId').val() == "M")
-                //        $('#MCTTTL').text("MUSCAT : " + MCTRecords);
-                //    else
-                //        $('#MCTTTL').text("SALALAH : " + SLLRecords);
-                //}
-
 
                 $(".dataTables_filter input")
                     .unbind() // Unbind previous default bindings
@@ -176,12 +168,7 @@
         $('.table tbody').on('click', '.btnLink', function () {
             var _Mode = this.id.split('_')[0];
             var _id = parseInt(this.id.split('_')[1]);
-
             var data = table.row($(this).parents('tr')).data();
-
-            console.log(data);
-            console.log(_id);
-            console.log(data.CaseId);
 
             processbtnLinkClick(_Mode, data);
             return false;
@@ -248,13 +235,13 @@
 </div>
 <div class="card-body">
     <div class="row">
-        <div class="col-sm-2">
+        <div class="col-sm-2 AppHidden">
             <div class="form-group">
                 <label for="ContactDateFrom">FROM</label>
                 @Html.EditorFor(model => model.ContactDateFrom, new { htmlAttributes = new { @class = "form-control datepicker" } })
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 AppHidden"">
             <div class="form-group">
                 <label for="ContactPrintDateTo">TO</label>
                 @Html.EditorFor(model => model.ContactDateTo, new { htmlAttributes = new { @class = "form-control datepicker" } })
@@ -262,7 +249,7 @@
         </div>
         <div class="col-sm-3">
             <div class="form-group">
-                @Html.LabelFor(model => model.CauseOfRecoveryId)
+                <label style="color:brown" for="CauseOfRecoveryId">FILE STATUS حالة الملف</label>
                 @Html.DropDownList("CauseOfRecoveryId", null, htmlAttributes: new { @class = "form-control select2bs4" })
             </div>
         </div>

@@ -312,12 +312,12 @@ namespace YandS.UI.Controllers
                         _ModalToSave.DEF_LawyerId = modal.DEF_LawyerId; //Common for all
                         _ModalToSave.DEF_VisitDate = modal.DEF_VisitDate; //Common for all
 
-                        if (modal.EnforcementlevelId == "2") //ANNOUNCEMENT الإعلان
+                        if (modal.EnforcementlevelId == OfficeFileStatus.Announcement.ToString()) //ANNOUNCEMENT الإعلان
                         {
                             _ModalToSave.AnnouncementTypeId = modal.AnnouncementTypeId;
                             _ModalToSave.AnnouncementCompleteDt = modal.AnnouncementCompleteDt;
                         }
-                        else if (modal.EnforcementlevelId == "3") //CONTACTING AUTHORITIES استعلام الجهات
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.ContactingAuthorities.ToString()) //CONTACTING AUTHORITIES استعلام الجهات
                         {
                             _ModalToSave.SubmissionDt = modal.SubmissionDt;
                             _ModalToSave.ApprovalDt = modal.ApprovalDt;
@@ -329,17 +329,17 @@ namespace YandS.UI.Controllers
                             _ModalToSave.BankResultDt = modal.BankResultDt;
                             _ModalToSave.BankResult = modal.BankResult;
                         }
-                        else if (modal.EnforcementlevelId == "4") //JUDICIAL SALE البيع القضائي
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.JudicalSale.ToString()) //JUDICIAL SALE البيع القضائي
                         {
                             _ModalToSave.AuctionProcess = modal.AuctionProcess;
                             _ModalToSave.JUDAuctionDate = modal.JUDAuctionDate;
                             _ModalToSave.JUDAuctionRepeat = modal.JUDAuctionRepeat;
                             _ModalToSave.JUDAuctionValue = modal.JUDAuctionValue;
                         }
-                        else if (modal.EnforcementlevelId == "5") //ARREST APPLICATION طلب الحبس
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.ArrestApplication.ToString()) //ARREST APPLICATION طلب الحبس
                         {
                         }
-                        else if (modal.EnforcementlevelId == "6") //ARREST ORDER قرار بالحبس
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.ArrestOrder.ToString()) //ARREST ORDER قرار بالحبس
                         {
                             _ModalToSave.ArrestOrderNo = modal.ArrestOrderNo;
                             _ModalToSave.ArrestOrderIssueDate = modal.ArrestOrderIssueDate;
@@ -347,7 +347,7 @@ namespace YandS.UI.Controllers
                             _ModalToSave.Arrested = modal.Arrested;
                             _ModalToSave.ArrestedDate = modal.ArrestedDate;
                         }
-                        else if (modal.EnforcementlevelId == "7") //SUSPENDED وقف مؤقت
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.Suspendfd.ToString()) //SUSPENDED وقف مؤقت
                         {
                             _ModalToSave.SuspensionCauseId = modal.SuspensionCauseId;
                             _ModalToSave.SuspensionPeriod = modal.SuspensionPeriod;
@@ -366,7 +366,7 @@ namespace YandS.UI.Controllers
                             db.Entry(courtCases).State = EntityState.Modified;
                             db.SaveChanges();
                         }
-                        else if (modal.EnforcementlevelId == "11") //DISPUTE منازعة تنفيذ
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.Dispute.ToString()) //DISPUTE منازعة تنفيذ
                         {
                             _ModalToSave.CurrentDisputeLevelandType = modal.CurrentDisputeLevelandType;
                             _ModalToSave.PrimaryObjectionNo = modal.PrimaryObjectionNo;
@@ -417,12 +417,12 @@ namespace YandS.UI.Controllers
                         db.Entry(_ModalToSave).Entity.DEF_VisitDate = modal.DEF_VisitDate; //Common for all
 
 
-                        if (modal.EnforcementlevelId == "2") //ANNOUNCEMENT الإعلان
+                        if (modal.EnforcementlevelId == OfficeFileStatus.Announcement.ToString()) //ANNOUNCEMENT الإعلان
                         {
                             db.Entry(_ModalToSave).Entity.AnnouncementTypeId = modal.AnnouncementTypeId;
                             db.Entry(_ModalToSave).Entity.AnnouncementCompleteDt = modal.AnnouncementCompleteDt;
                         }
-                        else if (modal.EnforcementlevelId == "3") //CONTACTING AUTHORITIES استعلام الجهات
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.ContactingAuthorities.ToString()) //CONTACTING AUTHORITIES استعلام الجهات
                         {
                             db.Entry(_ModalToSave).Entity.SubmissionDt = modal.SubmissionDt;
                             db.Entry(_ModalToSave).Entity.ApprovalDt = modal.ApprovalDt;
@@ -434,17 +434,17 @@ namespace YandS.UI.Controllers
                             db.Entry(_ModalToSave).Entity.BankResultDt = modal.BankResultDt;
                             db.Entry(_ModalToSave).Entity.BankResult = modal.BankResult;
                         }
-                        else if (modal.EnforcementlevelId == "4") //JUDICIAL SALE البيع القضائي
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.JudicalSale.ToString()) //JUDICIAL SALE البيع القضائي
                         {
                             db.Entry(_ModalToSave).Entity.AuctionProcess = modal.AuctionProcess;
                             db.Entry(_ModalToSave).Entity.JUDAuctionDate = modal.JUDAuctionDate;
                             db.Entry(_ModalToSave).Entity.JUDAuctionRepeat = modal.JUDAuctionRepeat;
                             db.Entry(_ModalToSave).Entity.JUDAuctionValue = modal.JUDAuctionValue;
                         }
-                        else if (modal.EnforcementlevelId == "5") //ARREST APPLICATION طلب الحبس
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.ArrestApplication.ToString()) //ARREST APPLICATION طلب الحبس
                         {
                         }
-                        else if (modal.EnforcementlevelId == "6") //ARREST ORDER قرار بالحبس
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.ArrestOrder.ToString()) //ARREST ORDER قرار بالحبس
                         {
                             db.Entry(_ModalToSave).Entity.ArrestOrderNo = modal.ArrestOrderNo;
                             db.Entry(_ModalToSave).Entity.ArrestOrderIssueDate = modal.ArrestOrderIssueDate;
@@ -452,7 +452,7 @@ namespace YandS.UI.Controllers
                             db.Entry(_ModalToSave).Entity.Arrested = modal.Arrested;
                             db.Entry(_ModalToSave).Entity.ArrestedDate = modal.ArrestedDate;
                         }
-                        else if (modal.EnforcementlevelId == "7") //SUSPENDED وقف مؤقت
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.Suspendfd.ToString()) //SUSPENDED وقف مؤقت
                         {
                             db.Entry(_ModalToSave).Entity.SuspensionCauseId = modal.SuspensionCauseId;
                             db.Entry(_ModalToSave).Entity.SuspensionPeriod = modal.SuspensionPeriod;
@@ -471,7 +471,7 @@ namespace YandS.UI.Controllers
                             db.Entry(courtCases).State = EntityState.Modified;
                             db.SaveChanges();
                         }
-                        else if (modal.EnforcementlevelId == "11") //DISPUTE منازعة تنفيذ
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.Dispute.ToString()) //DISPUTE منازعة تنفيذ
                         {
                             db.Entry(_ModalToSave).Entity.CurrentDisputeLevelandType = modal.CurrentDisputeLevelandType;
                             db.Entry(_ModalToSave).Entity.PrimaryObjectionNo = modal.PrimaryObjectionNo;
@@ -516,6 +516,7 @@ namespace YandS.UI.Controllers
             db.Entry(courtCases).Entity.RealEstateDetail = modal.RealEstateDetail; //BASIC INFO 12
             db.Entry(courtCases).Entity.GovernorateId = modal.GovernorateId; //BASIC INFO 4
             db.Entry(courtCases).Entity.AgainstInsurance = modal.AgainstInsurance; //BASIC INFO 6
+            db.Entry(courtCases).Entity.OfficeFileStatus = modal.EnforcementlevelId; //NEW
 
             if (!string.IsNullOrEmpty(PartialViewName))
             {
@@ -684,7 +685,7 @@ namespace YandS.UI.Controllers
                             ViewModal.ApealByWho = courtCasesEnforcement.EnforcementBy;
                             ViewModal.CaseLevelName = "ENFORCEMENT COURT";
                             ViewModal.EnforcementAdmin = courtCasesEnforcement.EnforcementAdmin;
-                            ViewModal.EnforcementlevelId = courtCasesEnforcement.EnforcementlevelId;
+                            ViewModal.EnforcementlevelId = courtCases.OfficeFileStatus;
 
                             if (!string.IsNullOrEmpty(courtCasesEnforcement.CourtLocationid))
                                 ViewModal.COURT = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.Location && w.Mst_Value == courtCasesEnforcement.CourtLocationid).FirstOrDefault().Mst_Desc;
@@ -756,7 +757,7 @@ namespace YandS.UI.Controllers
                                 ViewModal.ApealByWho = courtCasesEnforcement.EnforcementBy;
                                 ViewModal.CaseLevelName = "ENFORCEMENT COURT";
                                 ViewModal.EnforcementAdmin = courtCasesEnforcement.EnforcementAdmin;
-                                ViewModal.EnforcementlevelId = courtCasesEnforcement.EnforcementlevelId;
+                                ViewModal.EnforcementlevelId = courtCases.OfficeFileStatus;
 
                                 if (!string.IsNullOrEmpty(courtCasesEnforcement.CourtLocationid))
                                     ViewModal.COURT = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.Location && w.Mst_Value == courtCasesEnforcement.CourtLocationid).FirstOrDefault().Mst_Desc;
@@ -774,7 +775,7 @@ namespace YandS.UI.Controllers
                                 ViewModal.ApealByWho = courtCasesEnforcement.EnforcementBy;
                                 ViewModal.CaseLevelName = "ENFORCEMENT COURT";
                                 ViewModal.EnforcementAdmin = courtCasesEnforcement.EnforcementAdmin;
-                                ViewModal.EnforcementlevelId = courtCasesEnforcement.EnforcementlevelId;
+                                ViewModal.EnforcementlevelId = courtCases.OfficeFileStatus;
 
                                 if (!string.IsNullOrEmpty(courtCasesEnforcement.CourtLocationid))
                                     ViewModal.COURT = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.Location && w.Mst_Value == courtCasesEnforcement.CourtLocationid).FirstOrDefault().Mst_Desc;
@@ -2060,7 +2061,7 @@ namespace YandS.UI.Controllers
                         ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", ViewModal.SessionClientId);
                         ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(), "Mst_Value", "Mst_Desc", ViewModal.GovernorateId);
                         ViewBag.EnforcementAdmin = new SelectList(Helper.GetEnfcAdmin(), "Mst_Value", "Mst_Desc", ViewModal.EnforcementAdmin);
-                        ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc", ViewModal.EnforcementlevelId);
+                        ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc", ViewModal.EnforcementlevelId);
                         ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", ViewModal.CourtLocationid);
                         ViewBag.ApealByWho = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc", ViewModal.ApealByWho);
                         ViewBag.AgainstInsurance = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", ViewModal.AgainstInsurance);
@@ -2431,7 +2432,7 @@ namespace YandS.UI.Controllers
                         ViewBag.hid_DetailId = 0;
                         ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(), "Mst_Value", "Mst_Desc");
                         ViewBag.EnforcementAdmin = new SelectList(Helper.GetEnfcAdmin(), "Mst_Value", "Mst_Desc");
-                        ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
+                        ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc");
                         ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc");
                         ViewBag.ApealByWho = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc");
                         ViewBag.AgainstInsurance = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc");
@@ -2478,7 +2479,8 @@ namespace YandS.UI.Controllers
                     }
                     else if (PartialViewName == "RecoveryFromCourt")
                     {
-                        ViewBag.CauseOfRecoveryId = new SelectList(Helper.GetCauseOfRecovery(), "Mst_Value", "Mst_Desc");
+                        string[] FileCodes = new[] { "0", "OFS-29", "OFS-30" };
+                        ViewBag.CauseOfRecoveryId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF, FileCodes), "Mst_Value", "Mst_Desc");
 
                     }
                     else if (PartialViewName == "TBRAppSubmission")
@@ -2630,7 +2632,7 @@ namespace YandS.UI.Controllers
 
                             ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(), "Mst_Value", "Mst_Desc", ViewModal.GovernorateId);
                             ViewBag.EnforcementAdmin = new SelectList(Helper.GetEnfcAdmin(), "Mst_Value", "Mst_Desc", ViewModal.EnforcementAdmin);
-                            ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc", ViewModal.EnforcementlevelId);
+                            ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc", ViewModal.EnforcementlevelId);
                             ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", ViewModal.CourtLocationid);
                             ViewBag.ApealByWho = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc", ViewModal.ApealByWho);
                             ViewBag.AgainstInsurance = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", ViewModal.AgainstInsurance);
@@ -2695,7 +2697,7 @@ namespace YandS.UI.Controllers
                             ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", ViewModal.SessionClientId);
                             ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(), "Mst_Value", "Mst_Desc", ViewModal.GovernorateId);
                             ViewBag.EnforcementAdmin = new SelectList(Helper.GetEnfcAdmin(), "Mst_Value", "Mst_Desc", ViewModal.EnforcementAdmin);
-                            ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc", ViewModal.EnforcementlevelId);
+                            ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc", ViewModal.EnforcementlevelId);
                             ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", ViewModal.CourtLocationid);
                             ViewBag.ApealByWho = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc", ViewModal.ApealByWho);
                             ViewBag.AgainstInsurance = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", ViewModal.AgainstInsurance);
@@ -3465,460 +3467,7 @@ namespace YandS.UI.Controllers
             else
                 return RedirectToAction("EnforcementEdit", new RouteValueDictionary(new { id = _CasesEnforcement.EnforcementId }));
         }
-
-        public ActionResult EnforcementCreate(int id)
-        {
-            if (User.IsInRole("VoucherApproval") || User.IsSysAdmin())
-                ViewBag.UserRole = "VoucherApproval";
-            else
-                ViewBag.UserRole = "";
-
-            var CourtCases = db.CourtCase.Find(id);
-            var AgainstName = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.CaseAgainst && w.Mst_Value == CourtCases.AgainstCode).FirstOrDefault().Mst_Desc;
-            var ClientName = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.Client && w.Mst_Value == CourtCases.ClientCode).FirstOrDefault().Mst_Desc;
-
-            ViewBag.AgainstName = AgainstName;
-            ViewBag.ClaimAmount = CourtCases.ClaimAmount;
-            ViewBag.OfficeFileNo = CourtCases.OfficeFileNo;
-            ViewBag.ClientName = ClientName;
-            ViewBag.Defendant = CourtCases.Defendant;
-            ViewBag.CaseLevelName = "ENFORCEMENT";
-            ViewBag.YandSNotesUpdate = CourtCases.YandSNotes;
-            ViewBag.OfficeFileNo = CourtCases.OfficeFileNo;
-            ViewBag.CaseId = id;
-
-            ViewBag.hid_CaseId = id;
-            //ViewBag.Courtid = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CourtType), "Mst_Value", "Mst_Desc","4");
-            ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
-            ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
-            ViewBag.SuspensionCauseId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CauseOfSuspension), "Mst_Value", "Mst_Desc");
-            ViewBag.EnforcementBy = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc");
-
-            ViewBag.PoliceStationid = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Location), "Mst_Value", "Mst_Desc");
-            ViewBag.ArrestOrderStatusId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ArrestOrderStatus), "Mst_Value", "Mst_Desc");
-
-            ViewBag.PrimaryObjectionCourt = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
-            ViewBag.ApealObjectionCourt = new SelectList(Helper.GetCourtLocationList("2"), "Mst_Value", "Mst_Desc");
-            ViewBag.SupremeObjectionCourt = new SelectList(Helper.GetCourtLocationList("3"), "Mst_Value", "Mst_Desc");
-
-            ViewBag.PrimaryPlaintCourt = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
-            ViewBag.ApealPlaintCourt = new SelectList(Helper.GetCourtLocationList("2"), "Mst_Value", "Mst_Desc");
-            ViewBag.SupremePlaintCourt = new SelectList(Helper.GetCourtLocationList("3"), "Mst_Value", "Mst_Desc");
-
-            //SessionRoll
-            var _sessionRoll = db.SessionsRoll.Where(w => w.CaseId == id && w.SessionLevel == "6").FirstOrDefault();
-            CourtCasesEnforcement modalToView = new CourtCasesEnforcement();
-
-            modalToView.CurrentHearingDate = CourtCases.CurrentHearingDate;
-            modalToView.CourtDecision = CourtCases.CourtDecision;
-            modalToView.SessionRemarks = CourtCases.SessionRemarks;
-            modalToView.Requirements = CourtCases.Requirements;
-            modalToView.SessionClientId = CourtCases.SessionClientId;
-            modalToView.SessionRollDefendentName = CourtCases.SessionRollDefendentName;
-
-            if (_sessionRoll != null)
-            {
-                modalToView.ShowFollowup = _sessionRoll.ShowFollowup;
-                modalToView.ShowSuspend = _sessionRoll.ShowSuspend;
-                modalToView.LastDate = _sessionRoll.LastDate;
-                modalToView.WorkRequired = _sessionRoll.WorkRequired;
-                modalToView.SessionNotes = _sessionRoll.SessionNotes;
-                modalToView.FollowerId = _sessionRoll.FollowerId;
-
-                ViewBag.hid_SessionRollId = _sessionRoll.SessionRollId;
-
-
-            }
-            else
-                ViewBag.hid_SessionRollId = 0;
-
-            ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", modalToView.SessionClientId);
-            ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", modalToView.FollowerId);
-            ViewBag.NextCaseLevel = new SelectList(Helper.GetNextCaseLevel(), "Mst_Value", "Mst_Desc", modalToView.NextCaseLevel);
-
-
-
-            return View(modalToView);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult EnforcementCreate(CourtCasesEnforcement courtCasesEnforcement)
-        {
-            var errors = ModelState.Values.SelectMany(v => v.Errors);
-            ViewBag.hid_CaseId = courtCasesEnforcement.CaseId;
-            if (ModelState.IsValid)
-            {
-                courtCasesEnforcement.SuspensionStartDate = DateTime.Today;
-                db.CourtCasesEnforcement.Add(courtCasesEnforcement);
-                db.SaveChanges();
-
-                Helper.ProcessCourtDecisionHistory(courtCasesEnforcement, HttpContext.User.Identity.GetUserId(), "CourtCasesEnforcement");
-
-                CourtCases courtCases = db.CourtCase.Find(courtCasesEnforcement.CaseId);
-                courtCases.CaseLevelCode = "6";
-                courtCases.YandSNotes = courtCasesEnforcement.YandSNotesUpdate;
-                db.Entry(courtCases).Entity.CurrentHearingDate = courtCasesEnforcement.CurrentHearingDate;
-                db.Entry(courtCases).Entity.CourtDecision = courtCasesEnforcement.CourtDecision;
-                db.Entry(courtCases).Entity.SessionRemarks = courtCasesEnforcement.SessionRemarks;
-                db.Entry(courtCases).Entity.Requirements = courtCasesEnforcement.Requirements;
-                db.Entry(courtCases).Entity.SessionClientId = courtCasesEnforcement.SessionClientId;
-                db.Entry(courtCases).Entity.SessionRollDefendentName = courtCasesEnforcement.SessionRollDefendentName;
-
-                db.Entry(courtCases).State = EntityState.Modified;
-                db.SaveChanges();
-
-
-                if (courtCasesEnforcement.SessionRollId == 0)
-                {
-                }
-                else
-                    UpdateSessionRoll("ENFORCEMENT", courtCasesEnforcement);
-
-
-                var _caseRegistration = db.CaseRegistration.Where(w => w.CaseId == courtCasesEnforcement.CaseId && w.ActionLevel == "4" && !w.IsDeleted).OrderByDescending(o => o.CaseRegistrationId).FirstOrDefault();
-
-                if (_caseRegistration != null)
-                {
-                    if (
-                    !string.IsNullOrEmpty(courtCasesEnforcement.PrimaryObjectionNo) ||
-                    !string.IsNullOrEmpty(courtCasesEnforcement.PrimaryPlaintNo) ||
-                    !string.IsNullOrEmpty(courtCasesEnforcement.ApealObjectionNo) ||
-                    !string.IsNullOrEmpty(courtCasesEnforcement.ApealPlaintNo)
-                    )
-                    {
-                        string P_EnforcementDispute = _caseRegistration.EnforcementDispute;
-                        bool runProcess = false;
-
-                        if (P_EnforcementDispute == "1" && !string.IsNullOrEmpty(courtCasesEnforcement.PrimaryPlaintNo))
-                            runProcess = true;
-                        else if (P_EnforcementDispute == "2" && !string.IsNullOrEmpty(courtCasesEnforcement.ApealPlaintNo))
-                            runProcess = true;
-                        else if (P_EnforcementDispute == "3" && !string.IsNullOrEmpty(courtCasesEnforcement.PrimaryObjectionNo))
-                            runProcess = true;
-                        else if (P_EnforcementDispute == "4" && !string.IsNullOrEmpty(courtCasesEnforcement.ApealObjectionNo))
-                            runProcess = true;
-
-                        if (runProcess)
-                            Helper.ProcessCaseRegistrationProgress(courtCasesEnforcement, "CourtCasesEnforcement", true, P_EnforcementDispute);
-
-                    }
-                }
-
-                Session["Message"] = new MessageVM
-                {
-                    Category = "Success",
-                    Message = "Data Save Successfully",
-                    IsShowForm = "Y",
-                    CaseId = courtCasesEnforcement.CaseId.ToString()
-                };
-
-                return RedirectToAction("EnforcementEdit", new RouteValueDictionary(new { id = courtCasesEnforcement.EnforcementId }));
-
-            }
-
-            var CourtCases = db.CourtCase.Find(courtCasesEnforcement.CaseId);
-            var AgainstName = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.CaseAgainst && w.Mst_Value == CourtCases.AgainstCode).FirstOrDefault().Mst_Desc;
-            var ClientName = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.Client && w.Mst_Value == CourtCases.ClientCode).FirstOrDefault().Mst_Desc;
-
-            ViewBag.AgainstName = AgainstName;
-            ViewBag.ClaimAmount = CourtCases.ClaimAmount;
-            ViewBag.OfficeFileNo = CourtCases.OfficeFileNo;
-            ViewBag.ClientName = ClientName;
-            ViewBag.Defendant = CourtCases.Defendant;
-            ViewBag.CaseLevelName = "ENFORCEMENT";
-            ViewBag.YandSNotesUpdate = CourtCases.YandSNotes;
-            ViewBag.OfficeFileNo = CourtCases.OfficeFileNo;
-            ViewBag.CaseId = courtCasesEnforcement.CaseId;
-
-            ViewBag.Courtid = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CourtType), "Mst_Value", "Mst_Desc");
-            ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
-            ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
-            ViewBag.SuspensionCauseId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CauseOfSuspension), "Mst_Value", "Mst_Desc");
-
-            ViewBag.PoliceStationid = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Location), "Mst_Value", "Mst_Desc");
-            ViewBag.ArrestOrderStatusId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ArrestOrderStatus), "Mst_Value", "Mst_Desc");
-
-            ViewBag.PrimaryObjectionCourt = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
-            ViewBag.ApealObjectionCourt = new SelectList(Helper.GetCourtLocationList("2"), "Mst_Value", "Mst_Desc");
-            ViewBag.SupremeObjectionCourt = new SelectList(Helper.GetCourtLocationList("3"), "Mst_Value", "Mst_Desc");
-
-            ViewBag.PrimaryPlaintCourt = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
-            ViewBag.ApealPlaintCourt = new SelectList(Helper.GetCourtLocationList("2"), "Mst_Value", "Mst_Desc");
-            ViewBag.SupremePlaintCourt = new SelectList(Helper.GetCourtLocationList("3"), "Mst_Value", "Mst_Desc");
-            ViewBag.EnforcementBy = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc");
-
-            ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.SessionClientId);
-            ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.FollowerId);
-            ViewBag.NextCaseLevel = new SelectList(Helper.GetNextCaseLevel(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.NextCaseLevel);
-
-            Session["Message"] = new MessageVM
-            {
-                Category = "Error",
-                Message = string.Join("<br/>", ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage).ToArray())
-            };
-
-            if (User.IsInRole("VoucherApproval") || User.IsSysAdmin())
-                ViewBag.UserRole = "VoucherApproval";
-            else
-                ViewBag.UserRole = "";
-
-
-            return View(courtCasesEnforcement);
-        }
-        public ActionResult EnforcementEdit(int? id)
-        {
-            if (User.IsInRole("VoucherApproval") || User.IsSysAdmin())
-                ViewBag.UserRole = "VoucherApproval";
-            else
-                ViewBag.UserRole = "";
-
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            CourtCasesEnforcement courtCasesEnforcement = db.CourtCasesEnforcement.Find(id);
-            if (courtCasesEnforcement == null)
-            {
-                return HttpNotFound();
-            }
-
-            var CourtCases = db.CourtCase.Find(courtCasesEnforcement.CaseId);
-            var AgainstName = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.CaseAgainst && w.Mst_Value == CourtCases.AgainstCode).FirstOrDefault().Mst_Desc;
-            var ClientName = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.Client && w.Mst_Value == CourtCases.ClientCode).FirstOrDefault().Mst_Desc;
-
-            ViewBag.AgainstName = AgainstName;
-            ViewBag.ClaimAmount = CourtCases.ClaimAmount;
-            ViewBag.OfficeFileNo = CourtCases.OfficeFileNo;
-            ViewBag.ClientName = ClientName;
-            ViewBag.Defendant = CourtCases.Defendant;
-            ViewBag.CaseLevelName = "ENFORCEMENT";
-            courtCasesEnforcement.YandSNotesUpdate = CourtCases.YandSNotes;
-            ViewBag.OfficeFileNo = CourtCases.OfficeFileNo;
-            ViewBag.hid_CaseId = courtCasesEnforcement.CaseId;
-
-            courtCasesEnforcement.CurrentHearingDate = CourtCases.CurrentHearingDate;
-            courtCasesEnforcement.CourtDecision = CourtCases.CourtDecision;
-            courtCasesEnforcement.SessionRemarks = CourtCases.SessionRemarks;
-            courtCasesEnforcement.Requirements = CourtCases.Requirements;
-            courtCasesEnforcement.SessionClientId = CourtCases.SessionClientId;
-            courtCasesEnforcement.SessionRollDefendentName = CourtCases.SessionRollDefendentName;
-
-
-            if (courtCasesEnforcement.SuspensionStartDate != null && courtCasesEnforcement.SuspensionPeriod != null)
-            {
-                ViewBag.SuspensionEndDate = courtCasesEnforcement.SuspensionStartDate.Value.AddMonths((int)courtCasesEnforcement.SuspensionPeriod).ToString("dd/MM/yyyy");
-                ViewBag.DaysRemaining = (courtCasesEnforcement.SuspensionStartDate.Value.AddMonths((int)courtCasesEnforcement.SuspensionPeriod) - DateTime.Today).TotalDays;
-
-            }
-
-            //ViewBag.Courtid = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CourtType), "Mst_Value", "Mst_Desc", courtCasesEnforcement.Courtid);
-            ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.CourtLocationid);
-
-            ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.EnforcementlevelId);
-            ViewBag.SuspensionCauseId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CauseOfSuspension), "Mst_Value", "Mst_Desc", courtCasesEnforcement.SuspensionCauseId);
-
-            ViewBag.PoliceStationid = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Location), "Mst_Value", "Mst_Desc", courtCasesEnforcement.PoliceStationid);
-            ViewBag.ArrestOrderStatusId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.VoucherStatus), "Mst_Value", "Mst_Desc", courtCasesEnforcement.ArrestOrderStatusId);
-
-            ViewBag.PrimaryObjectionCourt = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.PrimaryObjectionCourt);
-            ViewBag.ApealObjectionCourt = new SelectList(Helper.GetCourtLocationList("2"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.ApealObjectionCourt);
-            ViewBag.SupremeObjectionCourt = new SelectList(Helper.GetCourtLocationList("3"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.SupremeObjectionCourt);
-
-            ViewBag.PrimaryPlaintCourt = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.PrimaryPlaintCourt);
-            ViewBag.ApealPlaintCourt = new SelectList(Helper.GetCourtLocationList("2"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.ApealPlaintCourt);
-            ViewBag.SupremePlaintCourt = new SelectList(Helper.GetCourtLocationList("3"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.SupremePlaintCourt);
-            ViewBag.EnforcementBy = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.EnforcementBy);
-
-            //SessionRoll
-
-            var _sessionRoll = db.SessionsRoll.Where(w => w.CaseId == courtCasesEnforcement.CaseId && w.SessionLevel == "6").FirstOrDefault();
-
-            if (_sessionRoll != null)
-            {
-                courtCasesEnforcement.SessionRollId = _sessionRoll.SessionRollId;
-
-                courtCasesEnforcement.ShowFollowup = _sessionRoll.ShowFollowup;
-                courtCasesEnforcement.ShowSuspend = _sessionRoll.ShowSuspend;
-                courtCasesEnforcement.LastDate = _sessionRoll.LastDate;
-                courtCasesEnforcement.WorkRequired = _sessionRoll.WorkRequired;
-                courtCasesEnforcement.SessionNotes = _sessionRoll.SessionNotes;
-                courtCasesEnforcement.FollowerId = _sessionRoll.FollowerId;
-
-                ViewBag.hid_SessionRollId = _sessionRoll.SessionRollId;
-                ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.SessionClientId);
-                ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.FollowerId);
-                ViewBag.NextCaseLevel = new SelectList(Helper.GetNextCaseLevel(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.NextCaseLevel);
-
-                ViewBag.hid_SessionRollId = courtCasesEnforcement.SessionRollId;
-
-            }
-            else
-            {
-                courtCasesEnforcement.SessionRollId = 0;
-                ViewBag.hid_SessionRollId = 0;
-                ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc");
-                ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc");
-                ViewBag.NextCaseLevel = new SelectList(Helper.GetNextCaseLevel(), "Mst_Value", "Mst_Desc");
-
-            }
-
-            return View(courtCasesEnforcement);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult EnforcementEdit(CourtCasesEnforcement courtCasesEnforcement)
-        {
-            var errors = ModelState.Values.SelectMany(v => v.Errors);
-            ViewBag.hid_CaseId = courtCasesEnforcement.CaseId;
-            if (ModelState.IsValid)
-            {
-                db.Entry(courtCasesEnforcement).State = EntityState.Modified;
-                db.SaveChanges();
-
-                Helper.ProcessCourtDecisionHistory(courtCasesEnforcement, HttpContext.User.Identity.GetUserId(), "CourtCasesEnforcement");
-
-                CourtCases courtCases = db.CourtCase.Find(courtCasesEnforcement.CaseId);
-                courtCases.CaseLevelCode = "6";
-                courtCases.YandSNotes = courtCasesEnforcement.YandSNotesUpdate;
-                db.Entry(courtCases).Entity.CurrentHearingDate = courtCasesEnforcement.CurrentHearingDate;
-                db.Entry(courtCases).Entity.CourtDecision = courtCasesEnforcement.CourtDecision;
-                db.Entry(courtCases).Entity.SessionRemarks = courtCasesEnforcement.SessionRemarks;
-                db.Entry(courtCases).Entity.Requirements = courtCasesEnforcement.Requirements;
-                db.Entry(courtCases).Entity.SessionClientId = courtCasesEnforcement.SessionClientId;
-                db.Entry(courtCases).Entity.SessionRollDefendentName = courtCasesEnforcement.SessionRollDefendentName;
-
-                db.Entry(courtCases).State = EntityState.Modified;
-                db.SaveChanges();
-
-
-                if (courtCasesEnforcement.SessionRollId == 0)
-                {
-                }
-                else
-                    UpdateSessionRoll("ENFORCEMENT", courtCasesEnforcement);
-
-                var _caseRegistration = db.CaseRegistration.Where(w => w.CaseId == courtCasesEnforcement.CaseId && w.ActionLevel == "4" && !w.IsDeleted).OrderByDescending(o => o.CaseRegistrationId).FirstOrDefault();
-
-                if (_caseRegistration != null)
-                {
-                    if (
-                    !string.IsNullOrEmpty(courtCasesEnforcement.PrimaryObjectionNo) ||
-                    !string.IsNullOrEmpty(courtCasesEnforcement.PrimaryPlaintNo) ||
-                    !string.IsNullOrEmpty(courtCasesEnforcement.ApealObjectionNo) ||
-                    !string.IsNullOrEmpty(courtCasesEnforcement.ApealPlaintNo)
-                    )
-                    {
-                        string P_EnforcementDispute = _caseRegistration.EnforcementDispute;
-                        bool runProcess = false;
-
-                        if (P_EnforcementDispute == "1" && !string.IsNullOrEmpty(courtCasesEnforcement.PrimaryPlaintNo))
-                            runProcess = true;
-                        else if (P_EnforcementDispute == "2" && !string.IsNullOrEmpty(courtCasesEnforcement.ApealPlaintNo))
-                            runProcess = true;
-                        else if (P_EnforcementDispute == "3" && !string.IsNullOrEmpty(courtCasesEnforcement.PrimaryObjectionNo))
-                            runProcess = true;
-                        else if (P_EnforcementDispute == "4" && !string.IsNullOrEmpty(courtCasesEnforcement.ApealObjectionNo))
-                            runProcess = true;
-
-                        if (runProcess)
-                            Helper.ProcessCaseRegistrationProgress(courtCasesEnforcement, "CourtCasesEnforcement", true, P_EnforcementDispute);
-
-                    }
-                }
-
-                Session["Message"] = new MessageVM
-                {
-                    Category = "Success",
-                    Message = "Data Save Successfully",
-                    IsShowForm = "Y",
-                    CaseId = courtCasesEnforcement.CaseId.ToString()
-                };
-
-                if (User.IsInRole("VoucherApproval") || User.IsSysAdmin())
-                    ViewBag.UserRole = "VoucherApproval";
-                else
-                    ViewBag.UserRole = "";
-
-                return RedirectToAction("ManageEnforcementDetail", new RouteValueDictionary(new { CaseId = courtCasesEnforcement.CaseId }));
-
-            }
-
-            var CourtCases = db.CourtCase.Find(courtCasesEnforcement.CaseId);
-            var AgainstName = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.CaseAgainst && w.Mst_Value == CourtCases.AgainstCode).FirstOrDefault().Mst_Desc;
-            var ClientName = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.Client && w.Mst_Value == CourtCases.ClientCode).FirstOrDefault().Mst_Desc;
-
-            ViewBag.AgainstName = AgainstName;
-            ViewBag.ClaimAmount = CourtCases.ClaimAmount;
-            ViewBag.OfficeFileNo = CourtCases.OfficeFileNo;
-            ViewBag.ClientName = ClientName;
-            ViewBag.Defendant = CourtCases.Defendant;
-            ViewBag.CaseLevelName = "ENFORCEMENT";
-            ViewBag.OfficeFileNo = CourtCases.OfficeFileNo;
-            ViewBag.SuspensionEndDate = courtCasesEnforcement.SuspensionStartDate.Value.AddMonths((int)courtCasesEnforcement.SuspensionPeriod).ToString("dd/MM/yyyy");
-            ViewBag.DaysRemaining = (courtCasesEnforcement.SuspensionStartDate.Value.AddMonths((int)courtCasesEnforcement.SuspensionPeriod) - DateTime.Today).TotalDays;
-
-            ViewBag.Courtid = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CourtType), "Mst_Value", "Mst_Desc", courtCasesEnforcement.Courtid);
-            ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.CourtLocationid);
-            ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.EnforcementlevelId);
-            ViewBag.SuspensionCauseId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CauseOfSuspension), "Mst_Value", "Mst_Desc", courtCasesEnforcement.SuspensionCauseId);
-
-            ViewBag.PoliceStationid = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Location), "Mst_Value", "Mst_Desc", courtCasesEnforcement.PoliceStationid);
-            ViewBag.ArrestOrderStatusId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.VoucherStatus), "Mst_Value", "Mst_Desc", courtCasesEnforcement.ArrestOrderStatusId);
-
-            ViewBag.PrimaryObjectionCourt = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.PrimaryObjectionCourt);
-            ViewBag.ApealObjectionCourt = new SelectList(Helper.GetCourtLocationList("2"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.ApealObjectionCourt);
-            ViewBag.SupremeObjectionCourt = new SelectList(Helper.GetCourtLocationList("3"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.SupremeObjectionCourt);
-
-            ViewBag.PrimaryPlaintCourt = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.PrimaryPlaintCourt);
-            ViewBag.ApealPlaintCourt = new SelectList(Helper.GetCourtLocationList("2"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.ApealPlaintCourt);
-            ViewBag.SupremePlaintCourt = new SelectList(Helper.GetCourtLocationList("3"), "Mst_Value", "Mst_Desc", courtCasesEnforcement.SupremePlaintCourt);
-            ViewBag.EnforcementBy = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.EnforcementBy);
-
-            ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.SessionClientId);
-            ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.FollowerId);
-            ViewBag.NextCaseLevel = new SelectList(Helper.GetNextCaseLevel(), "Mst_Value", "Mst_Desc", courtCasesEnforcement.NextCaseLevel);
-
-            courtCasesEnforcement.CurrentHearingDate = CourtCases.CurrentHearingDate;
-            courtCasesEnforcement.CourtDecision = CourtCases.CourtDecision;
-            courtCasesEnforcement.SessionRemarks = CourtCases.SessionRemarks;
-            courtCasesEnforcement.Requirements = CourtCases.Requirements;
-
-            Session["Message"] = new MessageVM
-            {
-                Category = "Error",
-                Message = string.Join("<br/>", ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage).ToArray())
-            };
-            return View(courtCasesEnforcement);
-        }
-
-        [HttpPost]
-        public ActionResult ValidateDateEqualOrGreater(DateTime ReceptionDate)
-        {
-            // validate your date here and return True if validated
-            if (ReceptionDate > DateTime.Now)
-            {
-                return Json(false);
-            }
-            return Json(true);
-        }
-        protected string RenderPartialViewToString(string viewName, object model = null)
-        {
-            if (string.IsNullOrEmpty(viewName))
-                viewName = ControllerContext.RouteData.GetRequiredString("action");
-
-            ViewData.Model = model;
-
-            using (var sw = new StringWriter())
-            {
-                ViewEngineResult viewResult = ViewEngines.Engines.FindPartialView(ControllerContext, viewName);
-                ViewContext viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, sw);
-                viewResult.View.Render(viewContext, sw);
-
-                return sw.GetStringBuilder().ToString();
-            }
-        }
+               
 
         [HttpPost]
         public ActionResult GetDefaulterDetail()

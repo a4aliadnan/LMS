@@ -354,17 +354,19 @@ namespace YandS.UI.Controllers
                             _ModalToSave.SuspensionStartDate = modal.SuspensionStartDate;
                             _ModalToSave.JUDDecisionId = modal.JUDDecisionId;
                         }
-                        else if (modal.EnforcementlevelId == "9") //RECOVERY JUDGMENT استرداد الصيغة
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.RecoveryRedStamp_Re_Open.ToString()) //RECOVERY JUDGMENT استرداد الصيغة
                         {
                             _ModalToSave.CauseOfRecoveryId = modal.CauseOfRecoveryId;
                             _ModalToSave.DateOfInstruction = modal.DateOfInstruction;
                         }
-                        else if (modal.EnforcementlevelId == "10") //CLOSE ENFC  غلق التنفيذ
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.RecoveryRedStamp_Close.ToString()) //RECOVERY JUDGMENT استرداد الصيغة
                         {
-                            CourtCases courtCases = db.CourtCase.Where(w => w.CaseId == modal.CaseId).FirstOrDefault();
-                            db.Entry(courtCases).Entity.ReasonCode = modal.ReasonCode;
-                            db.Entry(courtCases).State = EntityState.Modified;
-                            db.SaveChanges();
+                            _ModalToSave.CauseOfRecoveryId = modal.CauseOfRecoveryId;
+
+                            //CourtCases courtCases = db.CourtCase.Where(w => w.CaseId == modal.CaseId).FirstOrDefault();
+                            //db.Entry(courtCases).Entity.ReasonCode = modal.ReasonCode;
+                            //db.Entry(courtCases).State = EntityState.Modified;
+                            //db.SaveChanges();
                         }
                         else if (modal.EnforcementlevelId == OfficeFileStatus.Dispute.ToString()) //DISPUTE منازعة تنفيذ
                         {
@@ -459,17 +461,19 @@ namespace YandS.UI.Controllers
                             db.Entry(_ModalToSave).Entity.SuspensionStartDate = modal.SuspensionStartDate;
                             db.Entry(_ModalToSave).Entity.JUDDecisionId = modal.JUDDecisionId;
                         }
-                        else if (modal.EnforcementlevelId == "9") //RECOVERY JUDGMENT استرداد الصيغة
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.RecoveryRedStamp_Re_Open.ToString()) //RECOVERY JUDGMENT استرداد الصيغة
                         {
-                            db.Entry(_ModalToSave).Entity.CauseOfRecoveryId = modal.CauseOfRecoveryId;
-                            db.Entry(_ModalToSave).Entity.DateOfInstruction = modal.DateOfInstruction;
+                            _ModalToSave.CauseOfRecoveryId = modal.CauseOfRecoveryId;
+                            _ModalToSave.DateOfInstruction = modal.DateOfInstruction;
                         }
-                        else if (modal.EnforcementlevelId == "10") //CLOSE ENFC  غلق التنفيذ
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.RecoveryRedStamp_Close.ToString()) //RECOVERY JUDGMENT استرداد الصيغة
                         {
-                            CourtCases courtCases = db.CourtCase.Where(w => w.CaseId == modal.CaseId).FirstOrDefault();
-                            db.Entry(courtCases).Entity.ReasonCode = modal.ReasonCode;
-                            db.Entry(courtCases).State = EntityState.Modified;
-                            db.SaveChanges();
+                            _ModalToSave.CauseOfRecoveryId = modal.CauseOfRecoveryId;
+
+                            //CourtCases courtCases = db.CourtCase.Where(w => w.CaseId == modal.CaseId).FirstOrDefault();
+                            //db.Entry(courtCases).Entity.ReasonCode = modal.ReasonCode;
+                            //db.Entry(courtCases).State = EntityState.Modified;
+                            //db.SaveChanges();
                         }
                         else if (modal.EnforcementlevelId == OfficeFileStatus.Dispute.ToString()) //DISPUTE منازعة تنفيذ
                         {

@@ -1696,9 +1696,6 @@
     <Content Include="Content\jquery-ui\ui\widgets\tabs.js" />
     <Content Include="Content\jquery-ui\ui\widgets\tooltip.js" />
     <Content Include="Content\MySite_Ver_16.css" />
-    <Content Include="Content\MySite_Ver_15.css" />
-    <Content Include="Content\MySite_Ver_14.css" />
-    <Content Include="Content\MySite_Ver_13.css" />
     <Content Include="Content\plugins\bootstrap-colorpicker\css\bootstrap-colorpicker.css" />
     <Content Include="Content\plugins\bootstrap-colorpicker\css\bootstrap-colorpicker.min.css" />
     <Content Include="Content\plugins\bootstrap-colorpicker\js\bootstrap-colorpicker.js" />

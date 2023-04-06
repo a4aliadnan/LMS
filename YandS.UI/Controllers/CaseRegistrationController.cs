@@ -17,6 +17,12 @@ namespace YandS.UI.Controllers
     public class CaseRegistrationController : Controller
     {
         private RBACDbContext db = new RBACDbContext();
+        private string OfficeFileFilterTBR = Helper.getOfficeFileFilterTBR();
+        private string OfficeFileFilterSR = Helper.getOfficeFileFilterSR();
+        private string OfficeFileFilterENF = Helper.getOfficeFileFilterENF();
+        private string OfficeFileFilterSUP = Helper.getOfficeFileFilterSUP();
+        private string[] FileStatusCodesSR = Helper.getFileStatusCodesSR();
+        private string[] FileStatusCodesTBR = Helper.getFileStatusCodesTBR();
 
         public ActionResult Index()
         {
@@ -117,68 +123,11 @@ namespace YandS.UI.Controllers
 
                             UpdateCourtCaseUpdate(modal);
                         }
-                        //else //ADD
-                        //{
-                        //    SaveCaseRegister(modal, ref ModelToSave);
-
-                        //    if (int.Parse(modal.FileStatus) == 8)
-                        //        CreatePayVoucher(modal, ref ModelToSave);
-                        //}
                     }
-                    else
-                    {
-                        if (modal.CaseRegistrationId > 0) //EDIT
-                        {
-                            ModelToSave = db.CaseRegistration.Find(modal.CaseRegistrationId);
-
-                            if (int.Parse(modal.FileStatus) <= 8 || int.Parse(modal.FileStatus) >= 11)
-                                UpdateCaseRegister(modal, ref ModelToSave);
-
-                            if (int.Parse(modal.FileStatus) == 8)
-                            {
-                                if (modal.Voucher_No > 0)
-                                    UpdateVoucher(modal);
-                                else
-                                    CreatePayVoucher(modal, ref ModelToSave);
-                            }
-
-                            UpdateCourtCaseUpdate(modal);
-                        }
-                        else //ADD
-                        {
-                            SaveCaseRegister(modal, ref ModelToSave);
-
-                            if (int.Parse(modal.FileStatus) == 8)
-                                CreatePayVoucher(modal, ref ModelToSave);
-                        }
-
-                        if (int.Parse(modal.FileStatus) == 6)
-                        {
-                            if (int.Parse(modal.ActionLevel) == 1)
-                            {
-                                UpdateCaseManagementInfo(modal);
-                                UpdatecourtcasesDetail(modal);
-                            }
-                        }
-                        else if (int.Parse(modal.FileStatus) == 9)
-                        {
-                            if (int.Parse(modal.ActionLevel) == 4)
-                                ProcessMessage = UpdateEnforcementCourtInfo(modal);
-                            else
-                                ProcessMessage = UpdateCourtDetailInfo(modal);
-                        }
-                        else if (int.Parse(modal.FileStatus) == 10)
-                            ProcessMessage = UpdateBeforeCourtInfo(modal);
-
-                        if (modal.CaseRegistrationId > 0 && (int.Parse(modal.FileStatus) == 10 || int.Parse(modal.FileStatus) == 9)) //SOFT DELETE
-                            SoftDeleteCaseRegister(ref ModelToSave);
-
-                    }
-
-
+                    
                     #region UPLOADED DOCUMENT SAVING
 
-                    if (int.Parse(modal.FileStatus) == 2)
+                    if (modal.FileStatus == OfficeFileStatus.LegalNotice.ToString())
                     {
                         //Process Attachment Legal Notice (OMAN POST)
                         if (upload != null && upload.ContentLength > 0)
@@ -192,7 +141,7 @@ namespace YandS.UI.Controllers
                             upload.SaveAs(UploadPath);
                         }
                     }
-                    else if (int.Parse(modal.FileStatus) == 8)
+                    else if (modal.FileStatus == OfficeFileStatus.ForPayment.ToString())
                     {
                         //Process Attachment Payment Vouchers
                         if (uploadPVSupDocs != null && uploadPVSupDocs.ContentLength > 0)
@@ -217,23 +166,7 @@ namespace YandS.UI.Controllers
                             uploadPVBTDocs.SaveAs(UploadPath);
                         }
                     }
-                    else if (int.Parse(modal.FileStatus) == 11)
-                    {
-                        if (!string.IsNullOrEmpty(modal.PartialViewName))
-                        {
-                            //Process Attachment STOP REGISTRATION
-                            if (upload != null && upload.ContentLength > 0)
-                            {
-                                string FileExtension = Path.GetExtension(upload.FileName);
-
-                                string FileName = ModelToSave.CaseRegistrationId + FileExtension;
-
-                                string UploadPath = Path.Combine(UploadRoot, "StopRegEmails", FileName);
-
-                                upload.SaveAs(UploadPath);
-                            }
-                        }
-                    }
+                    
                     #endregion
 
                     #region RETURN
@@ -256,7 +189,7 @@ namespace YandS.UI.Controllers
                             CaseRegistrationVM ViewModal = new CaseRegistrationVM();
                             Helper.GetCaseRegistrationVM(modal.CaseRegistrationId, ref ViewModal);
 
-                            ViewBag.FileStatus = new SelectList(Helper.GetFileStatus(), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
+                            ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
                             ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
                             ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
                             ViewBag.DepartmentType = new SelectList(Helper.GetInvestmentYN(), "Mst_Value", "Mst_Desc", ViewModal.DepartmentType);
@@ -303,7 +236,7 @@ namespace YandS.UI.Controllers
                     ViewBag.RealEstateYesNo = new SelectList(Helper.GetYNForSelect(), "Mst_Value", "Mst_Desc", modal.RealEstateYesNo);
                     ViewBag.StopEnfRequest = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", modal.StopEnfRequest);
 
-                    ViewBag.FileStatus = new SelectList(Helper.GetFileStatus(), "Mst_Value", "Mst_Desc", modal.FileStatus);
+                    ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR), "Mst_Value", "Mst_Desc", modal.FileStatus);
                     ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", modal.ClientReply);
                     ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", modal.TransportationSource);
                     ViewBag.DepartmentType = new SelectList(Helper.GetInvestmentYN(), "Mst_Value", "Mst_Desc", modal.DepartmentType);
@@ -439,7 +372,7 @@ namespace YandS.UI.Controllers
                 db.Entry(ModelToSave).Entity.OfficeProcedure = modal.OfficeProcedure;
                 db.Entry(ModelToSave).Entity.FormPrintLastDate = modal.FormPrintLastDate;
                 if (modal.IsShowWithLawyer == "Y")
-                    db.Entry(ModelToSave).Entity.FileStatus = "12";
+                    db.Entry(ModelToSave).Entity.FileStatus = OfficeFileStatus.WithLawyer.ToString();
                 else
                     db.Entry(ModelToSave).Entity.FileStatus = modal.FileStatus;
 
@@ -505,7 +438,7 @@ namespace YandS.UI.Controllers
                     db.Entry(ModelToSave).Entity.DepartmentType = modal.DepartmentType;
                 }
 
-                if (int.Parse(modal.FileStatus) == 3 || int.Parse(modal.FileStatus) == 5)
+                if (modal.FileStatus == OfficeFileStatus.WritingSubmission.ToString() || modal.FileStatus == OfficeFileStatus.Scanned.ToString())
                 {
                     db.Entry(ModelToSave).Entity.ActionDate = DateTime.UtcNow.AddHours(4);
                 }
@@ -1168,7 +1101,7 @@ namespace YandS.UI.Controllers
             db.Entry(CourtCase).Entity.TransportationSource = modal.TransportationSource;
             db.Entry(CourtCase).Entity.FirstEmailDate = modal.FirstEmailDate;
             db.Entry(CourtCase).Entity.NextHearingDate = modal.NextHearingDate;
-
+            db.Entry(CourtCase).Entity.OfficeFileStatus = modal.FileStatus;
             db.Entry(CourtCase).State = EntityState.Modified;
             db.SaveChanges();
 

@@ -154,6 +154,12 @@
 
                 $(row).addClass(rowColor);
             },
+            "drawCallback": function (settings) {
+                if (SmartFilter) {
+                    SmartFilter = false;
+                    $("#ModificationContainer").empty();
+                }
+            },
             initComplete: function () {
                 console.log("table  Initiated !!");
                 var info = table.page.info();
@@ -179,17 +185,19 @@
                         $('#MCTTTL').text("SALALAH : " + SSLTTL);
                 }
 
-                $("#HtmlTable_filter.tables_filter input")
+                $("#HtmlTable_filter.dataTables_filter input")
                     .unbind() // Unbind previous default bindings
                     .bind("keyup", function (e) { // Bind our desired behavior
                         //console.log(e.keyCode);
                         // this.value.length >= 3 || If the length is 3 or more characters, or the user pressed ENTER, search
                         if (e.keyCode == 13) {
                             // Call the API search function
+                            SmartFilter = true;
                             table.search(this.value).draw();
                         }
                         // Ensure we clear the search if they backspace far enough
                         if (this.value == "") {
+                            SmartFilter = true;
                             table.search("").draw();
                         }
                         return;

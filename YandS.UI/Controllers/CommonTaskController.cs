@@ -615,20 +615,21 @@ namespace YandS.UI.Controllers
 
         }
         [HttpPost]
-        public ActionResult GetExistingOfficeInTBR(string OfficeFileNo,string DataForTable)
+        public ActionResult GetExistingOfficeInTBR(string OfficeFileNo, string DataForTable)
         {
-            try { 
-            string spName = @"[dbo].[REG_IN_PROG-GetExistingCase]";
-            List<string> parName = new List<string> { "@P_OfficeFileNo", "@P_DataForTable" };
-            List<object> parValues = new List<object> { OfficeFileNo, DataForTable };
+            try
+            {
+                string spName = @"[dbo].[REG_IN_PROG-GetExistingCase]";
+                List<string> parName = new List<string>() { "@P_OfficeFileNo", "@P_DataForTable" };
+                List<object> parValues = new List<object>() { OfficeFileNo, DataForTable };
 
-            var ds = Helper.getDataSet(parName.ToArray(), parValues.ToArray(), TableNames: new string[] { "data", "summary" }, procedureName: spName);
-            DataTable dt = ds.Tables["data"];
-            DataTable Summarydt = ds.Tables["summary"];
+                DataSet ds = Helper.getDataSet(parName.ToArray(), parValues.ToArray(), TableNames: new string[] { "data", "summary" }, procedureName: spName);
+                DataTable dt = ds.Tables["data"];
+                DataTable Summarydt = ds.Tables["summary"];
 
-            var caseRegisteredExists = Summarydt.Rows.Count > 0 ? int.Parse(Summarydt.Rows[0]["caseRegisteredExists"].ToString()) : 0;
+                var caseRegisteredExists = Summarydt.Rows.Count > 0 ? int.Parse(Summarydt.Rows[0]["caseRegisteredExists"].ToString()) : 0;
 
-            var jsondata = dt.ToDictionary();
+                var jsondata = dt.ToDictionary();
 
                 return new JsonResult()
                 {

@@ -44,17 +44,122 @@
     }
 
     .SessionJudgementFollowup {
-        background-color: #e8e8e8 !important;
-        color: black !important;
+        background-color: #57257d !important;
+        color: white !important;
     }
 
         .SessionJudgementFollowup:hover {
-            background-color: #dae3f3 !important;
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
         }
 
     .SessionJudgementFollowupActive {
-        background-color: #dae3f3 !important;
-        color: black !important;
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionJudgementCorrected {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+    .SessionJudgementCorrected:hover {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionJudgementCorrectedActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionBlueStamp {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionBlueStamp:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionBlueStampActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionPeriodOfAppeal {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionPeriodOfAppeal:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionPeriodOfAppealActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionRedStamp {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionRedStamp:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionRedStampActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionMissingDocuments {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionMissingDocuments:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionMissingDocumentsActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionRefund34 {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionRefund34:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionRefund34Active {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
     }
 </style>
 <script>
@@ -110,7 +215,7 @@
         ReceiptOfFees: "OFS-14",
         Translation: "OFS-15",
         Scanned: "OFS-5",
-        OnlineReg: "OFS-6",
+        OnlineRegTBR: "OFS-6",
         CourtMsg: "OFS-7",
         ForPayment: "OFS-8",
         WithLawyer: "OFS-12",
@@ -121,7 +226,7 @@
         RequestMeetJudge: "OFS-19",
         Dispute: "OFS-20",
         AuctionSession: "OFS-21",
-        OnlineReg: "OFS-22",
+        OnlineRegENF: "OFS-22",
         Announcement: "OFS-23",
         ContactingAuthorities: "OFS-24",
         JudicalSale: "OFS-25",
@@ -1935,26 +2040,26 @@
                 <div class="col-sm-12 @ViewBag.ViewFollowUpTabs">
                     <div style="padding-bottom:10px;" class="row">
                         <div class="col">
-                            <button type="button" id="btn_SessionJudgementFollowup" style="font-size: 0.9rem !important;" class="btn btn-block SessionJudgementFollowup @ViewBag.SessionJudgementFollowupActive btn-lg navButton">أحكام مطابقة للطلبات<br />JUDGMENT</button>
+                            <button type="button" id="btn_SessionJudgementFollowup" style="font-size: 1.1rem !important;" class="btn btn-block SessionJudgementFollowup @ViewBag.SessionJudgementFollowupActive btn-lg navButton">أحكام مطابقة<br />JUDGMENT</button>
                         </div>
                         <div class="col">
-                            <button type="button" id="btn_SessionJudgementCorrected" style="font-size: 0.9rem !important;" class="btn btn-block SessionJudgementCorrected @ViewBag.SessionJudgementCorrectedActive btn-lg navButton">تصحيح الحكم<br />JUDGMENT CORRECTED</button>
+                            <button type="button" id="btn_SessionJudgementCorrected" style="font-size: 1.1rem !important;" class="btn btn-block SessionJudgementCorrected @ViewBag.SessionJudgementCorrectedActive btn-lg navButton">تصحيح الحكم<br />JUDGMENT CORRECTED</button>
                         </div>
                         <div class="col">
-                            <button type="button" id="btn_SessionBlueStamp" style="font-size: 0.9rem !important;" class="btn btn-block SessionBlueStamp @ViewBag.SessionBlueStampActive btn-lg navButton">الختم الأزرق<br />BLUE STAMP</button>
+                            <button type="button" id="btn_SessionBlueStamp" style="font-size: 1.1rem !important;" class="btn btn-block SessionBlueStamp @ViewBag.SessionBlueStampActive btn-lg navButton">الختم الأزرق<br />BLUE STAMP</button>
                         </div>
                         <div class="col">
-                            <button type="button" id="btn_SessionProvidedTime" style="font-size: 0.9rem !important;" class="btn btn-block SessionProvidedTime @ViewBag.SessionProvidedTimeActive btn-lg navButton">سريان الإستئناف<br />PROVIDED TIME</button>
+                            <button type="button" id="btn_SessionPeriodOfAppeal" style="font-size: 1.1rem !important;" class="btn btn-block SessionPeriodOfAppeal @ViewBag.SessionPeriodOfAppealActive btn-lg navButton">سريان ميعاد الاستئناف<br />PERIOD OF APPEAL</button>
                         </div>
                         <div class="col">
-                            <button type="button" id="btn_SessionRedStamp" style="font-size: 0.9rem !important;" class="btn btn-block SessionRedStamp @ViewBag.SessionRedStampActive btn-lg navButton">طلب الصيغة التنفيذية<br />RED STAMP</button>
+                            <button type="button" id="btn_SessionRedStamp" style="font-size: 1.1rem !important;" class="btn btn-block SessionRedStamp @ViewBag.SessionRedStampActive btn-lg navButton">طلب الصيغة التنفيذية<br />RED STAMP</button>
                         </div>
 
                         <div class="col">
-                            <button type="button" id="btn_SessionMissingDocuments" style="font-size: 0.9rem !important;" class="btn btn-block SessionMissingDocuments @ViewBag.SessionMissingDocumentsActive btn-lg navButton">نواقص مستندات<br />MISSING DOCUMENTS</button>
+                            <button type="button" id="btn_SessionMissingDocuments" style="font-size: 1.1rem !important;" class="btn btn-block SessionMissingDocuments @ViewBag.SessionMissingDocumentsActive btn-lg navButton">نواقص مستندات<br />MISSING DOC.</button>
                         </div>
-                        <div class="col-1">
-                            <button type="button" id="btn_SessionRefund34" style="font-size: 0.9rem !important;" class="btn btn-block SessionRefund34 @ViewBag.SessionRefund34Active btn-lg navButton">استرداد<br />REFUND 3/4</button>
+                        <div class="col">
+                            <button type="button" id="btn_SessionRefund34" style="font-size: 1.1rem !important;" class="btn btn-block SessionRefund34 @ViewBag.SessionRefund34Active btn-lg navButton">استرداد 3/4 الرسم<br />REFUND 3/4</button>
                         </div>
 
                     </div>

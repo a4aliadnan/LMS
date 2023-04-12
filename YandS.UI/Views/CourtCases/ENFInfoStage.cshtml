@@ -1028,6 +1028,8 @@
             if ($("#FirstEmailDate").val() == "") {
                 $("#FirstEmailDate").datepicker("setDate", new Date());
             }
+
+            $('textarea').autoResize();
         }
 
         if ($('#CourtFollow').val() == "1") {
@@ -1413,7 +1415,7 @@
             </div>
         </div>
     </div>
-    <div id="DIV_LAWYER_FOLLOW" class="row">
+    @*<div id="DIV_LAWYER_FOLLOW" class="row">
         <div class="col-sm-12">
             <div style="padding-bottom:0px !important;padding-top:10px;background-color: #50634d !important; color: white !important;">
                 <div class="row">
@@ -1421,40 +1423,15 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.CourtFollow)
-                            @Html.DropDownList("CourtFollow", null, htmlAttributes: new { @class = "form-control select2bs4" })
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group clsLawerFollow">
-                            <label for="LawyerId">LAWYER المحامي</label>
-                            @Html.DropDownList("LawyerId", null, htmlAttributes: new { @class = "form-control select2bs4" })
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group clsLawerFollow">
-                            <label for="CourtFollowRequirement">LAWYER 'S REQUIREMENT المطلوب من المحامي</label>
-                            @Html.TextAreaFor(model => model.CourtFollowRequirement, 1, 200, new { @class = "form-control", @dir = "auto", @placeholder = "PLEASE ENTER LAWYER 'S REQUIREMENT" })
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group clsLawerFollow">
-                            @Html.LabelFor(model => model.CommissioningDate)
-                            @Html.EditorFor(model => model.CommissioningDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
-                        </div>
-                    </div>
-                </div>
+                <
             </div>
         </div>
-    </div>
+    </div>*@
     <div id="DIV_UPDATE" class="row">
         <div class="col-sm-12">
             <div style="padding-bottom:0px !important;padding-top:10px;background-color: #336c85 !important; color: white !important; border-color:yellow !important; border:3px solid;">
                 <div class="row">
-                    <div class="col-sm-12 text-center"><h3>UPDATE التحديث</h3></div>
+                    <div class="col-sm-12 text-center"><span style="font-size:x-large; padding-left:10px; float:left">@Html.DisplayFor(model => model.UpdatedBy)</span><h3>UPDATE التحديث</h3></div>
                 </div>
             </div>
             <div class="card-body">
@@ -1487,7 +1464,7 @@
                             @Html.DropDownList("ClientReply", null, htmlAttributes: new { @class = "form-control select2bs4" })
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col">
                         <div class="form-group" id="txtRequirement">
                             <label for="Requirements">REQUIREMENT المطلوب من الموكل</label>
                             <div class="form-group">
@@ -1502,13 +1479,39 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-2">
-                        <div id="DIV_TRSOURCE" class="form-group">
+                    <div id="DIV_TRSOURCE" class="col-sm-2">
+                        <div class="form-group">
                             @Html.LabelFor(model => model.TransportationSource)
                             @Html.DropDownList("TransportationSource", null, htmlAttributes: new { @class = "form-control select2bs4" })
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CourtFollow)
+                        @Html.DropDownList("CourtFollow", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group clsLawerFollow">
+                        <label for="LawyerId">LAWYER المحامي</label>
+                        @Html.DropDownList("LawyerId", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group clsLawerFollow">
+                        <label for="CourtFollowRequirement">LAWYER 'S REQUIREMENT المطلوب من المحامي</label>
+                        @Html.TextAreaFor(model => model.CourtFollowRequirement, 1, 200, new { @class = "form-control", @dir = "auto", @placeholder = "PLEASE ENTER LAWYER 'S REQUIREMENT" })
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group clsLawerFollow">
+                        @Html.LabelFor(model => model.CommissioningDate)
+                        @Html.EditorFor(model => model.CommissioningDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                    </div>
+                </div>
+            </div>
             </div>
         </div>
     </div>

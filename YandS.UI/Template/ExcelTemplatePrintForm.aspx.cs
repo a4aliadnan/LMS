@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 namespace YandS.UI.Template
 {
-    public partial class ExcelTemplatePrintForm : System.Web.UI.Page
+    public partial class ExcelTemplateInvoiceNewFormat : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {

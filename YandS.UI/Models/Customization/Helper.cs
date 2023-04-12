@@ -2847,6 +2847,7 @@ namespace YandS.UI
                         ViewModal.AccountContractNo = courtCases.AccountContractNo;
                         ViewModal.ClientFileNo = courtCases.ClientFileNo;
                         ViewModal.ClaimAmount = courtCases.ClaimAmount;
+                        ViewModal.CourtReg_ClaimAmount = courtCases.ClaimAmount;
                         ViewModal.IdRegistrationNo = courtCases.IdRegistrationNo;
                         ViewModal.OmaniExp = courtCases.OmaniExp;
                         ViewModal.CRRegistrationNo = courtCases.CRRegistrationNo;
@@ -2890,6 +2891,7 @@ namespace YandS.UI
                         ViewModal.NextHearingDate = courtCases.NextHearingDate;
                         ViewModal.TransportationFee = courtCases.TransportationFee;
                         ViewModal.UpdatedOn = courtCases.UpdatedOn?.ToString("dd/MM/yyyy HH:mm:ss") ?? courtCases.CreatedOn.ToString("dd/MM/yyyy HH:mm:ss");
+                        ViewModal.UpdatedBy = GetUserName(courtCases?.UpdatedBy ?? 0);
 
 
                         var courtCasesDetail = db.CourtCasesDetail.Where(w => w.CaseId == CaseId && w.CaseLevelCode == CaseLevelCode).OrderByDescending(o => o.DetailId).FirstOrDefault();
@@ -3055,5 +3057,20 @@ namespace YandS.UI
                 db.SaveChanges();
             }
         }
+        public static string GetUserName(int UserId)
+        {
+            string strResult = string.Empty;
+
+            if (UserId > 0)
+            {
+                using (var db = new RBACDbContext())
+                {
+                    strResult = db.Users.Where(w => w.Id == UserId).FirstOrDefault().UserName;
+                }
+            }
+
+            return strResult;
+        }
+
     }
 }

@@ -63,8 +63,18 @@ namespace YandS.UI.Controllers
                 ViewBag.ViewFollowUpTabs = "AppHidden";
                 ViewBag.FormMode = "CREATE";
                 ViewBag.ViewContainer = "#PartialViewContainer";
-                ViewBag.AllSessionsActive = "AllSessionsActive";
-                ViewBag.ViewToLoad = "_AllSessions";
+
+                if (User.Identity.Name == "10")
+                {
+                    ViewBag.SessionSuspendedActive = "SessionSuspendedActive";
+                    ViewBag.ViewToLoad = "_SessionSuspended";
+                }
+                else
+                {
+                    ViewBag.AllSessionsActive = "AllSessionsActive";
+                    ViewBag.ViewToLoad = "_AllSessions";
+
+                }
             }
             else if (id == -1)
             {

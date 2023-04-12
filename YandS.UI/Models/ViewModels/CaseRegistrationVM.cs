@@ -249,6 +249,7 @@ namespace YandS.UI.Models
 
         #endregion
 
+        public string UpdatedBy { get; set; }
 
 
         public CaseRegistrationVM()

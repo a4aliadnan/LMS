@@ -601,6 +601,7 @@ namespace YandS.UI.Controllers
                 ViewModal.SessionRollClientName = SessionRollClientName;
                 ViewModal.CourtFollowRequirement = courtCases.CourtFollowRequirement;
                 ViewModal.UpdatedOn = courtCases.UpdatedOn?.ToString("dd/MM/yyyy HH:mm:ss") ?? courtCases.CreatedOn.ToString("dd/MM/yyyy HH:mm:ss");
+                ViewModal.UpdatedBy = Helper.GetUserName(courtCases?.UpdatedBy ?? 0);
 
 
                 #region BEFORE COURT

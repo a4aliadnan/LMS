@@ -734,6 +734,13 @@
     <Compile Include="Template\A4Template.aspx.designer.cs">
       <DependentUpon>A4Template.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Template\ExcelTemplateInvoiceNewFormat.aspx.cs">
+      <DependentUpon>ExcelTemplateInvoiceNewFormat.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Template\ExcelTemplateInvoiceNewFormat.aspx.designer.cs">
+      <DependentUpon>ExcelTemplateInvoiceNewFormat.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Template\ExcelTemplatePrintForm.aspx.cs">
       <DependentUpon>ExcelTemplatePrintForm.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3529,6 +3536,7 @@
     <Content Include="Template\A4InnerTableTwo.aspx" />
     <Content Include="Template\A4InvoiceTemplate.aspx" />
     <Content Include="Template\A4Template.aspx" />
+    <Content Include="Template\ExcelTemplateInvoiceNewFormat.aspx" />
     <Content Include="Template\ExcelTemplatePrintForm.aspx" />
     <Content Include="Template\TemplateLIBER.aspx" />
     <Content Include="Template\NewTemplate.aspx" />
@@ -3721,7 +3729,7 @@
     <Content Include="Views\Finance\_CaseInvoiceFeeCalculationModify.cshtml" />
     <Content Include="Views\Finance\_CaseInvoicePrintFormatAb4VAT.cshtml" />
     <Content Include="Views\Finance\_CaseInvoiceFeeCalcPrint - Copy.cshtml" />
-    <Content Include="Views\Finance\_CaseInvoiceFeePrint - Copy.cshtml" />
+    <Content Include="Views\Finance\_CaseInvoiceFeePrintFormatB.cshtml" />
     <Content Include="Views\Finance\_CaseInvoicePrintFormatB.cshtml" />
     <Content Include="Views\Finance\_CaseInvoiceViewFormatA.cshtml" />
     <Content Include="Views\CourtCases\Finance.cshtml" />
@@ -3984,6 +3992,8 @@
     <Content Include="Views\SessionRoll\_SessionJudgementSupreme_CaseDetail.cshtml" />
     <Content Include="Views\SessionRoll\_SessionUpdate_CaseDetail.cshtml" />
     <Content Include="Views\SessionRoll\_SessionOnHoldDIV_CaseDetail.cshtml" />
+    <Content Include="Views\Finance\_CaseInvoiceFeePrint - Copy %284%29.cshtml" />
+    <Content Include="Views\Finance\_CaseInvoiceClientAddressFormatB.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

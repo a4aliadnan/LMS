@@ -660,6 +660,7 @@
         public DateTime? ContactDateTo { get; set; }
         public string CourtFollowRequirement { get; set; }
         public string UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
         
 
         #region MONEY TRANSFER

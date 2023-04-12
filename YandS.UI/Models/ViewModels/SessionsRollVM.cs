@@ -271,6 +271,8 @@
         public string UpdatedOn { get; set; }
         public string IsDelete { get; set; }
         public string buttonToGo { get; set; }
+        public string UpdatedBy { get; set; }
+
         public SessionsRollVM()
         {
             SessionRollDefendentName = "";

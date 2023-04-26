@@ -2720,7 +2720,6 @@ namespace YandS.UI
                 OfficeFileStatus.Translation.ToString()
             };
         }
-
         public static DataTable getDataTable(string[] ParaName, object[] ParaValue, string procedureName = null)
         {
             List<SqlParameter> lstpar = new List<SqlParameter>();
@@ -3071,6 +3070,331 @@ namespace YandS.UI
 
             return strResult;
         }
+        public static void UpdateBoxModified(object objmodal)
+        {
+            var modal = (ToBeRegisterVM)objmodal;
+            int CaseId = modal.CaseId;
+            bool changeFound = false;
+            try
+            {
+                using (var db = new RBACDbContext())
+                {
+                    CourtCases courtCases = db.CourtCase.Find(CaseId);
 
+                    if (courtCases.CurrentHearingDate == modal.CurrentHearingDate)
+                        changeFound = false;
+                    else
+                        changeFound = true;
+
+                    if (!changeFound)
+                    {
+                        if (courtCases.CourtDecision == modal.CourtDecision)
+                            changeFound = false;
+                        else
+                            changeFound = true;
+                    }
+
+                    if (!changeFound)
+                    {
+                        if (courtCases.NextHearingDate == modal.NextHearingDate)
+                            changeFound = false;
+                        else
+                            changeFound = true;
+                    }
+
+                    if (!changeFound)
+                    {
+                        if (courtCases.ClientReply == modal.ClientReply)
+                            changeFound = false;
+                        else
+                            changeFound = true;
+                    }
+
+                    if (!changeFound)
+                    {
+                        if (courtCases.Requirements == modal.Requirements)
+                            changeFound = false;
+                        else
+                            changeFound = true;
+                    }
+
+                    if (!changeFound)
+                    {
+                        if (courtCases.TransportationSource == modal.TransportationSource)
+                            changeFound = false;
+                        else
+                            changeFound = true;
+                    }
+
+                    if (!changeFound)
+                    {
+                        if (courtCases.CourtFollow == modal.CourtFollow)
+                            changeFound = false;
+                        else
+                            changeFound = true;
+                    }
+
+                    if (!changeFound)
+                    {
+                        var enfDetail = db.CourtCasesEnforcement.Find(modal.DetailId);
+
+                        if (modal.DetailId == 0)
+                        {
+                            if (modal.LawyerId == "0")
+                                changeFound = false;
+                            else
+                                changeFound = true;
+                        }
+                        else
+                        {
+                            if (modal.LawyerId == enfDetail.LawyerId)
+                                changeFound = false;
+                            else
+                                changeFound = true;
+                        }
+                    }
+
+                    if (!changeFound)
+                    {
+                        if (courtCases.CourtFollowRequirement == modal.CourtFollowRequirement)
+                            changeFound = false;
+                        else
+                            changeFound = true;
+                    }
+
+                    if (!changeFound)
+                    {
+                        if (courtCases.CommissioningDate == modal.CommissioningDate)
+                            changeFound = false;
+                        else
+                            changeFound = true;
+                    }
+
+
+                    if (changeFound)
+                    {
+                        db.Entry(courtCases).Entity.UpdateBoxDate = DateTime.UtcNow.AddHours(4);
+                        db.Entry(courtCases).Entity.UpdateBoxBy = HttpContext.Current.User.Identity.GetUserId(); ;
+                        db.Entry(courtCases).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+        public static void ProcessSessionRollDetail(object objmodal)
+        {
+            var modal = (ToBeRegisterVM)objmodal;
+            int CaseId = modal.CaseId;
+            try
+            {
+                using (var db = new RBACDbContext())
+                {
+                    var sessionRoll = db.SessionsRoll.Find(modal.SessionRollId);
+                    if(sessionRoll == null)
+                    {
+                        sessionRoll = new SessionsRoll();
+
+                        sessionRoll.CaseId = modal.CaseId;
+                        sessionRoll.CountLocationId = modal.CourtLocationid;
+
+                        sessionRoll.CaseType = modal.CaseType;
+                        sessionRoll.LawyerId = modal.Session_LawyerId;
+                        sessionRoll.SessionFileStatus = modal.EnforcementlevelId;
+                        sessionRoll.CourtFollow_LawyerId = modal.CourtFollow_LawyerId;
+
+                        sessionRoll.ShowFollowup = modal.ShowFollowup;
+                        sessionRoll.WorkRequired = modal.WorkRequired;
+                        sessionRoll.SessionNotes = modal.SessionNotes;
+                        sessionRoll.LastDate = modal.LastDate;
+                        sessionRoll.FollowerId = modal.FollowerId;
+
+                        sessionRoll.ShowSuspend = modal.ShowSuspend;
+                        sessionRoll.SuspendedWorkRequired = modal.SuspendedWorkRequired;
+                        sessionRoll.SuspendedSessionNotes = modal.SuspendedSessionNotes;
+                        sessionRoll.SuspendedLastDate = modal.SuspendedLastDate;
+                        sessionRoll.SuspendedFollowerId = modal.SuspendedFollowerId;
+
+                        sessionRoll.SessionLevel = modal.CaseLevelCode;
+                        sessionRoll.SessionNote_Remark = modal.SessionNote_Remark;
+
+                        db.SessionsRoll.Add(sessionRoll);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        
+                        db.Entry(sessionRoll).Entity.CountLocationId = modal.CourtLocationid;
+                        db.Entry(sessionRoll).Entity.CaseType = modal.CaseType;
+                        db.Entry(sessionRoll).Entity.LawyerId = modal.Session_LawyerId;
+                        db.Entry(sessionRoll).Entity.SessionFileStatus = modal.EnforcementlevelId;
+                        db.Entry(sessionRoll).Entity.CourtFollow_LawyerId = modal.CourtFollow_LawyerId;
+
+                        db.Entry(sessionRoll).Entity.ShowFollowup = modal.ShowFollowup;
+                        db.Entry(sessionRoll).Entity.WorkRequired = modal.WorkRequired;
+                        db.Entry(sessionRoll).Entity.SessionNotes = modal.SessionNotes;
+                        db.Entry(sessionRoll).Entity.LastDate = modal.LastDate;
+                        db.Entry(sessionRoll).Entity.FollowerId = modal.FollowerId;
+
+                        db.Entry(sessionRoll).Entity.ShowSuspend = modal.ShowSuspend;
+                        db.Entry(sessionRoll).Entity.SuspendedWorkRequired = modal.SuspendedWorkRequired;
+                        db.Entry(sessionRoll).Entity.SuspendedSessionNotes = modal.SuspendedSessionNotes;
+                        db.Entry(sessionRoll).Entity.SuspendedLastDate = modal.SuspendedLastDate;
+                        db.Entry(sessionRoll).Entity.SuspendedFollowerId = modal.SuspendedFollowerId;
+
+                        db.Entry(sessionRoll).Entity.SessionLevel = modal.CaseLevelCode;
+                        db.Entry(sessionRoll).Entity.SessionNote_Remark = modal.SessionNote_Remark;
+                    }
+
+                    UpdateSessionUpdateDetail(objmodal, "ToBeRegisterVM");
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+        public static void UpdateSessionUpdateDetail(object objmodal,string objName)
+        {
+            try
+            {
+                using (var db = new RBACDbContext())
+                {
+                    if (objName == "ToBeRegisterVM")
+                    {
+                        var modal = (ToBeRegisterVM)objmodal;
+                        CourtCases courtCases = db.CourtCase.Find(modal.CaseId);
+
+                        db.Entry(courtCases).Entity.CurrentHearingDate = modal.CurrentHearingDate;
+                        db.Entry(courtCases).Entity.CourtDecision = modal.CourtDecision;
+                        db.Entry(courtCases).Entity.SessionRemarks = modal.SessionRemarks;
+                        db.Entry(courtCases).Entity.NextHearingDate = modal.NextHearingDate;
+                        db.Entry(courtCases).Entity.ClientReply = modal.ClientReply;
+                        db.Entry(courtCases).Entity.Requirements = modal.Requirements;
+                        db.Entry(courtCases).Entity.FirstEmailDate = modal.FirstEmailDate;
+                        db.Entry(courtCases).Entity.TransportationSource = modal.TransportationSource;
+                        db.Entry(courtCases).Entity.CourtFollow = modal.CourtFollow;
+                        db.Entry(courtCases).Entity.CommissioningDate = modal.CommissioningDate;
+                        db.Entry(courtCases).Entity.CourtFollowRequirement = modal.CourtFollowRequirement;
+                        db.Entry(courtCases).Entity.OfficeFileStatus = modal.EnforcementlevelId;
+
+                        if (modal.EnforcementlevelId == OfficeFileStatus.JudgIssued.ToString())
+                            db.Entry(courtCases).Entity.ClaimSummary = modal.ClaimSummary;
+
+                        db.Entry(courtCases).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                    else if (objName == "SessionsRollVM")
+                    {
+                        var modal = (SessionsRollVM)objmodal;
+                        CourtCases courtCases = db.CourtCase.Find(modal.CaseId);
+
+                        db.Entry(courtCases).Entity.CurrentHearingDate = modal.CurrentHearingDate;
+                        db.Entry(courtCases).Entity.CourtDecision = modal.CourtDecision;
+                        db.Entry(courtCases).Entity.SessionRemarks = modal.SessionRemarks;
+                        db.Entry(courtCases).Entity.NextHearingDate = modal.NextHearingDate;
+                        db.Entry(courtCases).Entity.Requirements = modal.Requirements;
+                        db.Entry(courtCases).Entity.ClientReply = modal.ClientReply;
+                        db.Entry(courtCases).Entity.TransportationSource = modal.TransportationSource;
+                        db.Entry(courtCases).Entity.FirstEmailDate = modal.FirstEmailDate;
+                        db.Entry(courtCases).Entity.CourtFollow = modal.CourtFollow;
+                        db.Entry(courtCases).Entity.CommissioningDate = modal.CommissioningDate;
+                        db.Entry(courtCases).Entity.CourtFollowRequirement = modal.CourtFollowRequirement;
+                        db.Entry(courtCases).Entity.OfficeFileStatus = modal.SessionFileStatus;
+
+                        if (modal.SessionFileStatus == OfficeFileStatus.JudgIssued.ToString())
+                            db.Entry(courtCases).Entity.ClaimSummary = modal.ClaimSummary;
+
+                        db.Entry(courtCases).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                    
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+        public static int CreatePaymentVoucher(object objmodal,string objName)
+        {
+            int retResult = 0;
+            try
+            {
+                using (var db = new RBACDbContext())
+                {
+                    if (objName == "ToBeRegisterVM")
+                    {
+                        var modal = (ToBeRegisterVM)objmodal;
+                        PayVoucher pv = new PayVoucher();
+
+                        pv.Voucher_Date = DateTime.UtcNow.AddHours(4);
+                        pv.Payment_Type = modal.PVDetail.Payment_Type;
+                        pv.Payment_Mode = modal.PVDetail.Payment_Mode;
+                        pv.VoucherType = modal.PVDetail.VoucherType;
+                        pv.Status = modal.PVDetail.Status;
+                        pv.VoucherStatus = modal.PVDetail.VoucherStatus;
+                        pv.LocationCode = modal.PVDetail.LocationCode;
+                        pv.Credit_Account = modal.PVDetail.Credit_Account;
+                        pv.TransTypeCode = modal.PVDetail.TransTypeCode;
+                        pv.TransReasonCode = modal.PVDetail.TransReasonCode;
+                        pv.CourtType = modal.PVDetail.CourtType;
+                        pv.Payment_Head = modal.PVDetail.Payment_Head;
+                        pv.Remarks = modal.PVDetail.Remarks;
+                        pv.Payment_To = modal.PVDetail.Payment_To;
+                        pv.Amount = modal.PVDetail.Amount ?? 0;
+                        pv.VatAmount = modal.PVDetail.VatAmount;
+                        pv.BillNumber = modal.PVDetail.BillNumber;
+                        pv.CaseId = modal.CaseId;
+
+                        db.PayVouchers.Add(pv);
+                        db.SaveChanges();
+
+                        retResult = pv.Voucher_No;
+                    }
+                    else if (objName == "SessionsRollVM")
+                    {
+                        var modal = (SessionsRollVM)objmodal;
+
+                        PayVoucher pv = new PayVoucher();
+
+                        pv.Voucher_Date = DateTime.UtcNow.AddHours(4);
+                        pv.Payment_Type = modal.Payment_Type;
+                        pv.Payment_Mode = modal.Payment_Mode;
+                        pv.VoucherType = modal.VoucherType;
+                        pv.Status = modal.Status;
+                        pv.VoucherStatus = modal.VoucherStatus;
+                        pv.LocationCode = modal.LocationCode;
+                        pv.Credit_Account = modal.Credit_Account;
+                        pv.TransTypeCode = modal.TransTypeCode;
+                        pv.TransReasonCode = modal.TransReasonCode;
+                        pv.CourtType = modal.CourtType;
+                        pv.Payment_Head = modal.Payment_Head;
+                        pv.Remarks = modal.Remarks;
+                        pv.Payment_To = modal.Payment_To;
+                        pv.Amount = modal.Amount;
+                        pv.VatAmount = modal.VatAmount;
+                        pv.BillNumber = modal.BillNumber;
+                        pv.CaseId = modal.CaseId;
+
+                        db.PayVouchers.Add(pv);
+                        db.SaveChanges();
+
+                        retResult = pv.Voucher_No;
+                    }
+                    
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return retResult;
+        }
     }
 }

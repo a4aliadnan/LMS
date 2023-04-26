@@ -881,6 +881,7 @@
                 @Html.HiddenFor(model => model.PartialViewName)
                 @Html.HiddenFor(model => model.TransportationFee)
                 @Html.HiddenFor(model => model.UpdatedOn)
+                @Html.HiddenFor(model => model.SavePV_Data, new { @Value = "_ModifyCase" })
                 <input type="hidden" id="hidUpdatedOn" value="@ViewBag.UpdatedOn" />
 
                 <div class="row">

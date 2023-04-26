@@ -375,7 +375,8 @@
     string ClientFileNo = !string.IsNullOrEmpty(Model.ClientFileNo) ? " - " + Model.ClientFileNo : string.Empty;
     string ODBLoanType = !(Model.ClientCaseTypeName).Contains("PLEASE SELECT") ? " - " + Model.ClientCaseTypeName : string.Empty;
 
-    ViewBag.CLIENTS_NO = string.Format(@"{0}{1}{2}", AccountContractNo, ClientFileNo, ODBLoanType).TrimStart('-');
+    string strCLIENTS_NO = string.Format(@"{0}{1}{2}", AccountContractNo, ClientFileNo, ODBLoanType).TrimStart('-');
+    ViewBag.CLIENTS_NO = strCLIENTS_NO;
 
     string CaseAgainst = Model.CaseAgainst ?? string.Empty;
     string CaseNo = !string.IsNullOrEmpty(Model.CourtRefNo) ? " - " + Model.CourtRefNo : string.Empty;
@@ -581,14 +582,17 @@
             <td class="auto-style4"></td>
             <td class="auto-style4"></td>
         </tr>
-        <tr height="29" style="mso-height-source:userset;height:21.95pt">
-            <td class="auto-style3" height="29"></td>
-            <td class="auto-style4"></td>
-            <td class="auto-style10" colspan="6">CLIENTS NO.</td>
-            <td class="auto-style11" colspan="17">@ViewBag.CLIENTS_NO</td>
-            <td class="auto-style4"></td>
-            <td class="auto-style4"></td>
-        </tr>
+        @if (!string.IsNullOrEmpty(strCLIENTS_NO))
+        {
+            <tr height="29" style="mso-height-source:userset;height:21.95pt">
+                <td class="auto-style3" height="29"></td>
+                <td class="auto-style4"></td>
+                <td class="auto-style10" colspan="6">CLIENTS NO.</td>
+                <td class="auto-style11" colspan="17">@ViewBag.CLIENTS_NO</td>
+                <td class="auto-style4"></td>
+                <td class="auto-style4"></td>
+            </tr>
+        }
         <tr height="29" style="mso-height-source:userset;height:21.95pt">
             <td class="auto-style3" height="29"></td>
             <td class="auto-style4"></td>
@@ -687,7 +691,7 @@
         <tr height="29" style="mso-height-source:userset;height:21.95pt">
             <td class="auto-style3" height="29"></td>
             <td class="auto-style4"></td>
-            <td class="auto-style7" colspan="23">GRAND TOTAL</td>
+            <td class="auto-style7" colspan="23">INVOICE AMOUNT</td>
             <td class="auto-style4"></td>
             <td class="auto-style4"></td>
         </tr>

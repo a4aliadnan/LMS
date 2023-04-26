@@ -150,6 +150,7 @@
         public static OfficeFileStatus Closing_Settelment { get { return new OfficeFileStatus("OFS-51"); } }
         public static OfficeFileStatus Closing_Payments { get { return new OfficeFileStatus("OFS-52"); } }
         public static OfficeFileStatus Closing_AgainstClient { get { return new OfficeFileStatus("OFS-53"); } }
+        public static OfficeFileStatus Closing_ReSchedule { get { return new OfficeFileStatus("OFS-58"); } }
         public static OfficeFileStatus Closing_Consultants { get { return new OfficeFileStatus("OFS-54"); } }
         public static OfficeFileStatus Closing_Others { get { return new OfficeFileStatus("OFS-55"); } }
         public static OfficeFileStatus BlueStamp { get { return new OfficeFileStatus("OFS-56"); } }

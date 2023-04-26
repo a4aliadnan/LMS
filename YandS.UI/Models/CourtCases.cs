@@ -229,6 +229,9 @@
         public string StopEnfRequest { get; set; }
         [StringLength(10)]
         public string OfficeFileStatus { get; set; }
+        [Column(TypeName = "datetime2")]
+        public DateTime? UpdateBoxDate { get; set; }
+        public int? UpdateBoxBy { get; set; }
 
         public ICollection<CourtCasesDetail> DetailId { get; set; }
         public ICollection<CourtCasesEnforcement> EnforcementId { get; set; }
@@ -634,7 +637,6 @@
         public DateTime? DEF_VisitDate { get; set; }
 
 
-
         #endregion
 
         #region CLOSING
@@ -661,8 +663,31 @@
         public string CourtFollowRequirement { get; set; }
         public string UpdatedOn { get; set; }
         public string UpdatedBy { get; set; }
-        
+        public string UpdateBoxDate { get; set; }
+        public int? UpdateBoxBy { get; set; }
+        public string UpdateBoxByName { get; set; }
+        public string CurrentCaseLevel { get; set; }
+        public string CaseType { get; set; }
+        public string CountLocationName { get; set; }
+        public bool ShowFollowup { get; set; }
+        public bool ShowSuspend { get; set; }
+        public string Update_Follow { get; set; }
+        public string Update_Suspend { get; set; }
+        public string FollowerId { get; set; }
+        public string SuspendedFollowerId { get; set; }
 
+        public DateTime? LastDate { get; set; }
+        public string WorkRequired { get; set; }
+        public string SessionNotes { get; set; }
+        public DateTime? SuspendedLastDate { get; set; }
+        public string SuspendedWorkRequired { get; set; }
+        public string SuspendedSessionNotes { get; set; }
+        public string SessionNote_Remark { get; set; }
+        public string Session_LawyerId { get; set; }
+        public string CourtFollow_LawyerId { get; set; }
+        public string UpdatePV_Type { get; set; }
+        public string SavePV_Data { get; set; }
+        public int SessionRollId { get; set; }
         #region MONEY TRANSFER
         public int DefendentTransferId { get; set; }
         public string DataFor { get; set; }
@@ -674,11 +699,14 @@
         public DateTime? MoneyTrCompleteDate { get; set; }
         #endregion
 
+        public PayVoucherVM PVDetail { get; set; }
         public ToBeRegisterVM()
         {
             DetailId = 0;
             ApealByWho = "0";
             EnforcementlevelId = "0";
+            CaseType = "0";
+            LawyerId = "0";
             GovernorateId = "0";
             AgainstInsurance = "0";
             ActionDate = DateTime.UtcNow.AddHours(4);

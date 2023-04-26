@@ -31,7 +31,7 @@ namespace YandS.UI.Models
 
         [DisplayFormat(DataFormatString = "{0:#.###}", ApplyFormatInEditMode = true)]
         [Display(Name = "AMOUNT")]
-        public decimal Amount { get; set; }
+        public decimal? Amount { get; set; }
         [DisplayFormat(DataFormatString = "{0:#.###}", ApplyFormatInEditMode = true)]
         [Display(Name = "VAT AMOUNT")]
         public decimal? VatAmount { get; set; }

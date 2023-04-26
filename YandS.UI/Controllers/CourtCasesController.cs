@@ -300,7 +300,9 @@ namespace YandS.UI.Controllers
                     if (!string.IsNullOrEmpty(PartialViewName))
                     {
                         _ModalToSave.ActionDate = modal.EnforcementActionDate; //Common for all
-                        _ModalToSave.LawyerId = modal.LawyerId;
+                        if (modal.UpdatePV_Type == "ENF_UPDATE")
+                            _ModalToSave.LawyerId = modal.LawyerId;
+
                         _ModalToSave.DEF_Corresponding = modal.DEF_Corresponding; //Common for all
                         _ModalToSave.DEF_DateOfContact = modal.DEF_DateOfContact; //Common for all
                         _ModalToSave.DEF_MobileNo = modal.DEF_MobileNo; //Common for all
@@ -405,7 +407,10 @@ namespace YandS.UI.Controllers
                     if (!string.IsNullOrEmpty(PartialViewName))
                     {
                         db.Entry(_ModalToSave).Entity.ActionDate = modal.EnforcementActionDate; //Common for all
-                        db.Entry(_ModalToSave).Entity.LawyerId = modal.LawyerId; //Common for all
+
+                        if (modal.UpdatePV_Type == "ENF_UPDATE")
+                            db.Entry(_ModalToSave).Entity.LawyerId = modal.LawyerId; //Common for all
+
                         db.Entry(_ModalToSave).Entity.DEF_Corresponding = modal.DEF_Corresponding; //Common for all
                         db.Entry(_ModalToSave).Entity.DEF_DateOfContact = modal.DEF_DateOfContact; //Common for all
                         db.Entry(_ModalToSave).Entity.DEF_MobileNo = modal.DEF_MobileNo; //Common for all
@@ -496,6 +501,9 @@ namespace YandS.UI.Controllers
                     db.Entry(_ModalToSave).State = EntityState.Modified;
                     db.SaveChanges();
                 }
+
+                if (modal.UpdatePV_Type == "ENF_UPDATE_SESSION")
+                    ProcessSessionRollDetail(modal);
             }
 
             if (!string.IsNullOrEmpty(PartialViewName))
@@ -601,7 +609,10 @@ namespace YandS.UI.Controllers
                 ViewModal.SessionRollClientName = SessionRollClientName;
                 ViewModal.CourtFollowRequirement = courtCases.CourtFollowRequirement;
                 ViewModal.UpdatedOn = courtCases.UpdatedOn?.ToString("dd/MM/yyyy HH:mm:ss") ?? courtCases.CreatedOn.ToString("dd/MM/yyyy HH:mm:ss");
+                ViewModal.UpdateBoxDate = courtCases.UpdateBoxDate?.ToString("dd/MM/yyyy") ?? string.Empty;
                 ViewModal.UpdatedBy = Helper.GetUserName(courtCases?.UpdatedBy ?? 0);
+                ViewModal.UpdateBoxBy = courtCases?.UpdateBoxBy;
+                ViewModal.UpdateBoxByName = Helper.GetUserName(courtCases?.UpdateBoxBy ?? 0);
 
 
                 #region BEFORE COURT
@@ -789,7 +800,7 @@ namespace YandS.UI.Controllers
 
 
                                 ViewModal.EnforcementActionDate = courtCasesEnforcement.ActionDate;
-                                ViewModal.LawyerId = courtCasesEnforcement.LawyerId;
+                                ViewModal.LawyerId = courtCasesEnforcement.LawyerId ?? "0";
                                 ViewModal.DEF_Corresponding = courtCasesEnforcement.DEF_Corresponding;
                                 ViewModal.DEF_DateOfContact = courtCasesEnforcement.DEF_DateOfContact;
                                 ViewModal.DEF_MobileNo = courtCasesEnforcement.DEF_MobileNo;
@@ -852,6 +863,39 @@ namespace YandS.UI.Controllers
                             }
                         }
                     }
+                }
+
+                #endregion
+
+                #region SESSION ROLL
+                var sessionRoll = db.SessionsRoll.Where(w => w.CaseId == CaseId && w.DeletedOn == null).OrderByDescending(O => O.SessionRollId).FirstOrDefault();
+
+                ViewModal.CountLocationName = ViewModal.COURT;
+                if (!string.IsNullOrEmpty(courtCases.CaseLevelCode) && courtCases.CaseLevelCode != "0")
+                    ViewModal.CurrentCaseLevel = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.CaseLevel && w.Mst_Value == courtCases.CaseLevelCode).FirstOrDefault().Mst_Desc;
+
+                if (sessionRoll != null)
+                {
+                    ViewModal.SessionRollId = sessionRoll.SessionRollId;
+                    ViewModal.CaseType = sessionRoll.CaseType;
+                    ViewModal.Session_LawyerId = sessionRoll.LawyerId;
+                    ViewModal.CourtFollow_LawyerId = sessionRoll.CourtFollow_LawyerId;
+                    ViewModal.FollowerId = sessionRoll.FollowerId;
+                    ViewModal.SuspendedFollowerId = sessionRoll.SuspendedFollowerId;
+
+                    ViewModal.ShowFollowup = sessionRoll.ShowFollowup;
+                    ViewModal.Update_Follow = sessionRoll.ShowFollowup ? "Y" : "N";
+                    ViewModal.ShowSuspend = sessionRoll.ShowSuspend;
+                    ViewModal.Update_Suspend = sessionRoll.ShowSuspend ? "Y" : "N";
+
+                    ViewModal.WorkRequired = sessionRoll.WorkRequired;
+                    ViewModal.SessionNotes = sessionRoll.SessionNotes;
+                    ViewModal.LastDate = sessionRoll.LastDate;
+
+                    ViewModal.SuspendedWorkRequired = sessionRoll.SuspendedWorkRequired;
+                    ViewModal.SuspendedSessionNotes = sessionRoll.SuspendedSessionNotes;
+                    ViewModal.SuspendedLastDate = sessionRoll.SuspendedLastDate;
+                    ViewModal.SessionNote_Remark = sessionRoll.SessionNote_Remark;
                 }
 
                 #endregion
@@ -1104,7 +1148,14 @@ namespace YandS.UI.Controllers
 
             return ModelToSave.CaseRegistrationId;
         }
-
+        private void ProcessSessionRollDetail(ToBeRegisterVM modal)
+        {
+            Helper.ProcessSessionRollDetail(modal);
+        }
+        private int CreatePayVoucher(ToBeRegisterVM modal)
+        {
+            return Helper.CreatePaymentVoucher(modal, "ToBeRegisterVM");
+        }
         #endregion
 
         public ActionResult Index(int? id)
@@ -1949,7 +2000,7 @@ namespace YandS.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult TobeReg(ToBeRegisterVM RegModal, HttpPostedFileBase upload, HttpPostedFileBase uploadAddress)
+        public ActionResult TobeReg(ToBeRegisterVM RegModal, HttpPostedFileBase upload, HttpPostedFileBase uploadAddress, HttpPostedFileBase uploadPVSupDocs)
         {
             try
             {
@@ -1958,41 +2009,27 @@ namespace YandS.UI.Controllers
                 if (ModelState.IsValid)
                 {
                     ToBeRegisterVM ViewModal = new ToBeRegisterVM();
-                    if (RegModal.PartialViewName == "_ModifyCase")
+
+                    switch (RegModal.SavePV_Data)
                     {
-                        ProcessModifyCase(RegModal);
-                        ViewModal = GetFilledPartailView(RegModal.CaseId);
+                        case "_ModifyCase":
+                            ProcessModifyCase(RegModal);
+                            ViewModal = GetFilledPartailView(RegModal.CaseId);
 
-                        if (User.IsInRole("AllowCloseCase") || User.IsSysAdmin())
-                            ViewBag.AllowCloseCase = "Y";
-                        else
-                            ViewBag.AllowCloseCase = "N";
+                            if (User.IsInRole("AllowCloseCase") || User.IsSysAdmin())
+                                ViewBag.AllowCloseCase = "Y";
+                            else
+                                ViewBag.AllowCloseCase = "N";
 
-                        if (User.IsInRole("AllowAddClient") || User.IsSysAdmin())
-                            ViewBag.AllowAddClient = "Y";
-                        else
-                            ViewBag.AllowAddClient = "N";
+                            if (User.IsInRole("AllowAddClient") || User.IsSysAdmin())
+                                ViewBag.AllowAddClient = "Y";
+                            else
+                                ViewBag.AllowAddClient = "N";
 
-                        ViewBag.MstParentId = (int)MASTER_S.Client;
-
-                        ViewBag.ClientClassificationCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ClientClassification), "Mst_Value", "Mst_Desc", ViewModal.ClientClassificationCode);
-                        ViewBag.ReceiveLevelCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ReceiveLevel), "Mst_Value", "Mst_Desc", ViewModal.ReceiveLevelCode);
-                        ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType).OrderBy(o => o.DisplaySeq), "Mst_Value", "Mst_Desc", ViewModal.CaseTypeCode);
-                        ViewBag.AgainstCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseAgainst), "Mst_Value", "Mst_Desc", ViewModal.AgainstCode);
-                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc", ViewModal.ClientCode);
-                        ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc", ViewModal.CaseLevelCode);
-                        ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", ViewModal.SessionClientId);
-                        ViewBag.AgainstInsurance = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", ViewModal.AgainstInsurance);
-                        ViewBag.hid_DetailId = ViewModal.DetailId;
-                        ViewBag.OmaniExp = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OmaniExp), "Mst_Value", "Mst_Desc", ViewModal.OmaniExp);
-                        ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
-                        ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
-
-                    }
-                    else if (RegModal.PartialViewName == "ENFInfoStage" || RegModal.PartialViewName == "MoneyTransfer")
-                    {
-                        if (RegModal.PartialViewName == "MoneyTransfer")
-                        {
+                            ViewModal.PartialViewName = RegModal.PartialViewName;
+                            
+                            break;
+                        case "MoneyTransfer":
                             DefendentTransferDTO objDTO = new DefendentTransferDTO();
                             objDTO.Userid = HttpContext.User.Identity.GetUserId();
                             objDTO.DataFor = RegModal.DataFor;
@@ -2008,83 +2045,185 @@ namespace YandS.UI.Controllers
 
                             string ProcessFlag = _result.Rows[0]["ProcessFlag"].ToString();
                             string ProcessMessage = _result.Rows[0]["ProcessMessage"].ToString();
-                            RegModal.DefendentTransferId = Convert.ToInt32(_result.Rows[0]["DefendentTransferId"].ToString());
-                            RegModal.PartialViewName = "ENFInfoStage";
-                        }
+                            ViewModal = GetFilledPartailView(RegModal.CaseId);
 
-                        ProcessModifyEnforcement(RegModal);
+                            ViewModal.DefendentTransferId = Convert.ToInt32(_result.Rows[0]["DefendentTransferId"].ToString());
+                            ViewModal.PartialViewName = "ENFInfoStage";
 
-                        if (upload != null && upload.ContentLength > 0)
-                        {
-                            string FileExtension = Path.GetExtension(upload.FileName);
+                            int DefendentTransferId = ViewModal.DefendentTransferId;
 
-                            string FileName = RegModal.CaseId + FileExtension;
+                            var defendentTransfer = Helper.ProcessDefendentTransfer(DefendentTransferId);
 
-                            string UploadPath = Path.Combine(UploadRoot, "DEF_Lawyer_Docs", FileName);
+                            if (defendentTransfer != null)
+                            {
+                                ViewModal.DefendentTransferId = defendentTransfer.DefendentTransferId;
+                                ViewModal.MoneyTrRequestDate = defendentTransfer.MoneyTrRequestDate;
+                                ViewModal.TransferDate = defendentTransfer.TransferDate;
+                                ViewModal.Amount = defendentTransfer.Amount;
+                                ViewModal.MoneyTrCompleteDate = defendentTransfer.MoneyTrCompleteDate;
+                            }
 
-                            upload.SaveAs(UploadPath);
-                        }
+                            
+                            break;
+                        case "ENFInfoStage":
+                            Helper.UpdateBoxModified(RegModal);
+                            ProcessModifyEnforcement(RegModal);
 
-                        if (uploadAddress != null && uploadAddress.ContentLength > 0)
-                        {
-                            string FileExtension = Path.GetExtension(uploadAddress.FileName);
+                            if (upload != null && upload.ContentLength > 0)
+                            {
+                                string FileExtension = Path.GetExtension(upload.FileName);
 
-                            string FileName = RegModal.CaseId + FileExtension;
+                                string FileName = RegModal.CaseId + FileExtension;
 
-                            string UploadPath = Path.Combine(UploadRoot, "DEF_Address_Docs", FileName);
+                                string UploadPath = Path.Combine(UploadRoot, "DEF_Lawyer_Docs", FileName);
 
-                            uploadAddress.SaveAs(UploadPath);
-                        }
+                                upload.SaveAs(UploadPath);
+                            }
 
-                        ViewModal = GetFilledPartailView(RegModal.CaseId, RegModal.PartialViewName);
-                        ViewModal.PartialViewName = RegModal.PartialViewName;
+                            if (uploadAddress != null && uploadAddress.ContentLength > 0)
+                            {
+                                string FileExtension = Path.GetExtension(uploadAddress.FileName);
 
-                        string LawyerDoc = Helper.GetDEF_Lawyer_Doc(RegModal.CaseId);
-                        string AddressDoc = Helper.GetDEF_Address_Doc(RegModal.CaseId);
+                                string FileName = RegModal.CaseId + FileExtension;
 
-                        if(LawyerDoc == "#")
-                        {
-                            ViewBag.ViewDEF_LawyerDocs = "AppHidden";
-                        }
-                        else
-                        {
-                            ViewBag.ViewDEF_LawyerDocs = "";
-                            ViewBag.DEF_Lawyer_Docs = LawyerDoc;
-                        }
+                                string UploadPath = Path.Combine(UploadRoot, "DEF_Address_Docs", FileName);
 
-                        if (AddressDoc == "#")
-                        {
-                            ViewBag.ViewDEF_AddressDocs = "AppHidden";
-                        }
-                        else
-                        {
-                            ViewBag.ViewDEF_AddressDocs = "";
-                            ViewBag.DEF_Address_Docs = AddressDoc;
-                        }
+                                uploadAddress.SaveAs(UploadPath);
+                            }
+                            ViewModal = GetFilledPartailView(RegModal.CaseId);
+                            ViewModal.PartialViewName = "ENFInfoStage";
+                            break;
+                        case "ENFAddressDetail":
+                        case "ENFDetail":
+                            ProcessModifyEnforcement(RegModal);
+                            if (upload != null && upload.ContentLength > 0)
+                            {
+                                string FileExtension = Path.GetExtension(upload.FileName);
 
-                        ViewBag.MstParentId = (int)MASTER_S.SessionClients;
-                        ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", ViewModal.SessionClientId);
-                        ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(), "Mst_Value", "Mst_Desc", ViewModal.GovernorateId);
-                        ViewBag.EnforcementAdmin = new SelectList(Helper.GetEnfcAdmin(), "Mst_Value", "Mst_Desc", ViewModal.EnforcementAdmin);
-                        ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc", ViewModal.EnforcementlevelId);
-                        ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", ViewModal.CourtLocationid);
-                        ViewBag.ApealByWho = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc", ViewModal.ApealByWho);
-                        ViewBag.AgainstInsurance = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", ViewModal.AgainstInsurance);
-                        ViewBag.ReceiveLevelCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ReceiveLevel), "Mst_Value", "Mst_Desc", ViewModal.ReceiveLevelCode);
-                        ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType).OrderBy(o => o.DisplaySeq), "Mst_Value", "Mst_Desc", ViewModal.CaseTypeCode);
-                        ViewBag.AgainstCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseAgainst), "Mst_Value", "Mst_Desc", ViewModal.AgainstCode);
-                        ViewBag.OmaniExp = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OmaniExp), "Mst_Value", "Mst_Desc", ViewModal.OmaniExp);
-                        ViewBag.ReOpenEnforcement = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ReOpenEnforcement);
-                        ViewBag.LawyerId = new SelectList(Helper.GetSessionLawyers(true), "Mst_Value", "Mst_Desc", ViewModal.LawyerId);
-                        ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
+                                string FileName = RegModal.CaseId + FileExtension;
+
+                                string UploadPath = Path.Combine(UploadRoot, "DEF_Lawyer_Docs", FileName);
+
+                                upload.SaveAs(UploadPath);
+                            }
+
+                            if (uploadAddress != null && uploadAddress.ContentLength > 0)
+                            {
+                                string FileExtension = Path.GetExtension(uploadAddress.FileName);
+
+                                string FileName = RegModal.CaseId + FileExtension;
+
+                                string UploadPath = Path.Combine(UploadRoot, "DEF_Address_Docs", FileName);
+
+                                uploadAddress.SaveAs(UploadPath);
+                            }
+                            ViewModal = GetFilledPartailView(RegModal.CaseId);
+                            ViewModal.PartialViewName = "ENFInfoStage";
+                            break;
+                        case "PVCreate":
+                            int Voucher_No = CreatePayVoucher(RegModal);
+                            RegModal.PVDetail.Voucher_No = Voucher_No;
+
+                            if (uploadPVSupDocs != null && uploadPVSupDocs.ContentLength > 0)
+                            {
+                                string FileExtension = Path.GetExtension(uploadPVSupDocs.FileName);
+
+                                string FileName = RegModal.PVDetail.Voucher_No + FileExtension;
+
+                                string UploadPath = Path.Combine(UploadRoot, "PVDocuments", FileName);
+
+                                uploadPVSupDocs.SaveAs(UploadPath);
+                            }
+
+                            ViewModal = GetFilledPartailView(RegModal.CaseId);
+                            ViewModal.PartialViewName = "ENFInfoStage";
+                            break;
+                    }
+
+
+                    string LawyerDoc = Helper.GetDEF_Lawyer_Doc(RegModal.CaseId);
+                    string AddressDoc = Helper.GetDEF_Address_Doc(RegModal.CaseId);
+
+                    if (LawyerDoc == "#")
+                    {
+                        ViewBag.ViewDEF_LawyerDocs = "AppHidden";
+                    }
+                    else
+                    {
+                        ViewBag.ViewDEF_LawyerDocs = "";
+                        ViewBag.DEF_Lawyer_Docs = LawyerDoc;
+                    }
+
+                    if (AddressDoc == "#")
+                    {
+                        ViewBag.ViewDEF_AddressDocs = "AppHidden";
+                    }
+                    else
+                    {
+                        ViewBag.ViewDEF_AddressDocs = "";
+                        ViewBag.DEF_Address_Docs = AddressDoc;
+                    }
+
+                    #region Pay Voucher
+                    List<MasterSetups> Payment_Head_List = new List<MasterSetups>();
+                    MasterSetups PleaseSelect = new MasterSetups();
+                    PleaseSelect.Mst_Value = "0";
+                    PleaseSelect.Mst_Desc = "PLEASE SELECT";
+                    Payment_Head_List.Add(PleaseSelect);
+                    Payment_Head_List.AddRange(Helper.LoadPayFor("R"));
+
+
+                    ViewBag.CourtType = new SelectList(Helper.GetCaseLevelList("D"), "Mst_Value", "Mst_Desc");
+                    //ViewBag.Debit_Account = new SelectList(Helper.GetBankList(), "Mst_Value", "Mst_Desc");
+                    //ViewBag.Credit_Account = new SelectList(Helper.GetBankList(), "Mst_Value", "Mst_Desc");
+                    ViewBag.Payment_Head = new SelectList(Payment_Head_List, "Mst_Value", "Mst_Desc");
+                    ViewBag.Payment_To = new SelectList(Helper.GetListForPayTo(), "Mst_Value", "Mst_Desc");
+
+                    #endregion
+
+                    ViewBag.MstParentId = (int)MASTER_S.SessionClients;
+
+                    ViewBag.ClientClassificationCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ClientClassification), "Mst_Value", "Mst_Desc", ViewModal.ClientClassificationCode);
+                    ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc", ViewModal.ClientCode);
+                    ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc", ViewModal.CaseLevelCode);
+                    ViewBag.hid_DetailId = ViewModal.DetailId;
+
+
+                    ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", ViewModal.SessionClientId);
+                    ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(), "Mst_Value", "Mst_Desc", ViewModal.GovernorateId);
+                    ViewBag.EnforcementAdmin = new SelectList(Helper.GetEnfcAdmin(), "Mst_Value", "Mst_Desc", ViewModal.EnforcementAdmin);
+                    ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc", ViewModal.EnforcementlevelId);
+                    ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", ViewModal.CourtLocationid);
+                    ViewBag.ApealByWho = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc", ViewModal.ApealByWho);
+                    ViewBag.AgainstInsurance = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", ViewModal.AgainstInsurance);
+                    ViewBag.ReceiveLevelCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ReceiveLevel), "Mst_Value", "Mst_Desc", ViewModal.ReceiveLevelCode);
+                    ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType).OrderBy(o => o.DisplaySeq), "Mst_Value", "Mst_Desc", ViewModal.CaseTypeCode);
+                    ViewBag.AgainstCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseAgainst), "Mst_Value", "Mst_Desc", ViewModal.AgainstCode);
+                    ViewBag.OmaniExp = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OmaniExp), "Mst_Value", "Mst_Desc", ViewModal.OmaniExp);
+                    ViewBag.ReOpenEnforcement = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ReOpenEnforcement);
+                    ViewBag.DEF_CallerName = new SelectList(Helper.GetCallerNames(), "Mst_Value", "Mst_Desc", ViewModal.DEF_CallerName);
+                    ViewBag.AnnouncementTypeId = new SelectList(Helper.GetAnnouncementType(), "Mst_Value", "Mst_Desc", ViewModal.AnnouncementTypeId);
+
+                    ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
+                    ViewBag.CourtFollow = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow);
+                    ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
+
+                    if (ViewModal.UpdatePV_Type == "ENF_UPDATE_SESSION")
+                    {
+                        ViewBag.CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc", ViewModal.CaseType);
+                        ViewBag.Session_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", ViewModal.Session_LawyerId);
+
+                        ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", ViewModal.FollowerId);
+                        ViewBag.SuspendedFollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", ViewModal.SuspendedFollowerId);
+
                         ViewBag.CourtFollow = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow);
-                        ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
-                        ViewBag.DEF_CallerName = new SelectList(Helper.GetCallerNames(), "Mst_Value", "Mst_Desc", ViewModal.DEF_CallerName);
+                        ViewBag.CourtFollow_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow_LawyerId);
 
                     }
 
                     ViewBag.UpdatedOn = ViewModal.UpdatedOn;
-                    return PartialView(RegModal.PartialViewName, RegModal);
+
+                    return PartialView(ViewModal.PartialViewName, ViewModal);
                 }
                 else
                     return Json(new { Category = "Error", Message = string.Join("<br/>", ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage).ToArray()) });
@@ -2697,7 +2836,7 @@ namespace YandS.UI.Controllers
                             ViewModal = new ToBeRegisterVM();
                             ViewModal = GetFilledPartailView(caseid, PartialViewName);
                             ViewModal.PartialViewName = PartialViewName;
-
+                            ViewModal.SavePV_Data = PartialViewName;
                             ViewBag.MstParentId = (int)MASTER_S.SessionClients;
                             ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", ViewModal.SessionClientId);
                             ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(), "Mst_Value", "Mst_Desc", ViewModal.GovernorateId);
@@ -2712,11 +2851,8 @@ namespace YandS.UI.Controllers
                             ViewBag.OmaniExp = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OmaniExp), "Mst_Value", "Mst_Desc", ViewModal.OmaniExp);
                             ViewBag.ReOpenEnforcement = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ReOpenEnforcement);
                             ViewBag.LawyerId = new SelectList(Helper.GetSessionLawyers(true), "Mst_Value", "Mst_Desc", ViewModal.LawyerId);
-                            ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
-                            ViewBag.CourtFollow = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow);
-                            ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
                             ViewBag.DEF_CallerName = new SelectList(Helper.GetCallerNames(), "Mst_Value", "Mst_Desc", ViewModal.DEF_CallerName);
-
+                            ViewBag.AnnouncementTypeId = new SelectList(Helper.GetAnnouncementType(), "Mst_Value", "Mst_Desc", ViewModal.AnnouncementTypeId);
                             string LawyerDoc = Helper.GetDEF_Lawyer_Doc(ViewModal.CaseId);
                             string AddressDoc = Helper.GetDEF_Address_Doc(ViewModal.CaseId);
 
@@ -2757,6 +2893,23 @@ namespace YandS.UI.Controllers
                                 ViewModal.MoneyTrCompleteDate = defendentTransfer.MoneyTrCompleteDate;
 
                             }
+
+                            #region Pay Voucher
+                            List<MasterSetups> Payment_Head_List = new List<MasterSetups>();
+                            MasterSetups PleaseSelect = new MasterSetups();
+                            PleaseSelect.Mst_Value = "0";
+                            PleaseSelect.Mst_Desc = "PLEASE SELECT";
+                            Payment_Head_List.Add(PleaseSelect);
+                            Payment_Head_List.AddRange(Helper.LoadPayFor("R"));
+
+
+                            ViewBag.CourtType = new SelectList(Helper.GetCaseLevelList("D"), "Mst_Value", "Mst_Desc");
+                            //ViewBag.Debit_Account = new SelectList(Helper.GetBankList(), "Mst_Value", "Mst_Desc");
+                            //ViewBag.Credit_Account = new SelectList(Helper.GetBankList(), "Mst_Value", "Mst_Desc");
+                            ViewBag.Payment_Head = new SelectList(Payment_Head_List, "Mst_Value", "Mst_Desc");
+                            ViewBag.Payment_To = new SelectList(Helper.GetListForPayTo(), "Mst_Value", "Mst_Desc");
+
+                            #endregion
                         }
                         else if (PartialViewName == "MoneyTransfer")
                         {
@@ -2787,6 +2940,39 @@ namespace YandS.UI.Controllers
 
                             return PartialView(PartialViewName);
                         }
+                        else if (PartialViewName == "ENF_UPDATE")
+                        {
+                            ViewModal = new ToBeRegisterVM();
+                            ViewModal = GetFilledPartailView(caseid, PartialViewName);
+
+                            ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
+                            ViewBag.CourtFollow = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow);
+                            ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
+                            ViewBag.LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", ViewModal.LawyerId);
+                            ViewModal.UpdatePV_Type = "ENF_UPDATE";
+
+                        }
+                        else if (PartialViewName == "ENF_UPDATE_SESSION")
+                        {
+                            ViewModal = new ToBeRegisterVM();
+                            ViewModal = GetFilledPartailView(caseid, PartialViewName);
+
+                            ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
+                            ViewBag.CourtFollow = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow);
+                            ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
+
+                            ViewBag.CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc", ViewModal.CaseType);
+                            ViewBag.Session_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", ViewModal.Session_LawyerId);
+
+                            ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", ViewModal.FollowerId);
+                            ViewBag.SuspendedFollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", ViewModal.SuspendedFollowerId);
+
+                            ViewBag.CourtFollow = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow);
+                            ViewBag.CourtFollow_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow_LawyerId);
+                            ViewModal.UpdatePV_Type = "ENF_UPDATE_SESSION";
+
+                        }
+
                     }
                     else
                     {

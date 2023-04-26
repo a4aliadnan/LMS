@@ -1,5 +1,13 @@
 ﻿@model YandS.UI.Models.ToBeRegisterVM
 <script type="text/javascript">
+    function ProcessAuctionProcess() {
+        if ($("#AuctionProcess").val() == "11") {
+            $("#div_Def_AnnType").removeClass("AppHidden");
+            LoadUpdate($('#EnforcementlevelId').val());
+        }
+        else
+            $("#div_Def_AnnType").removeClass("AppHidden").addClass("AppHidden");
+    }
     $(document).ready(function () {
         $('.select2bs4').select2({
             theme: 'bootstrap4'
@@ -22,18 +30,6 @@
         else
             $("#JUDAuctionValue").prop("readonly", false);
 
-        /*
-        if ($('#txtJUDAuctionValue').val() == "")
-            $("#JUDAuctionValue").prop("readonly", false);
-        else {
-            if (parseFloat($('#txtJUDAuctionValue').val() == 0))
-                $("#JUDAuctionValue").prop("readonly", false);
-            else
-                $("#JUDAuctionValue").prop("readonly", true);
-        }
-            
-        */
-
         $('#JUDAuctionValue').on("blur", function () {
             $('#txtJUDAuctionValue').val($('#JUDAuctionValue').val());
 
@@ -41,6 +37,10 @@
                 $("#JUDAuctionValue").prop("readonly", true);
             else
                 $("#JUDAuctionValue").prop("readonly", false);
+        });
+
+        $('#AuctionProcess').change(function () {
+            ProcessAuctionProcess();
         });
 
         $('#JUDAuctionRepeat').change(function () {
@@ -58,7 +58,7 @@
             $('#JUDAuctionValue').val(Res);
             $('#txtJUDAuctionValue').val(Res);
         });
-
+        ProcessAuctionProcess();
     });
 </script>
 <div class="row">

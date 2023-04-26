@@ -184,5 +184,11 @@ logs/
 # DBScriptsCompare
 DBScriptsCompare/
 
-# DBScriptsCompare
+# Publish
 Publish/
+
+# RunScriptProd
+RunScriptProd/
+PENDING_TASK/
+SP_MAR2013_SCRIPTS/
+RunScriptProd/

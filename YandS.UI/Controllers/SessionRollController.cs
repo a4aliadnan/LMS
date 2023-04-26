@@ -180,7 +180,7 @@ namespace YandS.UI.Controllers
 
                     ViewBag.CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc", modal.CaseType);
                     ViewBag.LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", modal.LawyerId);
-                    ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterSR, modal.CaseLevelCode == "6" ? FileStatusCodesSR : null), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                    ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterSR, modal.CaseLevelCode == "6" ? null : FileStatusCodesSR), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
 
 
                     ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", modal.FollowerId);
@@ -1245,7 +1245,7 @@ namespace YandS.UI.Controllers
             {
                 db.Entry(ModelToSave).Entity.CaseType = modal.CaseType;
                 db.Entry(ModelToSave).Entity.LawyerId = modal.LawyerId;
-                UpdateOfficeFileStatus(modal.CaseId, modal.SessionFileStatus);
+                db.Entry(ModelToSave).Entity.SessionFileStatus = modal.SessionFileStatus;
 
                 if (modal.SessionFileStatus == OfficeFileStatus.RunningCase.ToString()) // Running
                 {
@@ -1324,27 +1324,7 @@ namespace YandS.UI.Controllers
         }
         private void UpdateSessionUpdateDetail(SessionsRollVM modal)
         {
-            CourtCases courtCases = db.CourtCase.Find(modal.CaseId);
-
-            db.Entry(courtCases).Entity.CurrentHearingDate = modal.CurrentHearingDate;
-            db.Entry(courtCases).Entity.CourtDecision = modal.CourtDecision;
-            db.Entry(courtCases).Entity.SessionRemarks = modal.SessionRemarks;
-            db.Entry(courtCases).Entity.NextHearingDate = modal.NextHearingDate;
-            db.Entry(courtCases).Entity.Requirements = modal.Requirements;
-            db.Entry(courtCases).Entity.ClientReply = modal.ClientReply;
-            db.Entry(courtCases).Entity.TransportationSource = modal.TransportationSource;
-            db.Entry(courtCases).Entity.FirstEmailDate = modal.FirstEmailDate;
-            db.Entry(courtCases).Entity.CourtFollow = modal.CourtFollow;
-            db.Entry(courtCases).Entity.CommissioningDate = modal.CommissioningDate;
-            db.Entry(courtCases).Entity.CourtFollowRequirement = modal.CourtFollowRequirement;
-            db.Entry(courtCases).Entity.OfficeFileStatus = modal.SessionFileStatus;
-
-            if (modal.SessionFileStatus == OfficeFileStatus.JudgIssued.ToString())
-                db.Entry(courtCases).Entity.ClaimSummary = modal.ClaimSummary;
-
-            db.Entry(courtCases).State = EntityState.Modified;
-            db.SaveChanges();
-
+            Helper.UpdateSessionUpdateDetail(modal, "SessionsRollVM");
         }
         private void ProcessCourtDecisionHistory(SessionsRollVM modal)
         {
@@ -1763,32 +1743,7 @@ namespace YandS.UI.Controllers
         }
         private int CreatePayVoucher(SessionsRollVM modal)
         {
-            PayVoucher pv = new PayVoucher();
-
-            pv.Voucher_Date = DateTime.UtcNow.AddHours(4);
-            pv.Payment_Type = modal.Payment_Type;
-            pv.Payment_Mode = modal.Payment_Mode;
-            pv.VoucherType = modal.VoucherType;
-            pv.Status = modal.Status;
-            pv.VoucherStatus = modal.VoucherStatus;
-            pv.LocationCode = modal.LocationCode;
-            pv.Credit_Account = modal.Credit_Account;
-            pv.TransTypeCode = modal.TransTypeCode;
-            pv.TransReasonCode = modal.TransReasonCode;
-            pv.CourtType = modal.CourtType;
-            pv.Payment_Head = modal.Payment_Head;
-            pv.Remarks = modal.Remarks;
-            pv.Payment_To = modal.Payment_To;
-            pv.Amount = modal.Amount;
-            pv.VatAmount = modal.VatAmount;
-            pv.BillNumber = modal.BillNumber;
-            pv.CaseId = modal.CaseId;
-
-            db.PayVouchers.Add(pv);
-            db.SaveChanges();
-
-            return pv.Voucher_No;
-
+            return Helper.CreatePaymentVoucher(modal, "SessionsRollVM"); 
         }
         private void CreateCaseRegistration(SessionsRollVM modal, ref SessionsRoll ModelToSave)
         {
@@ -1867,62 +1822,69 @@ namespace YandS.UI.Controllers
             }
             else
             {
-                if (modal.PrimaryIsFavorable == "N")
+                if (modal.PrimaryIsFavorable == "Y" || modal.AppealIsFavorable == "Y" || modal.EnforcementIsFavorable == "Y")
                 {
-                    RedirectToCaseRegister = true;
-                    db.Entry(caseRegistration).Entity.JudgementDate = modal.PrimaryJudgementsDate;
-                    db.Entry(caseRegistration).Entity.EnforcementDispute = "0";
-                    db.Entry(caseRegistration).Entity.CourtRegistration = "0";
-
-                }
-
-                if (modal.AppealIsFavorable == "N")
-                {
-                    RedirectToCaseRegister = true;
-                    db.Entry(caseRegistration).Entity.JudgementDate = modal.AppealJudgementsDate;
-                    db.Entry(caseRegistration).Entity.EnforcementDispute = "0";
-                    db.Entry(caseRegistration).Entity.CourtRegistration = "0";
-                }
-
-                if (modal.EnforcementIsFavorable == "N")
-                {
-                    RedirectToCaseRegister = true;
-                    db.Entry(caseRegistration).Entity.JudgementDate = modal.SupremeJudgementsDate;
-                    db.Entry(caseRegistration).Entity.EnforcementDispute = "1";
-                    db.Entry(caseRegistration).Entity.CourtRegistration = "0";
-                    db.Entry(caseRegistration).Entity.DisputeLevel = modal.DisputeLevel;
-                    db.Entry(caseRegistration).Entity.DisputrRegisterDate = modal.DisputrRegisterDate;
-                }
-
-                if (RedirectToCaseRegister)
-                {
-                    db.Entry(caseRegistration).Entity.ActionLevel = modal.ActionLevel;
-                    db.Entry(caseRegistration).Entity.ActionDate = modal.ActionDate;
-                    db.Entry(caseRegistration).Entity.FileStatus = modal.FileStatus;
-                    db.Entry(caseRegistration).Entity.FileStatusRemarks = modal.FileStatus == "4" ? modal.OnHoldReasonDDL : "";
-                    db.Entry(caseRegistration).Entity.DepartmentType = modal.DepartmentType;
-                    db.Entry(caseRegistration).Entity.ConsultantId = modal.ConsultantId;
-                    db.Entry(caseRegistration).Entity.FormPrintWorkRequired = modal.FormPrintWorkRequired;
-                    db.Entry(caseRegistration).Entity.OfficeProcedure = modal.OfficeProcedure;
-                    db.Entry(caseRegistration).Entity.FormPrintLastDate = modal.FormPrintLastDate;
-                    db.Entry(caseRegistration).Entity.CourtDetailRegistered = false;
-                    db.Entry(caseRegistration).Entity.IsDeleted = false;
-
+                    db.Entry(caseRegistration).Entity.IsDeleted = true;
                     db.Entry(caseRegistration).State = EntityState.Modified;
                     db.SaveChanges();
-
-                    if (caseRegistration.ActionLevel == "2")
-                        db.Entry(ModelToSave).Entity.PrimaryCrtInRegInProgress = "Y";
-                    else if (caseRegistration.ActionLevel == "3")
-                        db.Entry(ModelToSave).Entity.AppealCrtInRegInProgress = "Y";
-                    else if (caseRegistration.ActionLevel == "4")
-                        db.Entry(ModelToSave).Entity.EnforcementCrtInRegInProgress = "Y";
-
-                    db.Entry(ModelToSave).State = EntityState.Modified;
-                    db.SaveChanges();
-
                 }
+                else
+                {
+                    if (modal.PrimaryIsFavorable == "N")
+                    {
+                        RedirectToCaseRegister = true;
+                        db.Entry(caseRegistration).Entity.JudgementDate = modal.PrimaryJudgementsDate;
+                        db.Entry(caseRegistration).Entity.EnforcementDispute = "0";
+                        db.Entry(caseRegistration).Entity.CourtRegistration = "0";
 
+                    }
+
+                    if (modal.AppealIsFavorable == "N")
+                    {
+                        RedirectToCaseRegister = true;
+                        db.Entry(caseRegistration).Entity.JudgementDate = modal.AppealJudgementsDate;
+                        db.Entry(caseRegistration).Entity.EnforcementDispute = "0";
+                        db.Entry(caseRegistration).Entity.CourtRegistration = "0";
+                    }
+
+                    if (modal.EnforcementIsFavorable == "N")
+                    {
+                        RedirectToCaseRegister = true;
+                        db.Entry(caseRegistration).Entity.JudgementDate = modal.SupremeJudgementsDate;
+                        db.Entry(caseRegistration).Entity.EnforcementDispute = "1";
+                        db.Entry(caseRegistration).Entity.CourtRegistration = "0";
+                        db.Entry(caseRegistration).Entity.DisputeLevel = modal.DisputeLevel;
+                        db.Entry(caseRegistration).Entity.DisputrRegisterDate = modal.DisputrRegisterDate;
+                    }
+
+                    if (RedirectToCaseRegister)
+                    {
+                        db.Entry(caseRegistration).Entity.ActionLevel = modal.ActionLevel;
+                        db.Entry(caseRegistration).Entity.ActionDate = modal.ActionDate;
+                        db.Entry(caseRegistration).Entity.FileStatus = modal.FileStatus;
+                        db.Entry(caseRegistration).Entity.DepartmentType = modal.DepartmentType;
+                        db.Entry(caseRegistration).Entity.ConsultantId = modal.ConsultantId;
+                        db.Entry(caseRegistration).Entity.FormPrintWorkRequired = modal.FormPrintWorkRequired;
+                        db.Entry(caseRegistration).Entity.OfficeProcedure = modal.OfficeProcedure;
+                        db.Entry(caseRegistration).Entity.FormPrintLastDate = modal.FormPrintLastDate;
+                        db.Entry(caseRegistration).Entity.CourtDetailRegistered = false;
+                        db.Entry(caseRegistration).Entity.IsDeleted = false;
+
+                        db.Entry(caseRegistration).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                        if (caseRegistration.ActionLevel == "2")
+                            db.Entry(ModelToSave).Entity.PrimaryCrtInRegInProgress = "Y";
+                        else if (caseRegistration.ActionLevel == "3")
+                            db.Entry(ModelToSave).Entity.AppealCrtInRegInProgress = "Y";
+                        else if (caseRegistration.ActionLevel == "4")
+                            db.Entry(ModelToSave).Entity.EnforcementCrtInRegInProgress = "Y";
+
+                        db.Entry(ModelToSave).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                    }
+                }
             }
 
         }
@@ -2053,7 +2015,7 @@ namespace YandS.UI.Controllers
 
                 ViewBag.CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc", modal.CaseType);
                 ViewBag.LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", modal.LawyerId);
-                ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterSR, modal.CaseLevelCode == "6" ? FileStatusCodesSR : null), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterSR, modal.CaseLevelCode == "6" ? null : FileStatusCodesSR), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
 
                 ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", modal.FollowerId);
                 ViewBag.SuspendedFollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", modal.SuspendedFollowerId);
@@ -2408,7 +2370,7 @@ namespace YandS.UI.Controllers
                 mapSessionRollVM(CaseId, SessionRollId, ref modal);
 
                 ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc", modal.SessionClientId);
-                ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterSR, modal.CaseLevelCode == "6" ? FileStatusCodesSR : null), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterSR, modal.CaseLevelCode == "6" ? null : FileStatusCodesSR), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
                 return PartialView(PartialViewName, modal);
             }
             else if (PartialViewName == "_SessionJudgementEnforcement")

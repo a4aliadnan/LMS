@@ -1,16 +1,18 @@
 ﻿<script type="text/javascript">
 
     function LoadJudgementLevelPV(JudgementLevelId) {
-        console.log("function LoadJudgementLevelPV(" + JudgementLevelId + ")");
-        console.log($('#JudgementLevel').val());
         _parameters = "";
         _PartialViewName = "";
         PartialContainer = $("#DIV_JudgementLevel");
         $("#DIV_JudgementLevel").empty();
         $("#DIV_JudgementNotFav").empty();
+        $('#DIV_CommonTask').removeClass("AppHidden");
+        $("#DIV_UPDATE").removeClass("AppHidden");
 
         switch (JudgementLevelId) {
             case "0":
+                $('#DIV_CommonTask').removeClass("AppHidden").addClass("AppHidden");
+                $("#DIV_UPDATE").removeClass("AppHidden").addClass("AppHidden");
                 return false;
                 break;
             case "1":
@@ -99,14 +101,6 @@
             orientation: "bottom auto"
         });
         $('.select2bs4').select2({ theme: 'bootstrap4' });
-
-        if (parseInt($('#JudgementLevel').val()) > 0)
-            LoadJudgementLevelPV($('#JudgementLevel').val());
-
-        $('#JudgementLevel').on("change", function () {
-            LoadJudgementLevelPV($('#JudgementLevel').val());
-        });
-
         var DIV_TO_HIDE = [
             "#txtRequirement",
             "#txtFirstEmailDate",
@@ -118,6 +112,14 @@
         for (i = 0; i < DIV_TO_HIDE.length; ++i) {
             $(DIV_TO_HIDE[i]).removeClass("AppHidden").addClass("AppHidden");
         }
+        if (parseInt($('#JudgementLevel').val()) > 0)
+            LoadJudgementLevelPV($('#JudgementLevel').val());
+
+        $('#JudgementLevel').on("change", function () {
+            LoadJudgementLevelPV($('#JudgementLevel').val());
+        });
+
+        
         $("#hidNextHearingDate").val($("#NextHearingDate").val());
         $("#hidCurrentHearingDate").val($("#CurrentHearingDate").val());
 
@@ -189,7 +191,7 @@
     <div id="DIV_JudgementLevel"></div>
     <div id="DIV_JudgementNotFav"></div>
 </div>
-<div id="DIV_UPDATE">
+<div id="DIV_UPDATE" class="updatediv"> 
     <div class="col-sm-12">
         <div style="padding-bottom:0px !important;padding-top:10px;" class="UpdateBoxBar">
             <div class="row">

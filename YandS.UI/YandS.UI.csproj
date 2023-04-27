@@ -662,6 +662,10 @@
     <Compile Include="Migrations\202304160412256_addedUpdatedBoxColumns.Designer.cs">
       <DependentUpon>202304160412256_addedUpdatedBoxColumns.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304260632028_addedInvestDDL.cs" />
+    <Compile Include="Migrations\202304260632028_addedInvestDDL.Designer.cs">
+      <DependentUpon>202304260632028_addedInvestDDL.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\CaseInvoiceFeeCalculation.cs" />
     <Compile Include="Models\CaseInvoiceFee.cs" />
     <Compile Include="Models\CaseInvoice.cs" />
@@ -3645,10 +3649,6 @@
     <Content Include="Views\PayVouchers\PrintVoucher.cshtml" />
     <Content Include="Views\PayVouchers\_NonRefunable.cshtml" />
     <Content Include="Views\PayVouchers\_Refunable.cshtml" />
-    <Content Include="Views\CourtCases\Create.cshtml" />
-    <Content Include="Views\CourtCases\Delete.cshtml" />
-    <Content Include="Views\CourtCases\Details.cshtml" />
-    <Content Include="Views\CourtCases\Edit.cshtml" />
     <Content Include="Views\CourtCases\SlowIndex.cshtml" />
     <Content Include="Views\Error\PageNotFound.cshtml" />
     <Content Include="Views\Error\ServerError.cshtml" />
@@ -3656,10 +3656,6 @@
     <Content Include="Views\CourtCases\_CourtCaseDetailCreate.cshtml" />
     <Content Include="Views\CourtCases\_CourtCaseHearingCreate.cshtml" />
     <Content Include="Views\CourtCases\_CourtCaseHearingList.cshtml" />
-    <Content Include="Views\CourtCases\_CourtPView_Primary.cshtml" />
-    <Content Include="Views\CourtCases\_CourtPView_Apeal.cshtml" />
-    <Content Include="Views\CourtCases\_CourtPView_Supreme.cshtml" />
-    <Content Include="Views\CourtCases\_CourtPView_Enforcement.cshtml" />
     <Content Include="Views\CourtCases\_ErrorView.cshtml" />
     <Content Include="Views\CaseInvoice\Create.cshtml" />
     <Content Include="Views\CaseInvoice\Delete.cshtml" />
@@ -3683,10 +3679,8 @@
     <Content Include="Views\Finance\_CaseInvoiceFeeList.cshtml" />
     <Content Include="Views\Finance\_CaseInvoiceFee.cshtml" />
     <Content Include="Views\CourtCases\_ManageCourtInfo.cshtml" />
-    <Content Include="Views\CourtCases\_CourtFollowups.cshtml" />
     <Content Include="Views\CourtCases\_CourtPView.cshtml" />
     <Content Include="Views\CourtCases\ManageCourtDetail.cshtml" />
-    <Content Include="Views\CourtCases\_CourtStatusList.cshtml" />
     <Content Include="Views\Finance\InvoiceEdit.cshtml" />
     <Content Include="Views\Finance\InvoiceDelete.cshtml" />
     <Content Include="Views\Finance\_CaseInvoiceFeeEdit.cshtml" />
@@ -3703,7 +3697,6 @@
     <Content Include="Views\CaseReports\CourtCasesDetail.cshtml" />
     <Content Include="Views\Finance\SlowInvoiceCreateIndex.cshtml" />
     <Content Include="Views\Report\CourtCasesFollowup.cshtml" />
-    <Content Include="Views\CourtCases\_CourtStatus.cshtml" />
     <Content Include="Views\Finance\InvoiceView.cshtml" />
     <Content Include="Views\Finance\_CaseInvoiceViewReport.cshtml" />
     <Content Include="Views\Finance\PayVoucherCreateIntra.cshtml" />
@@ -3717,7 +3710,6 @@
     <Content Include="Views\CourtCases\FileClosure.cshtml" />
     <Content Include="Views\CourtCases\BeforeCourt.cshtml" />
     <Content Include="Views\CourtCases\TobeReg.cshtml" />
-    <Content Include="Views\CourtCases\Edit - Copy.cshtml" />
     <Content Include="Views\CourtCases\_ClientClassificationBanks.cshtml" />
     <Content Include="Views\CourtCases\_ClientClassificationFinance.cshtml" />
     <Content Include="Views\CourtCases\_ClientClassificationRealEstate.cshtml" />
@@ -3726,8 +3718,6 @@
     <Content Include="Views\CourtCases\_ClientClassificationIndividuals.cshtml" />
     <Content Include="Views\CourtCases\_ClientClassificationConsulatancy.cshtml" />
     <Content Include="Views\Finance\InvoiceCreate - Copy.cshtml" />
-    <Content Include="Views\CourtCases\_CourtPView - Copy.cshtml" />
-    <Content Include="Views\CourtCases\ManageCourtDetail - Copy.cshtml" />
     <Content Include="Views\Finance\InvoiceModify.cshtml" />
     <Content Include="Views\Finance\_CaseInvoiceFeeModify.cshtml" />
     <Content Include="Views\Finance\_CaseInvoiceFeeCalculationModify.cshtml" />
@@ -3754,7 +3744,6 @@
     <Content Include="Views\Finance\_Refunable - Copy.cshtml" />
     <Content Include="Views\Finance\_Refunable.cshtml" />
     <Content Include="Template\INVOICE_REP_TEMPLATE.xlsx" />
-    <Content Include="Views\CourtCases\ClosureFormView - Copy.cshtml" />
     <Content Include="Template\ReportAhliBank.xlsx" />
     <Content Include="Views\Finance\_CaseInvoicePrintFormatA - Copy %282%29.cshtml" />
     <Content Include="Views\Finance\_CaseInvoiceFeeCalcPrint - Copy %282%29.cshtml" />
@@ -3910,7 +3899,6 @@
     <Content Include="Views\Error\UnAuthorizedClientAccess.cshtml" />
     <Content Include="Views\Home\_ManageClients.cshtml" />
     <Content Include="Views\Home\clientGeneral.cshtml" />
-    <Content Include="Views\CourtCases\_TobeRegister - Copy.cshtml" />
     <Content Include="Views\CourtCases\TBRUrgent.cshtml" />
     <Content Include="Views\CourtCases\TBRNewCase.cshtml" />
     <Content Include="Views\CourtCases\TBRAppSubmission.cshtml" />
@@ -4001,6 +3989,7 @@
     <Content Include="Views\CourtCases\_SessionFooterBanner.cshtml" />
     <Content Include="Views\CourtCases\ENF_UPDATE.cshtml" />
     <Content Include="Views\CourtCases\ENF_UPDATE_SESSION.cshtml" />
+    <Content Include="Views\CourtCases\EnfGovernorate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4517,6 +4506,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304160412256_addedUpdatedBoxColumns.resx">
       <DependentUpon>202304160412256_addedUpdatedBoxColumns.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304260632028_addedInvestDDL.resx">
+      <DependentUpon>202304260632028_addedInvestDDL.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

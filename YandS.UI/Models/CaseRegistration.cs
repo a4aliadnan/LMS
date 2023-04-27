@@ -45,7 +45,7 @@
         public bool CourtDetailRegistered { get; set; }
         public string AdminFile { get; set; }
         [StringLength(3)]
-        public string DepartmentType { get; set; }
+        public string DepartmentType { get; set; } //INVESTMENT YES/NO
         public int? Voucher_No { get; set; }
 
         public string FormPrintDefendant { get; set; }

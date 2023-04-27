@@ -1379,6 +1379,8 @@ namespace YandS.UI.Controllers
                     DateTo = request.Params["DateTo"].ToString() == "" ? DateTime.Now.AddYears(100) : DateTime.ParseExact(request.Params["DateTo"].ToString(), "dd/MM/yyyy", null);
                     CallerName = request.Params["CallerName"].ToString();
                 }
+                else if (DataFor == "ENF-GOVERN")
+                    CallerName = request.Params["CallerName"].ToString();
 
                 DtView = Helper.GetCaseList(sortcoloumnIndex, start, searchvalue, Length, sortDirection, LocationId, DataFor, CaseLevel, DateFrom, DateTo, CallerName);
 
@@ -1391,30 +1393,6 @@ namespace YandS.UI.Controllers
             }
             return Json(new { data = data, recordsTotal = recordsTotal, recordsFiltered = recordsTotal }, JsonRequestBehavior.AllowGet);
 
-        }
-        public ActionResult Create()
-        {
-            if (User.IsInRole("AllowCloseCase") || User.IsSysAdmin())
-                ViewBag.AllowCloseCase = "Y";
-            else
-                ViewBag.AllowCloseCase = "N";
-
-            if (User.IsInRole("AllowAddClient") || User.IsSysAdmin())
-                ViewBag.AllowAddClient = "Y";
-            else
-                ViewBag.AllowAddClient = "N";
-
-            ViewBag.MstParentId = (int)MASTER_S.Client;
-
-            ViewBag.ClientClassificationCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ClientClassification), "Mst_Value", "Mst_Desc");
-            ViewBag.ReceiveLevelCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ReceiveLevel), "Mst_Value", "Mst_Desc");
-            ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType).OrderBy(o => o.DisplaySeq), "Mst_Value", "Mst_Desc");
-            ViewBag.AgainstCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseAgainst), "Mst_Value", "Mst_Desc");
-            ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
-            ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
-            ViewBag.OmaniExp = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OmaniExp), "Mst_Value", "Mst_Desc");
-
-            return View();
         }
 
         [HttpPost]
@@ -3255,6 +3233,8 @@ namespace YandS.UI.Controllers
 
                 ViewBag.CaseLevelCode = CaseLevelName;
                 ViewBag.NextCaseLevel = new SelectList(Helper.GetNextCaseLevel().OrderBy(o => o.DisplaySeq), "Mst_Value", "Mst_Desc");
+                ViewBag.DepartmentType = new SelectList(Helper.GetInvestmentYN(), "Mst_Value", "Mst_Desc");
+
             }
             else
             {
@@ -3275,6 +3255,7 @@ namespace YandS.UI.Controllers
                 _RetPartialView.ClosureDate = _courtCasesDetail.ClosureDate;
                 _RetPartialView.ClosedbyStaff = _courtCasesDetail.ClosedbyStaff;
                 _RetPartialView.NextCaseLevelCode = _courtCasesDetail.NextCaseLevelCode;
+                _RetPartialView.DepartmentType = _courtCasesDetail.DepartmentType;
 
 
                 if (Courtid == "1")
@@ -3317,7 +3298,7 @@ namespace YandS.UI.Controllers
                     ViewBag.ApealByWho = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc", _RetPartialView.ApealByWho);
 
                 ViewBag.NextCaseLevel = new SelectList(Helper.GetNextCaseLevel().OrderBy(o => o.DisplaySeq), "Mst_Value", "Mst_Desc", _courtCasesDetail.NextCaseLevel);
-
+                ViewBag.DepartmentType = new SelectList(Helper.GetInvestmentYN(), "Mst_Value", "Mst_Desc", _courtCasesDetail.DepartmentType);
 
             }
 
@@ -3384,6 +3365,7 @@ namespace YandS.UI.Controllers
                     _ModalToSave.ClosedbyStaff = courtCasesDetail.ClosedbyStaff;
                     _ModalToSave.NextCaseLevel = courtCasesDetail.NextCaseLevel;
                     _ModalToSave.NextCaseLevelCode = courtCasesDetail.NextCaseLevelCode;
+                    _ModalToSave.DepartmentType = courtCasesDetail.DepartmentType;
 
                     db.CourtCasesDetail.Add(_ModalToSave);
                     db.SaveChanges();
@@ -3448,6 +3430,7 @@ namespace YandS.UI.Controllers
                     db.Entry(_ModalToSave).Entity.ClosedbyStaff = courtCasesDetail.ClosedbyStaff;
                     db.Entry(_ModalToSave).Entity.NextCaseLevel = courtCasesDetail.NextCaseLevel;
                     db.Entry(_ModalToSave).Entity.NextCaseLevelCode = courtCasesDetail.NextCaseLevelCode;
+                    db.Entry(_ModalToSave).Entity.DepartmentType = courtCasesDetail.DepartmentType;
 
                     db.Entry(_ModalToSave).State = EntityState.Modified;
                     db.SaveChanges();
@@ -3540,7 +3523,8 @@ namespace YandS.UI.Controllers
                 ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList(_ModalToSave.Courtid), "Mst_Value", "Mst_Desc", _ModalToSave.CourtLocationid);
                 ViewBag.CourtDepartment = new SelectList(Helper.GetSupremeStage(), "Mst_Value", "Mst_Desc", _ModalToSave.CourtDepartment);
                 ViewBag.CaseLevelCode = CaseLevelName;
-                
+
+                ViewBag.DepartmentType = new SelectList(Helper.GetInvestmentYN(), "Mst_Value", "Mst_Desc", _ModalToSave.DepartmentType);
 
                 if (_ModalToReturn.Courtid == "3")
                     ViewBag.ApealByWho = new SelectList(Helper.GetByWho(true), "Mst_Value", "Mst_Desc", _ModalToReturn.ApealByWho);
@@ -3592,60 +3576,6 @@ namespace YandS.UI.Controllers
                 Message = string.Join("<br/>", ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage).ToArray())
             };
             return PartialView("_CourtPView", courtCasesDetail);
-        }
-
-        [HttpGet]
-        public ActionResult GetHearingDetail(int DetailId, string Courtid)
-        {
-            using (var context = new RBACDbContext())
-            {
-                List<CourtCasesFollowup> HearingList = new List<CourtCasesFollowup>();
-                SqlParameter pDetailId = new SqlParameter("@DetailId", DetailId);
-                SqlParameter pCourtid = new SqlParameter("@Courtid", Courtid);
-
-                HearingList = context.Database.SqlQuery<CourtCasesFollowup>("[dbo].[GetHearingDetail] @DetailId, @Courtid", pDetailId, pCourtid).OrderByDescending(o => o.HearingDate).ToList();
-                return PartialView("_CourtCaseHearingList", HearingList);
-            }
-        }
-
-        [HttpGet]
-        public ActionResult CreateCourtFollowup(int DetailId, string Courtid)
-        {
-            CourtCasesFollowup CasesFollowups = new CourtCasesFollowup();
-            CasesFollowups.DetailId = DetailId;
-            return PartialView("_CourtCaseHearingCreate", CasesFollowups);
-        }
-        [HttpPost]
-        public ActionResult CreateCourtFollowup(CourtCasesFollowup courtCasesFollowup)
-        {
-
-            if (ModelState.IsValid)
-            {
-                db.CourtCasesFollowup.Add(courtCasesFollowup);
-                db.SaveChanges();
-                return new JsonResult()
-                {
-                    Data = new { Message = "Success" }
-                };
-            }
-
-            var modelErrors = ModelState.AllErrors();
-
-            return Json(modelErrors);
-        }
-
-        [HttpGet]
-        public ActionResult DeleteCourtFollowup(int FollowupId)
-        {
-            CourtCasesFollowup CasesFollowups = db.CourtCasesFollowup.Find(FollowupId);
-            int DetailId = CasesFollowups.DetailId;
-
-            db.CourtCasesFollowup.Remove(CasesFollowups);
-            db.SaveChanges();
-
-            var HearingList = db.CourtCasesFollowup.Where(w => w.DetailId == DetailId).ToList();
-
-            return PartialView("_CourtCaseHearingList", HearingList);
         }
 
         [HttpGet]

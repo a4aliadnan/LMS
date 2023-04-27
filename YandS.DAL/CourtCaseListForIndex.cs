@@ -102,6 +102,8 @@
         public DateTime? DEF_VisitDate { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? SuspensionEndDate { get; set; }
+        public string GovernorateId { get; set; }
+        public string GovernorateName { get; set; }
     }
 
     public class CourtCaseDTView

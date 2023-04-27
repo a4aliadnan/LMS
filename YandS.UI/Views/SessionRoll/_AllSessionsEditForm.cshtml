@@ -40,14 +40,13 @@
                 })
             })
         };
-        console.log("function LoadFileStatusPV(" + FileStatusId + ")");
-        console.log($('#FileStatus').val());
         _parameters = "";
         _PartialViewName = "";
         PartialContainer = $("#FileStatusDetail");
         var RetainActivebtnName = ActiveButton;
 
         $('.clsJudIssued').removeClass("AppHidden");
+        $('#DIV_CommonTask').removeClass("AppHidden");
 
         switch (FileStatusId) {
             case OfficeFileStatus.PleaseSelect:
@@ -56,6 +55,9 @@
                 return false;
                 break;
             case OfficeFileStatus.RunningCase:
+            case OfficeFileStatus.Dispute:
+            case OfficeFileStatus.MeetJudge:
+            case OfficeFileStatus.AuctionSession:
                 _PartialViewName = "_SessionRunningDIV";
                 ActiveButton = "btn_AllSessions";
                 break;
@@ -68,6 +70,7 @@
                 _PartialViewName = "_SessionJudgementDIV";
                 ActiveButton = "btn_SessionJudgement";
                 $('.clsJudIssued').removeClass("AppHidden").addClass("AppHidden");
+                $('#DIV_CommonTask').removeClass("AppHidden").addClass("AppHidden");
                 break;
         }
 

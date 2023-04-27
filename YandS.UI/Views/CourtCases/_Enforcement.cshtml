@@ -1,6 +1,23 @@
 ﻿@{
     ViewBag.Title = "Y & S Associates - Enforcement";
 }
+<style>
+    .EnfGovernorate {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .EnfGovernorate:hover {
+            background-color: #002060 !important;
+            color: white !important;
+        }
+
+    .EnfGovernorateActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+</style>
 <script>
         
     var _parameters = {};
@@ -124,6 +141,7 @@
             <button type="button" id="enfbtn_ContactResult" style="font-size: 1rem !important;" class="btn btn-block ContactResult @ViewBag.ContactResultActive btn-lg enfNavButton">نتائج الاتصالات<br />CONTACT'S RESULT</button>
         </div>
         <div class="col">
+            <button type="button" id="enfbtn_EnfGovernorate" style="font-size: 1rem !important;" class="btn btn-block EnfGovernorate @ViewBag.EnfGovernorateActive btn-lg enfNavButton">المحافظة<br />GOVERNORATE</button>
         </div>
         <div class="col">
         </div>

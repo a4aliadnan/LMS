@@ -73,6 +73,21 @@
                 "orderMulti": false,
                 "destroy": true,
                 "ordering": true,
+                "pageLength": 10,
+                "lengthMenu": [[5, 10, 50, 100, 500, 1000], [5, 10, 50, 100, 500, 1000]],
+                dom: "<'row'<'col-sm-1'l><'col-sm-1 text-left'B><'col-sm-10 text-right'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                buttons: [
+                    {
+                        extend: 'excel',
+                        title: 'Invoice List',
+                        text: 'Print',
+                        titleAttr: 'Export Excel',
+                        "oSelectorOpts": { filter: 'applied', order: 'current' },
+                        exportOptions: { modifier: { page: 'all', search: 'none' } }
+                    }
+                ],
                 "ajax": {
                     "url": GetIndexDataURL,
                     "type": "POST",

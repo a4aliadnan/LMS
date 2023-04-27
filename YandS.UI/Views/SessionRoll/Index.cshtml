@@ -300,6 +300,19 @@
         return new Promise((resolve) => setTimeout(resolve, time));
     }
     function ShowDIV() {
+        $.fn.autoResize = function () {
+            let r = e => {
+                e.style.height = '';
+                e.style.height = e.scrollHeight + 'px'
+            };
+            return this.each((i, e) => {
+                e.style.overflow = 'hidden';
+                r(e);
+                $(e).bind('input', e => {
+                    r(e.target);
+                })
+            })
+        };
 
         if ($('#ShowFollowup').val() == "True") {
             $("#FollowDIV").removeClass("AppHidden");
@@ -376,13 +389,6 @@
 
         if ($('#TransportationFee').val() == "1") {
             $("#DIV_TRSOURCE").removeClass("AppHidden");
-        }
-
-        if (parseInt($('#JudgementLevel').val()) > 0) {
-            $("#DIV_UPDATE").removeClass("AppHidden");
-        }
-        else {
-            $("#DIV_UPDATE").removeClass("AppHidden").addClass("AppHidden");
         }
 
         $('textarea').autoResize();

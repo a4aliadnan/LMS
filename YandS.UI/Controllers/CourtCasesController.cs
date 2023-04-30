@@ -1265,6 +1265,8 @@ namespace YandS.UI.Controllers
         {
             string LocationId = string.Empty;
             string UserLocation = string.Empty;
+            string EnfCourtLocation = string.Empty;
+            string EnfGovernorate = string.Empty;
             var request = HttpContext.Request;
             if (User.IsInRole("CourtCasesViewAll") || User.IsSysAdmin())
                 UserLocation = "A";
@@ -1379,10 +1381,14 @@ namespace YandS.UI.Controllers
                     DateTo = request.Params["DateTo"].ToString() == "" ? DateTime.Now.AddYears(100) : DateTime.ParseExact(request.Params["DateTo"].ToString(), "dd/MM/yyyy", null);
                     CallerName = request.Params["CallerName"].ToString();
                 }
-                else if (DataFor == "ENF-GOVERN")
+                else if (DataFor == "ENF-GENERAL")
+                {
                     CallerName = request.Params["CallerName"].ToString();
+                    EnfCourtLocation = request.Params["EnfCourtLocation"].ToString();
+                    EnfGovernorate = request.Params["EnfGovernorate"].ToString();
+                }
 
-                DtView = Helper.GetCaseList(sortcoloumnIndex, start, searchvalue, Length, sortDirection, LocationId, DataFor, CaseLevel, DateFrom, DateTo, CallerName);
+                DtView = Helper.GetCaseList(sortcoloumnIndex, start, searchvalue, Length, sortDirection, LocationId, DataFor, CaseLevel, DateFrom, DateTo, CallerName, EnfCourtLocation, EnfGovernorate);
 
                 recordsTotal = data.Count > 0 ? data[0].TotalRecords : 0;
                 return Json(new { data = DtView.data, recordsTotal = DtView.recordsTotal, recordsFiltered = DtView.recordsFiltered, MuscatTotal = DtView.MCTRecords, SalalahTotal = DtView.SLLRecords }, JsonRequestBehavior.AllowGet);
@@ -1426,6 +1432,7 @@ namespace YandS.UI.Controllers
                     courtCases.OmaniExp = RegModal.OmaniExp;
                     courtCases.ClientReply = RegModal.ClientReply;
                     courtCases.TransportationSource = RegModal.TransportationSource;
+                    courtCases.OfficeFileStatus = RegModal.FileStatus ?? "0";
 
                     if (RegModal.ClientClassificationCode == "1")
                     {
@@ -1471,7 +1478,6 @@ namespace YandS.UI.Controllers
                         courtCases.Subject = RegModal.Subject;
                     }
 
-
                     db.CourtCase.Add(courtCases);
                     db.SaveChanges();
 
@@ -1492,12 +1498,10 @@ namespace YandS.UI.Controllers
                         ModelToSave.Remarks = RegModal.MainRemarks;
                         ModelToSave.FormPrintWorkRequired = RegModal.FormPrintWorkRequired;
                         ModelToSave.FormPrintLastDate = RegModal.FormPrintLastDate;
+                        ModelToSave.FileStatus = RegModal.FileStatus ?? "0";
 
-                        //ModelToSave.FileStatus = RegModal.FileStatus ?? "0";
                         db.CaseRegistration.Add(ModelToSave);
                         db.SaveChanges();
-
-                        Helper.UpdateOfficeFileStatus(courtCases.CaseId, RegModal.FileStatus ?? "0");
                     }
                     else if (courtCases.CaseLevelCode == "2")
                         UpdateBeforeCourt("CREATEBEFORECOURT", RegModal);
@@ -1517,6 +1521,17 @@ namespace YandS.UI.Controllers
                 }
                 else
                 {
+
+                    if (User.IsInRole("AllowCloseCase") || User.IsSysAdmin())
+                        ViewBag.AllowCloseCase = "Y";
+                    else
+                        ViewBag.AllowCloseCase = "N";
+
+                    if (User.IsInRole("AllowAddClient") || User.IsSysAdmin())
+                        ViewBag.AllowAddClient = "Y";
+                    else
+                        ViewBag.AllowAddClient = "N";
+
                     ViewBag.MstParentId = (int)MASTER_S.Client;
 
                     ViewBag.ClientClassificationCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ClientClassification), "Mst_Value", "Mst_Desc");
@@ -1525,6 +1540,7 @@ namespace YandS.UI.Controllers
                     ViewBag.AgainstCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseAgainst), "Mst_Value", "Mst_Desc");
                     ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
                     ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
+                    ViewBag.SessionClientId = new SelectList(Helper.GetSessionClients(), "Mst_Value", "Mst_Desc");
                     ViewBag.OmaniExp = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OmaniExp), "Mst_Value", "Mst_Desc");
                     ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc");
                     ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc");
@@ -2599,6 +2615,26 @@ namespace YandS.UI.Controllers
                     {
                         ViewBag.DEF_CallerName = new SelectList(Helper.GetCallerNames(), "Mst_Value", "Mst_Desc");
                     }
+                    else if (PartialViewName == "EnfGeneral")
+                    {
+                        string LawyerId = Helper.GetLawyerId(User.Identity.Name);
+
+                        string GovDDLSelectedValue = "0";
+                        string CourtDDLSelectedValue = "0";
+
+                        if (User.Identity.Name == "29")
+                            GovDDLSelectedValue = "5";
+
+                        if (User.Identity.Name == "47")
+                            GovDDLSelectedValue = "99";
+
+                        if (User.Identity.Name == "48")
+                            CourtDDLSelectedValue = "4";
+
+                        ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", CourtDDLSelectedValue);
+                        ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(true), "Mst_Value", "Mst_Desc", GovDDLSelectedValue);
+
+                    }
                     else if (PartialViewName == "RecoveryFromCourt")
                     {
                         string[] FileCodes = new[] { "0", "OFS-29", "OFS-30" };
@@ -2950,7 +2986,6 @@ namespace YandS.UI.Controllers
                             ViewModal.UpdatePV_Type = "ENF_UPDATE_SESSION";
 
                         }
-
                     }
                     else
                     {

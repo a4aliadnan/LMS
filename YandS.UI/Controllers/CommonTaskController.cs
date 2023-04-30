@@ -838,5 +838,24 @@ namespace YandS.UI.Controllers
                 Data = "Beat Generated"
             };
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ProcessReset(int CaseId, string ResetName)
+        {
+            try
+            {
+                string strResult = Helper.ProcessResetYesNo(CaseId, ResetName);
+
+                if (string.IsNullOrEmpty(strResult))
+                    return Json(new { redirectTo = "SUCCESS" });
+                else
+                    return Json(new { errorMessage = strResult });
+            }
+            catch (Exception e)
+            {
+                return Json(new { errorMessage = e.Message });
+            }
+        }
     }
 }

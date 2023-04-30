@@ -90,7 +90,7 @@
         {
             CaseRegistrationId = 0;
             ActionLevel = "1";
-            FileStatus = "1";
+            FileStatus = "OFS-1";
             EnforcementDispute = "0";
             CourtRegistration = "0";
             DepartmentType = "0";

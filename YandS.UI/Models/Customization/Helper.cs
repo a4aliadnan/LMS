@@ -342,19 +342,10 @@ namespace YandS.UI
             RBACDbContext db = new RBACDbContext();
             List<MasterSetups> ResultList = new List<MasterSetups>();
 
-            //string[] values = null;
-
-            //if (CourtId.Equals("1")) //Primary
-            //    values = new[] { "P", "B" };
-            //else if (CourtId.Equals("2")) //Apeal
-            //    values = new[] { "B" };
-            //                ResultList = db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Location && values.Contains(m.Remarks)).OrderBy(o => o.DisplaySeq).ToList();
-
             if (CourtId.Equals("1") || CourtId.Equals("2") || CourtId.Equals("4")) //Primary //Apeal
                 ResultList = db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Location && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList();
             else if (CourtId.Equals("3")) //Supreme
                 ResultList = db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Location && m.Mst_Value == "1" && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList();
-
 
             return ResultList;
         }
@@ -642,10 +633,29 @@ namespace YandS.UI
             RBACDbContext db = new RBACDbContext();
             return db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ReconciliationDeptt && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList();
         }
-        public static List<MasterSetups> GetGovernorate()
+        public static List<MasterSetups> GetGovernorate(bool forEnfGeneral = false)
         {
-            RBACDbContext db = new RBACDbContext();
-            return db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Governorate && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList();
+            using (var db = new RBACDbContext())
+            {
+                if (forEnfGeneral)
+                {
+                    List<MasterSetups> ResultList = new List<MasterSetups>();
+                    ResultList.AddRange(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Governorate && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList());
+
+                    MasterSetups Governorate = new MasterSetups();
+                    Governorate.Mst_Desc = "Dakhiliah + Dhahirah  الداخلية + الظاهرة";
+                    Governorate.Mst_Value = "99";
+                    Governorate.DisplaySeq = 99;
+                    ResultList.Add(Governorate);
+
+                    return ResultList;
+                }
+                else
+                {
+                    return db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Governorate && m.Active_Flag == true).OrderBy(o => o.DisplaySeq).ToList();
+                }
+
+            }
         }
         public static List<MasterSetups> GetEnfcAdmin()
         {
@@ -772,7 +782,7 @@ namespace YandS.UI
             return ResultList;
             
         }
-        public static CourtCaseDTView GetCaseList(int sortcoloumnIndex, int start, string searchvalue, int Length, string sortDirection, string UserLocation, string DataFor, string CaseLevel, DateTime DateFrom, DateTime DateTo, string CallerName)
+        public static CourtCaseDTView GetCaseList(int sortcoloumnIndex, int start, string searchvalue, int Length, string sortDirection, string UserLocation, string DataFor, string CaseLevel, DateTime DateFrom, DateTime DateTo, string CallerName, string EnfCourtLocation, string EnfGovernorate)
         {
             CourtCaseDTView ReturnResult = new CourtCaseDTView();
 
@@ -818,7 +828,7 @@ namespace YandS.UI
                 }
 
 
-                ReturnResult = new ReportCourtCases().getCourtCaseListWithPaging(start, searchvalue, Length, SortColumn, sortDirection, UserLocation.ToUpper().Substring(0, 1), DataFor, CaseLevel, DateFrom, DateTo, CallerName);
+                ReturnResult = new ReportCourtCases().getCourtCaseListWithPaging(start, searchvalue, Length, SortColumn, sortDirection, UserLocation.ToUpper().Substring(0, 1), DataFor, CaseLevel, DateFrom, DateTo, CallerName, EnfCourtLocation, EnfGovernorate);
             }
             catch (Exception ex)
             {
@@ -2006,11 +2016,6 @@ namespace YandS.UI
         {
             var UniquiId = new SqlParameter { ParameterName = "@UniquiId", Value = HttpServerUtility.UrlTokenDecode(Uid) };
             var RetResult = new SqlParameter { ParameterName = "@RetResult", SqlDbType = SqlDbType.NVarChar, Size = 500, Direction = ParameterDirection.Output };
-
-            //object[] xparams = {
-            //    new SqlParameter("@UniquiId", HttpServerUtility.UrlTokenDecode(Uid)),
-            //    new SqlParameter("@RetResult", SqlDbType.NVarChar,500) {Direction = ParameterDirection.Output}
-            //};
 
             using (var context = new RBACDbContext())
             {
@@ -3395,6 +3400,46 @@ namespace YandS.UI
             }
 
             return retResult;
+        }
+        public static string ProcessResetYesNo(int CaseId, string ResetName)
+        {
+            string strResult = string.Empty;
+            try
+            {
+                using (var db = new RBACDbContext())
+                {
+                    CourtCases courtCases = db.CourtCase.Find(CaseId);
+                    if (ResetName == "ENF-CLREPLY")
+                    {
+                        db.Entry(courtCases).Entity.ClientReply = null;
+                        db.Entry(courtCases).Entity.Requirements = null;
+                        db.Entry(courtCases).Entity.FirstEmailDate = null;
+                        db.Entry(courtCases).Entity.UpdateBoxDate = DateTime.UtcNow.AddHours(4);
+                        db.Entry(courtCases).Entity.UpdateBoxBy = HttpContext.Current.User.Identity.GetUserId();
+                    }
+
+                    db.Entry(courtCases).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                }
+            }
+            catch (Exception e)
+            {
+                strResult = e.Message;
+            }
+
+            return strResult;
+        }
+
+        public static string GetLawyerId(string UserName)
+        {
+            string LawyerId = string.Empty;
+            using (var context = new RBACDbContext())
+            {
+                var p_UserName = new SqlParameter { ParameterName = "@UserName", Value = UserName };
+                LawyerId = context.Database.SqlQuery<string>("SELECT dbo.FnGetLawyerId(@UserName)", p_UserName).FirstOrDefault();
+            }
+            return LawyerId;
         }
     }
 }

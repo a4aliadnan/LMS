@@ -548,7 +548,7 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                                                     };
             return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "GetCourtCaseListForIndex", parameterList).Tables[0].DataTableToList<CourtCaseListForIndex>();
         }
-        public CourtCaseDTView getCourtCaseListWithPaging(int start, string searchvalue, int Length, string SortColumn, string sortDirection, string UserLocation, string DataFor, string CaseLevel, DateTime DateFrom, DateTime DateTo, string CallerName)
+        public CourtCaseDTView getCourtCaseListWithPaging(int start, string searchvalue, int Length, string SortColumn, string sortDirection, string UserLocation, string DataFor, string CaseLevel, DateTime DateFrom, DateTime DateTo, string CallerName, string EnfCourtLocation, string EnfGovernorate)
         {
             CourtCaseDTView _result = new CourtCaseDTView();
             SqlParameter[] parameterList = new SqlParameter[]
@@ -563,9 +563,10 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                                                          new SqlParameter("@CaseLevelFilter", CaseLevel),
                                                          new SqlParameter("@DateFrom", DateFrom),
                                                          new SqlParameter("@DateTo", DateTo),
-                                                         new SqlParameter("@CallerName", CallerName)
+                                                         new SqlParameter("@CallerName", CallerName),
+                                                         new SqlParameter("@EnfCourtLocation", EnfCourtLocation),
+                                                         new SqlParameter("@EnfGovernorate", EnfGovernorate)
                                                     };
-            // return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "GetCourtCaseListWithPaging", parameterList).Tables[0].DataTableToList<CourtCaseListForIndex>();
 
             DataSet DS = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "GetCourtCaseListWithPaging", parameterList);
             _result.data = DS.Tables[0].DataTableToList<CourtCaseListForIndex>();

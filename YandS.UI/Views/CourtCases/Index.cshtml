@@ -211,7 +211,6 @@
             $('textarea').autoResize();
         }
     }
-
     function LoadPartialView(data, container) {
         console.log(container.attr("id"));
         container.empty();
@@ -388,7 +387,6 @@
 
     }
     function processbtnLinkClick(_Mode, data, tableName) {
-
         if (_Mode == "D") {
             Swal.fire({
                 title: 'Are you sure?',
@@ -530,10 +528,91 @@
             if (typeof tableName !== 'undefined')
                 $("#hidCurrentTableName").val(tableName);
 
-            var _PartialViewName = "_ENF_Modify";
-            var PartialContainer = $("#ENF_ModificationContainer");
-            _parameters = { ClassificationId: _PartialViewName, Mode: $CaseId };
+            if (tableName == "ENF-CLREPLY") {
+                Swal.fire({
+                    title: 'ARE YOU SURE?',
+                    text: "YOU WON'T BE ABLE TO REVERT THIS!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'CANCEL',
+                    confirmButtonText: 'CLIENT DONE'
+                }).then((result) => {
+                    if (result.value) {
+
+                        var form = $('#__AjaxAntiForgeryForm');
+                        var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+                        $.ajax({
+                            url: "/CommonTask/ProcessReset",
+                            type: 'POST',
+                            cache: false,
+                            data: {
+                                __RequestVerificationToken: token,
+                                CaseId: $CaseId,
+                                ResetName: tableName
+                            },
+                            statusCode: {
+                                401: function (response) {
+                                    alert(response);
+                                }
+                            },
+                            success: function (result) {
+                                if (result.redirectTo) {
+                                    Swal.fire(
+                                        'PROCEED!',
+                                        'Your file has been updated.',
+                                        'success'
+                                    )
+                                    Swal.fire({
+                                        type: 'success',
+                                        title: '',
+                                        html: 'Your file has been updated.'
+                                    }).then(function () {
+                                        table.ajax.reload(function (json) {
+                                            var info = table.page.info();
+                                            var MCTRecords = table.ajax.json().MuscatTotal;
+                                            var SLLRecords = table.ajax.json().SalalahTotal;
+                                            var recordsTotal = table.ajax.json().recordsTotal;
+
+                                            if ($("#txtUserRole").val() == "VoucherApproval") {
+                                                $('#MCTTTL').text("MUSCAT : " + MCTRecords);
+                                                $('#SLLTTL').text("SALALAH : " + SLLRecords);
+                                                $('#TTL').text(recordsTotal);
+                                            }
+                                        });
+                                    });
+                                }
+                                else {
+                                    //console.log(result);
+                                    var errorHtml = $('<div />').append(result).find('.content').html();
+                                    //console.log(errorHtml);
+                                    Swal.fire({
+                                        type: 'error',
+                                        title: 'Error in Update!',
+                                        html: errorHtml,
+                                        width: '50%'
+                                        //grow: 'row'
+                                    });
+
+                                }
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                Swal.fire("Error processing!", "Please try again" + thrownError + "" + xhr.textStatus, "error");
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                var _PartialViewName = "_ENF_Modify";
+                var PartialContainer = $("#ENF_ModificationContainer");
+                _parameters = { ClassificationId: _PartialViewName, Mode: $CaseId };
+            }
+
             GetTab(PartialContainer, GetClientClassificationURL, _parameters);
+
         }
         else if (_Mode == "T") {
             CancelTBR();

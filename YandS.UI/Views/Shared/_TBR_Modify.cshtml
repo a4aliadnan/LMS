@@ -1,4 +1,7 @@
 ﻿@model YandS.UI.Models.CaseRegistrationVM
+    @{ 
+        var strFormPrintLastDate = Model.FormPrintLastDate?.ToString("dd/MM/yyyy");
+     }
 <script type="text/javascript">
     $(document).ready(function () {
         console.log("Modify To be Register Partail View Document Page");
@@ -33,6 +36,7 @@
         LoadFileStatusPV($('#FileStatus').val());
 
         $('#FileStatus').on("change", function () {
+            $('#hidFileStatusChanged').val("Y");
             LoadFileStatusPV($('#FileStatus').val());
         });
 
@@ -161,6 +165,8 @@
 </script>
 @using (Html.BeginForm("IndexMain", "CaseRegistration", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm_CaseRegister" }))
 {
+     
+    
     @Html.HiddenFor(model => model.CaseId)
     @Html.HiddenFor(model => model.CaseRegistrationId, new { @Value = ViewBag.CaseRegistrationId })
     @Html.HiddenFor(model => model.ActionLevel)
@@ -308,3 +314,8 @@
     </div>
 }
 <input type="hidden" id="hidCaseRegistrationId" value="@ViewBag.CaseRegistrationId" />
+<input type="hidden" id="hidFileStatus" value="@Model.FileStatus" />
+<input type="hidden" id="hidFormPrintWorkRequired" value="@Model.FormPrintWorkRequired" />
+<input type="hidden" id="hidOfficeProcedure" value="@Model.OfficeProcedure" />
+<input type="hidden" id="hidFormPrintLastDate" value="@strFormPrintLastDate" />
+<input type="hidden" id="hidFileStatusChanged" value="N" />

@@ -23,3 +23,7 @@ function PadDigits(n, totalDigits) {
     }
     return pd + n.toString();
 }
+
+function InitPartialViews() {
+    
+}

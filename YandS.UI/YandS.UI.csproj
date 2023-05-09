@@ -666,10 +666,24 @@
     <Compile Include="Migrations\202304260632028_addedInvestDDL.Designer.cs">
       <DependentUpon>202304260632028_addedInvestDDL.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202305030705449_AddedNewColumnforCorporate.cs" />
+    <Compile Include="Migrations\202305030705449_AddedNewColumnforCorporate.Designer.cs">
+      <DependentUpon>202305030705449_AddedNewColumnforCorporate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202305070508523_AddedNewColumnTranslation.cs" />
+    <Compile Include="Migrations\202305070508523_AddedNewColumnTranslation.Designer.cs">
+      <DependentUpon>202305070508523_AddedNewColumnTranslation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202305072238553_AddedNewTableForTranslation.cs" />
+    <Compile Include="Migrations\202305072238553_AddedNewTableForTranslation.Designer.cs">
+      <DependentUpon>202305072238553_AddedNewTableForTranslation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\CaseInvoiceFeeCalculation.cs" />
     <Compile Include="Models\CaseInvoiceFee.cs" />
     <Compile Include="Models\CaseInvoice.cs" />
     <Compile Include="Models\CaseInvoiceFeeCalculationConfiguration.cs" />
+    <Compile Include="Models\DecisionTranslationConfiguration.cs" />
+    <Compile Include="Models\DecisionTranslation.cs" />
     <Compile Include="Models\ClientAccess.cs" />
     <Compile Include="Models\DefendentTransfer.cs" />
     <Compile Include="Models\SessionsRollConfiguration.cs" />
@@ -1710,6 +1724,7 @@
     <Content Include="Content\jquery-ui\ui\widgets\spinner.js" />
     <Content Include="Content\jquery-ui\ui\widgets\tabs.js" />
     <Content Include="Content\jquery-ui\ui\widgets\tooltip.js" />
+    <Content Include="Content\MySite_Ver_17.css" />
     <Content Include="Content\MySite_Ver_16.css" />
     <Content Include="Content\plugins\bootstrap-colorpicker\css\bootstrap-colorpicker.css" />
     <Content Include="Content\plugins\bootstrap-colorpicker\css\bootstrap-colorpicker.min.css" />
@@ -3990,6 +4005,10 @@
     <Content Include="Views\CourtCases\ENF_UPDATE.cshtml" />
     <Content Include="Views\CourtCases\ENF_UPDATE_SESSION.cshtml" />
     <Content Include="Views\CourtCases\EnfGovernorate.cshtml" />
+    <Content Include="Views\Shared\_GlobalVariables.cshtml" />
+    <Content Include="Views\CourtCases\_Corporate.cshtml" />
+    <Content Include="Views\CourtCases\_Translation.cshtml" />
+    <Content Include="Views\CourtCases\_PartViewTranslation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4509,6 +4528,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304260632028_addedInvestDDL.resx">
       <DependentUpon>202304260632028_addedInvestDDL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305030705449_AddedNewColumnforCorporate.resx">
+      <DependentUpon>202305030705449_AddedNewColumnforCorporate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305070508523_AddedNewColumnTranslation.resx">
+      <DependentUpon>202305070508523_AddedNewColumnTranslation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305072238553_AddedNewTableForTranslation.resx">
+      <DependentUpon>202305072238553_AddedNewTableForTranslation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

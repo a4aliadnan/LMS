@@ -84,7 +84,14 @@ namespace YandS.UI.Controllers
             if (User.Identity.Name == "22" || User.Identity.Name == "10")
                 return RedirectToAction("Index", "SessionRoll");
             else
-                return RedirectToAction("Index", "CourtCases");
+            {
+                if (User.Identity.Name == "31")
+                    return RedirectToAction("Index", "CourtCases", new RouteValueDictionary(new { id = -4 }));
+                if (User.Identity.Name == "9")
+                    return RedirectToAction("Index", "CourtCases", new RouteValueDictionary(new { id = -5 }));
+                else
+                    return RedirectToAction("Index", "CourtCases");
+            }
 
             /*
             if (strUser == "3")

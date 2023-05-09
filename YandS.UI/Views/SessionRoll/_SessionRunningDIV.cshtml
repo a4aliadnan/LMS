@@ -22,14 +22,6 @@
         $("#hidNextHearingDate").val($("#NextHearingDate").val());
         $("#hidCurrentHearingDate").val($("#CurrentHearingDate").val());
 
-        $('#CourtDecision').bind('input propertychange', function () {
-            $("#hidCourtDecisionChange").val("N");
-
-            if (this.value.length) {
-                $("#hidCourtDecisionChange").val("Y");
-            }
-        });
-
         $('#ClientReply').on("change", function () {
             $("#txtRequirement").removeClass("AppHidden").addClass("AppHidden");
             $("#txtFirstEmailDate").removeClass("AppHidden").addClass("AppHidden");

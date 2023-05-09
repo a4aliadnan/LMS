@@ -24,10 +24,14 @@
             unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
         }
     </style>
+    @Scripts.Render("~/bundles/JqueryScript")
+    @Scripts.Render("~/bundles/BootstrapScript")
+    @Scripts.Render("~/CommonFunctions")
 </head>
 <body class="sidebar-mini control-sidebar-slide-open accent-lightblue text-sm">
     <!-- Site wrapper -->
     <div class="wrapper">
+        @Html.Partial("_GlobalVariables")
         @if (SessionHandler.User == null)
         {
             using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
@@ -72,25 +76,11 @@
     </div>
     <div id="div_RequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>
     @{ Html.RenderPartial("_Scripts", RenderSection("pagespecific", false)); }
-    @Scripts.Render("~/CommonFunctions")
     @if (Request.IsAuthenticated)
     {
         @Html.Partial("~/Views/Shared/_KeepAlive.cshtml")
     }
-    @* <script type="text/javascript">
-            $(document).ready(function () {
-                console.log("_Aside Loaded!!");
-                $('.clsFollowup').click(function () {
-                    $('.clsSessionRoll').removeClass("active");
-                });
-
-                $('.clsSessionRoll').click(function () {
-                    $('.clsFollowup').removeClass("active");
-                });
-            });
-        </script>*@
     <script>
-        var GetRequirementFormURL = '@Url.Action("GetTab", "SessionRoll", new { area = string.Empty })';
         function LoadRequirementForm(PartialViewName,CaseId) {
             var _PartialViewName = PartialViewName;
             P_CaseId = parseInt(CaseId);
@@ -153,8 +143,7 @@
         }
 
         $(document).ready(function () {
-
-            //setTimeout(function () { $('#divPgroress').hide(); }, 200);
+            console.log("document ready _Layout");
             try {
                 $("input[type='text']").each(function () {
                     $(this).attr("autocomplete", "off");
@@ -165,7 +154,13 @@
                 showMessage();
             }
 
+            $('.clsCourtCases').click(function () {
+                $('.clsCourtCases').removeClass("active");
+                $(this).addClass("active");
+            });
+
         });
     </script>
 
 </body>
+</html>

@@ -163,12 +163,7 @@
     }
 </style>
 <script>
-    var GetSessionRollURL = '@Url.Action("GetTab", "SessionRoll", new { area = string.Empty })';
-    var GetCaseDetailURL = '@Url.Action("GetCaseDetail", "SessionRoll", new { area = string.Empty })';
     var GetIndexDataURL = '@Url.Action("AjaxIndexData", "SessionRoll", new { DataFor = @ViewBag.DataFor })';
-    var CreateMasterTableDetailURL = '@Url.Action("CreateMasterTableDetail", "CommonTask", new { area = string.Empty })';
-    var GetDetailTableURL = '@Url.Action("GetDetailTable", "CommonTask", new { area = string.Empty })';
-    var SubmitFormURL = '@Url.Action("Index", "SessionRoll", new { area = string.Empty })';
     var bkClientReply = "";
     var bkRequirements = "";
     var bkFirstEmailDate = "";
@@ -203,67 +198,6 @@
     var searchFileNoToGo = "";
     var CaseIdToGo = 0;
     var SessionRollIdToGo = 0;
-    const OfficeFileStatus = {
-        PleaseSelect: "0",
-        Transfer: "OFS-1",
-        LegalNotice: "OFS-2",
-        WritingSubmission: "OFS-3",
-        SubmissionApproval: "OFS-4",
-        ApprovalForAppeal: "OFS-10",
-        ApprovalForSupreme: "OFS-11",
-        CompletingDocs: "OFS-13",
-        ReceiptOfFees: "OFS-14",
-        Translation: "OFS-15",
-        Scanned: "OFS-5",
-        OnlineRegTBR: "OFS-6",
-        CourtMsg: "OFS-7",
-        ForPayment: "OFS-8",
-        WithLawyer: "OFS-12",
-        Registered: "OFS-9",
-        RunningCase: "OFS-16",
-        JudgIssued: "OFS-17",
-        ToKnowSessionDate: "OFS-18",
-        RequestMeetJudge: "OFS-19",
-        Dispute: "OFS-20",
-        AuctionSession: "OFS-21",
-        OnlineRegENF: "OFS-22",
-        Announcement: "OFS-23",
-        ContactingAuthorities: "OFS-24",
-        JudicalSale: "OFS-25",
-        ArrestApplication: "OFS-26",
-        ArrestOrder: "OFS-27",
-        Suspendfd: "OFS-28",
-        RecoveryRedStamp_Close: "OFS-29",
-        RecoveryRedStamp_Re_Open: "OFS-30",
-        MeetJudge: "OFS-31",
-        AssigningJudge: "OFS-32",
-        JudgStamp: "OFS-33",
-        CorrectingJudg: "OFS-34",
-        PeriodOfAppeal: "OFS-35",
-        RedStamp: "OFS-36",
-        EnfcApproval: "OFS-37",
-        Refundable3_4: "OFS-38",
-        FileReview: "OFS-39",
-        OPP: "OFS-40",
-        ROP: "OFS-41",
-        MOL: "OFS-42",
-        PACP: "OFS-43",
-        MOCI: "OFS-44",
-        EstablishingCompanies: "OFS-45",
-        Arbition: "OFS-46",
-        AttendAssociation: "OFS-47",
-        WrittingContracts: "OFS-48",
-        ReviewingContracts: "OFS-49",
-        LegalServices: "OFS-50",
-        Closing_Settelment: "OFS-51",
-        Closing_Payments: "OFS-52",
-        Closing_AgainstClient: "OFS-53",
-        Closing_ReSchedule: "OFS-58",
-        Closing_Consultants: "OFS-54",
-        Closing_Others: "OFS-55",
-        BlueStamp: "OFS-56",
-        DifferentPanel: "OFS-57"
-    }
     function LoadPrintRequirementForm(PartialViewName) {
         var _PartialViewName = PartialViewName;
         P_CaseId = parseInt($("#CaseId").val());
@@ -291,6 +225,22 @@
                 }).then(function () {
                     CopyToClipboard('swal2-content');
                     console.log("Table Copied");
+                    $("#ModificationContainer").empty();
+                    table.ajax.reload(function (json) {
+                        var info = table.page.info();
+                        var MCTRecords = table.ajax.json().MuscatTotal;
+                        var SLLRecords = table.ajax.json().SalalahTotal;
+                        var recordsTotal = table.ajax.json().recordsTotal;
+
+                        if ($("#txtUserRole").val() == "VoucherApproval") {
+                            $('#MCTTTL').text("MUSCAT : " + MCTRecords);
+                            $('#SLLTTL').text("SALALAH : " + SLLRecords);
+                            $('#TTL').text(recordsTotal);
+                        }
+                    });
+                    $('html, body').animate({
+                        scrollTop: $("#PartialViewContainer").offset().top
+                    }, 1000);
                 });
             }
         });
@@ -475,14 +425,14 @@
                         LoadPVData = false;
 
                     ResetHiddenItems();
-                    $("#ModificationContainer").empty();
-                    $("#ModificationContainer").html(result);
+                    //$("#ModificationContainer").empty();
+                    //$("#ModificationContainer").html(result);
 
                     LoadPrintRequirementForm("SaveResult");
                     ReloadTable();
 
-                    if (!LoadPVData)
-                        $("#ModificationContainer").empty();
+                    //if (!LoadPVData)
+                      //  $("#ModificationContainer").empty();
                 }
             },
             error: function () {
@@ -584,11 +534,12 @@
         });
     };
     function ResetHiddenItems() {
-        $("#hidNextHearingDate").val("");
-        $("#hidCourtDecisionChange").val("");
-        $("#hidCurrentHearingDate").val("");
-        $("#hidRequirement").val("");
-        $("#hidFirstEmailDate").val("");
+        console.log('function ResetHiddenItems() ');
+        $("#hidNextHearingDate").val('');
+        $("#hidCourtDecisionChange").val('');
+        $("#hidCurrentHearingDate").val('');
+        $("#hidRequirement").val('');
+        $("#hidFirstEmailDate").val('');
 
         bkClientReply = "";
         bkRequirements = "";
@@ -1630,10 +1581,6 @@
 
                     GetTab(PartialContainer, GetSessionRollURL, _parameters);
                 });
-
-
-
-
             }
         });
     }
@@ -1645,12 +1592,6 @@
         var IsShowNextHearing = false; //DIV_CHANGE_NEXT_HEARING_DATE
         var IsShowRequirement = false;
         var IsShowMemo = false;
-
-        console.log('Updated On');
-        console.log($('#UpdatedOn').val());
-
-        console.log('hidUpdated On');
-        console.log($('#hidUpdatedOn').val());
 
         $('#DIV_WAITING_CLIENT_REPLY').removeClass("AppHidden").addClass("AppHidden");
         $('#DIV_WAITING_COURT_FOLLOW').removeClass("AppHidden").addClass("AppHidden");
@@ -1730,11 +1671,6 @@
 
         var ReqAlreadyExists = bkReqWorkRequired + bkReqSessionNotes + bkReqLastDate + bkReqFollowerId;
 
-        console.log(ReqAlreadyExists);
-        console.log(ReqAlreadyExists.length);
-        console.log($("#FollowDIV").hasClass("AppHidden"));
-        console.log($('#selReqFollowYN').val());
-
         if (!$("#FollowDIV").hasClass("AppHidden")) {
             if (ReqAlreadyExists.length > 1) {
                 if ($('#selReqFollowYN').val() == "") {
@@ -1772,10 +1708,6 @@
         }
 
         var MemoAlreadyExists = bkSuspendedWorkRequired + bkSuspendedSessionNotes + bkSuspendedLastDate + bkSuspendedFollowerId;
-
-
-        console.log(MemoAlreadyExists);
-        console.log(MemoAlreadyExists.length);
 
         if (!$("#ForMemoDIV").hasClass("AppHidden")) {
             if (MemoAlreadyExists.length > 1) {
@@ -1875,7 +1807,6 @@
             }
         }
 
-
         $('#modal-preSubmit').modal('hide');
         submitForm();
     }
@@ -1934,7 +1865,6 @@
             ProcessPreSubmit();
         }
     }
-
 </script>
 <div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>
 <div class="content-wrapper">
@@ -2015,14 +1945,15 @@
                             <button type="button" id="btn_SessionClientApproval" style="font-size: 1rem !important;" class="btn btn-block SessionClientApproval @ViewBag.SessionClientApprovalActive btn-lg navButton">موافقة الموكل: الاستئناف/الطعن<br />CLIENT APPROVAL</button>
                         </div>
                         <div class="col">
-                            <button type="button" id="btn_SessionJudgement" style="font-size: 1rem !important;" class="btn btn-block SessionJudgement @ViewBag.SessionJudgementActive btn-lg navButton">استلام أحكام غير مطابقة<br />JUDGMENT</button>
-                        </div>
-                        <div class="col">
                             <button type="button" id="btn_SessionPauseEnfReq" style="font-size: 1rem !important;" class="btn btn-block SessionPauseEnfReq @ViewBag.SessionPauseEnfReqActive btn-lg navButton">وقف التنفيذ في العليا<br />PAUSE ENFC REQUEST</button>
                         </div>
                         <div class="col">
                             <button type="button" id="btn_SessionAppointment" style="font-size: 1rem !important;" class="btn btn-block SessionAppointment @ViewBag.SessionAppointmentActive btn-lg navButton">المواعيد<br />APPOINTMENT</button>
                         </div>
+                        <div class="col">
+                            @*<button type="button" id="btn_SessionJudgement" style="font-size: 1rem !important;" class="btn btn-block SessionJudgement @ViewBag.SessionJudgementActive btn-lg navButton">استلام أحكام غير مطابقة<br />JUDGMENT</button>*@
+                        </div>
+
                     </div>
                 </div>
                 <div class="col-sm-12 @ViewBag.ViewFollowUpTabs">
@@ -2135,7 +2066,7 @@
             <!-- /.modal-dialog -->
         </div>
         <div class="modal fade" id="modal-preSubmit">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content bg-gradient-light">
                     <div class="modal-header">
                         <h4 class="modal-title"></h4>
@@ -2195,11 +2126,11 @@
                         <div id="DIV_CHANGE_UPDATE_DATE" class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label dir="auto" for="selUpdateDateYN">أنت لم تقم بتغيير تاريخ التحديث (تاريخ الجلسة)؟</label>
+                                    <label dir="auto" for="selUpdateDateYN">Change (Update Date) to be today's date? هل تريد تغيير ( تاريخ التحديث ) ليكون تاريخ اليوم؟</label>
                                     <select class="form-control select2bs4" id="selUpdateDateYN">
                                         <option value="">PLEASE SELECT</option>
-                                        <option value="N">حفظ بدون تغيير CONTUNUE</option>
-                                        <option value="Y">تغييرالتاريخ والحفظ CHANGE</option>
+                                        <option value="Y">YES</option>
+                                        <option value="N">NO</option>
                                     </select>
                                 </div>
                             </div>
@@ -2255,10 +2186,19 @@
     <script type="text/javascript">
         var IsValidOfficeFileNo = true;
         $(document).ready(function () {
-            //console.log("Index Sessions Roll Page");
-            //console.log("Partial View Tobe Load :: " + $("#txtViewToLoad").val());
-            //console.log("View Container :: " + $("#txtViewContainer").val());
-
+            $.fn.autoResize = function () {
+                let r = e => {
+                    e.style.height = '';
+                    e.style.height = e.scrollHeight + 'px'
+                };
+                return this.each((i, e) => {
+                    e.style.overflow = 'hidden';
+                    r(e);
+                    $(e).bind('input', e => {
+                        r(e.target);
+                    })
+                })
+            };
             var _PartialViewName = $("#txtViewToLoad").val();
             var _CaseId = -1;
             var _SessionRollId = -1;
@@ -2366,15 +2306,19 @@
             });
 
             $('#selUpdateDateYN').on("change", function () {
-                if ($('#selUpdateDateYN').val() == "Y") {
-                    $('#modal-preSubmit').modal('hide');
+                if ($('#selUpdateDateYN').val() == "")
+                    return false;
+
+                if ($('#selUpdateDateYN').val() == "N") {
+                    $("#hidCourtDecisionChange").val("N");
                 }
-                else if ($('#selUpdateDateYN').val() == "N") {
+                else if ($('#selUpdateDateYN').val() == "Y") {
                     $("#CurrentHearingDate").datepicker("setDate", new Date).datepicker({
                         format: 'dd/mm/yyyy',
                         autoclose: true
                     });
                 }
+                ShowPreSubmit();
             });
 
             $('#selNextHearingDateYN').on("change", function () {
@@ -2383,6 +2327,14 @@
                 }
             });
 
+            $("body").on('propertychange change keyup paste input', "#CourtDecision", function (e) {
+                $("#hidCourtDecisionChange").val("N");
+                if (this.value.length) {
+                    $("#hidCourtDecisionChange").val("Y");
+                }
+
+                $('textarea').autoResize();
+            });
         });
     </script>
 }

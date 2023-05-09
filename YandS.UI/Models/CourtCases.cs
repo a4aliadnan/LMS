@@ -232,6 +232,11 @@
         [Column(TypeName = "datetime2")]
         public DateTime? UpdateBoxDate { get; set; }
         public int? UpdateBoxBy { get; set; }
+        public decimal? CorporateFee { get; set; }
+        [Column(TypeName = "nvarchar(max)")]
+        public string CorporateWorkDetail { get; set; }
+        [StringLength(1)]
+        public string Translation { get; set; }
 
         public ICollection<CourtCasesDetail> DetailId { get; set; }
         public ICollection<CourtCasesEnforcement> EnforcementId { get; set; }
@@ -240,6 +245,7 @@
         public ICollection<PayVoucher> Voucher_No { get; set; }
         public ICollection<CaseRegistration> CaseRegistrationId { get; set; }
         public ICollection<SessionsRoll> SessionRollId { get; set; }
+        public ICollection<DecisionTranslation> TranslationId { get; set; }
 
         public CourtCases()
         {
@@ -476,6 +482,7 @@
         public string FormPrintWorkRequired { get; set; }
         [Display(Name = "FILE STATUS حالة الملف")]
         public string FileStatus { get; set; }
+        public string OfficeFileStatus { get; set; }
 
         #endregion
 
@@ -698,7 +705,12 @@
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? MoneyTrCompleteDate { get; set; }
         #endregion
-
+        [DisplayFormat(DataFormatString = "{0:###0.000#}", ApplyFormatInEditMode = true)]
+        [Display(Name = "CORPORATE FEE")]
+        public decimal? CorporateFee { get; set; }
+        [Display(Name = "DETAILS")]
+        public string CorporateWorkDetail { get; set; }
+        public string Translation { get; set; }
         public PayVoucherVM PVDetail { get; set; }
         public ToBeRegisterVM()
         {
@@ -901,6 +913,7 @@
         [Display(Name = "NOTES")]
         public string ClosingNotes { get; set; }
         public string TransportationFee { get; set; }
+        public string Translation { get; set; }
     }
     public class CourtStatusVM
     {

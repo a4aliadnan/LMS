@@ -97,14 +97,6 @@
         $("#hidNextHearingDate").val($("#NextHearingDate").val());
         $("#hidCurrentHearingDate").val($("#CurrentHearingDate").val());
 
-        $('#CourtDecision').bind('input propertychange', function () {
-            $("#hidCourtDecisionChange").val("N");
-
-            if (this.value.length) {
-                $("#hidCourtDecisionChange").val("Y");
-            }
-        });
-
         $("#CurrentHearingDate").datepicker({
             todayBtn: 1,
             autoclose: true,

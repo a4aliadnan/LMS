@@ -48,6 +48,7 @@
                 { data: 'DefClientName', name: 'DefClientName', autoWidth: true },
                 { data: 'COURT', name: 'COURT', autoWidth: true },
                 { data: 'CourtRefNo', name: 'CourtRefNo', autoWidth: true },
+                { data: 'CurrentEnforcementLevel', name: 'CurrentEnforcementLevel', autoWidth: true },
                 { data: 'CauseOfRecovery', name: 'CauseOfRecovery', autoWidth: true },
                 { data: 'LawyerName', name: 'LawyerName', autoWidth: true },
                 //{ data: 'DateOfInstruction', name: 'DateOfInstruction', autoWidth: true },
@@ -108,7 +109,7 @@
                 //    targets: 8
                 //},
                 {
-                    targets: 9, render: function (data) {
+                    targets: 10, render: function (data) {
                         if (data) {
                             return "<div dir = 'auto' class='text-right text-wrap'>" + data.replace(/(\r\n|\n|\r)/g, "<br />"); +"</div>";
                         }
@@ -272,6 +273,7 @@
                         <th style="width:80px !important" class="VMiddle text-center">NAME</th>
                         <th style="width:70px !important" class="VMiddle text-center">COURT</th>
                         <th class="VMiddle text-center">ENFC NO.</th>
+                        <th style="width:100px !important;" class="VMiddle text-center">STAGE<br />المرحلة</th>
                         <th class="VMiddle text-center">السبب<br />CAUSE</th>
                         <th class="VMiddle text-center">المحامي<br />LAWYER</th>
                         @*<th style="width:50px !important" class="VMiddle text-center">تاريخ الإبلاغ <br />DATE OF<br />INSTRUCTION</th>*@

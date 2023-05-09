@@ -12,19 +12,11 @@
     }
 </style>
 <script>
-    var CreateMasterTableDetailURL = '@Url.Action("CreateMasterTableDetail", "CommonTask", new { area = string.Empty })';
-    var CreateMasterTableDetailForPayToURL = '@Url.Action("CreateMasterTableDetailForPayTo", "CommonTask", new { area = string.Empty })';
     var GetIndexDataURL = '@Url.Action("AjaxIndexData", "CourtCases", new { area = string.Empty })';
-    var GetClientClassificationURL = '@Url.Action("GetTab", "CourtCases", new { area = string.Empty })';
-    var GetRegisterIdURL = '@Url.Action("GetRegisterId", "CommonTask", new { area = string.Empty })';
-    var GetSessionRollURL = '@Url.Action("GetTab", "SessionRoll", new { area = string.Empty })';
     var DDLToAppend;
     var ValidationMessage = "";
     var NotValid = false;
     var DefendentTable;
-    var CurrentCaseLevel = 0;
-    var ClientClassification = 0;
-    var ClientClassificationCode = "";
     var SmartFilter = false;
     var bkClientReply = "";
     var bkRequirements = "";
@@ -44,68 +36,6 @@
     var bkSuspendedSessionNotes = "";
     var bkSuspendedLastDate = "";
     var bkSuspendedFollowerId = "";
-
-    const OfficeFileStatus = {
-        PleaseSelect: "0",
-        Transfer: "OFS-1",
-        LegalNotice: "OFS-2",
-        WritingSubmission: "OFS-3",
-        SubmissionApproval: "OFS-4",
-        ApprovalForAppeal: "OFS-10",
-        ApprovalForSupreme: "OFS-11",
-        CompletingDocs: "OFS-13",
-        ReceiptOfFees: "OFS-14",
-        Translation: "OFS-15",
-        Scanned: "OFS-5",
-        OnlineRegTBR: "OFS-6",
-        CourtMsg: "OFS-7",
-        ForPayment: "OFS-8",
-        WithLawyer: "OFS-12",
-        Registered: "OFS-9",
-        RunningCase: "OFS-16",
-        JudgIssued: "OFS-17",
-        ToKnowSessionDate: "OFS-18",
-        RequestMeetJudge: "OFS-19",
-        Dispute: "OFS-20",
-        AuctionSession: "OFS-21",
-        OnlineRegENF: "OFS-22",
-        Announcement: "OFS-23",
-        ContactingAuthorities: "OFS-24",
-        JudicalSale: "OFS-25",
-        ArrestApplication: "OFS-26",
-        ArrestOrder: "OFS-27",
-        Suspendfd: "OFS-28",
-        RecoveryRedStamp_Close: "OFS-29",
-        RecoveryRedStamp_Re_Open: "OFS-30",
-        MeetJudge: "OFS-31",
-        AssigningJudge: "OFS-32",
-        JudgStamp: "OFS-33",
-        CorrectingJudg: "OFS-34",
-        PeriodOfAppeal: "OFS-35",
-        RedStamp: "OFS-36",
-        EnfcApproval: "OFS-37",
-        Refundable3_4: "OFS-38",
-        FileReview: "OFS-39",
-        OPP: "OFS-40",
-        ROP: "OFS-41",
-        MOL: "OFS-42",
-        PACP: "OFS-43",
-        MOCI: "OFS-44",
-        EstablishingCompanies: "OFS-45",
-        Arbition: "OFS-46",
-        AttendAssociation: "OFS-47",
-        WrittingContracts: "OFS-48",
-        ReviewingContracts: "OFS-49",
-        LegalServices: "OFS-50",
-        Closing_Settelment: "OFS-51",
-        Closing_Payments: "OFS-52",
-        Closing_AgainstClient: "OFS-53",
-        Closing_ReSchedule: "OFS-58",
-        Closing_Consultants: "OFS-54",
-        Closing_Others: "OFS-55",
-        BlueStamp: "OFS-56",
-        DifferentPanel: "OFS-57"
-    }
     var _parameters = {};
     var GetTabFromSessionRoll = function (divToLoad, p_url, p_parameters) {
         divToLoad.empty();
@@ -271,8 +201,34 @@
             console.log("File Status :: " + $('#FileStatus').val());
             console.log("Case Id :: " + $("#HFCaseId").val());
             console.log("Case Registration Id :: " + $("#hidCaseRegistrationId").val());
+            console.log("Case hidFileStatus Value :: " + $("#hidFileStatus").val());
+            console.log("Case FileStatus :: " + $("#FileStatus").val());
 
-            var skipFileStatus = ["1", "9", "11"];
+            var skipFileStatus = [OfficeFileStatus.Transfer, OfficeFileStatus.Registered, "11"];
+
+            if ($('#hidFileStatusChanged').val() === "Y") {
+                if ($("#hidFileStatus").val() === $("#FileStatus").val()) {
+                    console.log("Same file status need to be restore Values");
+                    $("#FormPrintWorkRequired").val($("#hidFormPrintWorkRequired").val());
+                    $("#OfficeProcedure").val($("#hidOfficeProcedure").val());
+
+                    if ($("#hidFormPrintLastDate").val() != "")
+                        $("#FormPrintLastDate").datepicker("setDate", $("#hidFormPrintLastDate").val());
+                }
+                else {
+                    $("#FormPrintWorkRequired").val('');
+                    $("#OfficeProcedure").val('');
+                    $("#FormPrintLastDate").val('');
+
+                    $('#FormPrintLastDate').datepicker({
+                        format: "dd/mm/yyyy",
+                        todayBtn: "linked",
+                        clearBtn: true,
+                        autoclose: true,
+                        orientation: "bottom auto"
+                    });
+                }
+            }
 
             if (skipFileStatus.indexOf($("#FileStatus").val()) == -1) {
                 if (!$.trim($("#DIV_REMARKS").html())) {
@@ -655,47 +611,56 @@
             GetTabFromSessionRoll(PartialContainer, GetSessionRollURL, _parameters);
         }
         else {
-            if (tableName == "ToBeRegister") {
-                p_parameters = { "CaseId": parseInt(data.CaseId) };
-                $.ajax({
-                    url: GetRegisterIdURL,
-                    type: "POST",
-                    data: JSON.stringify(p_parameters),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: 'json',
-                    success: function (result) {
-                        $.blockUI();
-                        console.log(result);
-                        console.log(result.CaseRegistrationId);
-                        var RedirectURL = "/CaseRegistration/IndexMain/" + result.CaseRegistrationId;
-                        window.location = RedirectURL;
-                    }
-                });
-            }
-            else {
-                console.log($("#txtViewToLoad").val());
-                console.log($("#txtViewContainer").val());
 
-                console.log(data);
-
-                var _PartialViewName = "_ModifyCase";
-                var PartialContainer = $($("#txtViewContainer").val());
-
-                if (_PartialViewName == "_ModifyCase") {
-                    $(".navButton").each(function () {
-                        var btnActiveClass = $(this).attr("id").split('_')[1] + "Active";
-                        $(this).removeClass(btnActiveClass);
+            switch (tableName) {
+                case "ToBeRegister":
+                    p_parameters = { "CaseId": parseInt(data.CaseId) };
+                    $.ajax({
+                        url: GetRegisterIdURL,
+                        type: "POST",
+                        data: JSON.stringify(p_parameters),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: 'json',
+                        success: function (result) {
+                            $.blockUI();
+                            console.log(result);
+                            console.log(result.CaseRegistrationId);
+                            var RedirectURL = "/CaseRegistration/IndexMain/" + result.CaseRegistrationId;
+                            window.location = RedirectURL;
+                        }
                     });
-                    $("#spanCreateBtnText").text("");
-                    $("#spanCreateBtnText").text("MODIFY CASE");
-                    $("#txtViewToLoad").val("_ModifyCase");
-                    $("#btn_CreateCase").addClass("CreateCaseActive");
+                    break;
+                case "CORPORATE":
+                    var _PartialViewName = "_ModifyCase";
+                    var PartialContainer = $("#ModificationContainer");
                     _parameters = { ClassificationId: _PartialViewName, Mode: data.CaseId };
-                }
-                else
-                    _parameters = { ClassificationId: _PartialViewName, Mode: "C" };
+                    GetTab(PartialContainer, GetClientClassificationURL, _parameters);
+                    break;
+                case "TRANSELATION":
+                    var _PartialViewName = "_PartViewTranslation";
+                    var PartialContainer = $("#ModificationContainer");
+                    _parameters = { ClassificationId: _PartialViewName, Mode: data.CaseId };
+                    GetTab(PartialContainer, GetClientClassificationURL, _parameters);
+                    break;
+                default:
+                    var _PartialViewName = "_ModifyCase";
+                    var PartialContainer = $($("#txtViewContainer").val());
 
-                GetTab(PartialContainer, GetClientClassificationURL, _parameters);
+                    if (_PartialViewName == "_ModifyCase") {
+                        $(".navButton").each(function () {
+                            var btnActiveClass = $(this).attr("id").split('_')[1] + "Active";
+                            $(this).removeClass(btnActiveClass);
+                        });
+                        $("#spanCreateBtnText").text("");
+                        $("#spanCreateBtnText").text("MODIFY CASE");
+                        $("#txtViewToLoad").val("_ModifyCase");
+                        $("#btn_CreateCase").addClass("CreateCaseActive");
+                        _parameters = { ClassificationId: _PartialViewName, Mode: data.CaseId };
+                    }
+                    else
+                        _parameters = { ClassificationId: _PartialViewName, Mode: "C" };
+
+                    GetTab(PartialContainer, GetClientClassificationURL, _parameters);
             }
         }
     }
@@ -959,11 +924,11 @@
             return "";
     }
     function ResetHiddenItems() {
-        $("#hidRequirement").val("");
-        $("#hidFirstEmailDate").val("");
-        $("#hidNextHearingDate").val("");
-        $("#hidCourtDecisionChange").val("");
-        $("#hidCurrentHearingDate").val("");
+        $("#hidRequirement").val('');
+        $("#hidFirstEmailDate").val('');
+        $("#hidNextHearingDate").val('');
+        $("#hidCourtDecisionChange").val('');
+        $("#hidCurrentHearingDate").val('');
 
         bkClientReply = "";
         bkRequirements = "";
@@ -1226,7 +1191,27 @@
                     html: $("#ContentDIV").html()
                 }).then(function () {
                     CopyToClipboard('swal2-content');
-                    $("#btn_General").trigger('click');
+
+                    if ($("#hidIsCorporate").val() == "Y" || $("#hidIsTranselation").val() == "Y") {
+                        table.ajax.reload(function (json) {
+                            var info = table.page.info();
+                            var MCTRecords = table.ajax.json().MuscatTotal;
+                            var SLLRecords = table.ajax.json().SalalahTotal;
+                            var recordsTotal = table.ajax.json().recordsTotal;
+
+                            if ($("#txtUserRole").val() == "VoucherApproval") {
+                                $('#MCTTTL').text("MUSCAT : " + MCTRecords);
+                                $('#SLLTTL').text("SALALAH : " + SLLRecords);
+                                $('#TTL').text(recordsTotal);
+                            }
+                        });
+                        $('html, body').animate({
+                            scrollTop: $("#PartialViewContainer").offset().top
+                        }, 1000);
+                    }
+                    else {
+                        $("#btn_General").trigger('click');
+                    }
                 });
             }
         });
@@ -1264,6 +1249,12 @@
                 $("#" + DivID).removeClass("AppHidden").addClass("AppHidden");
             }
         });
+    }
+    function ValidateTranslation() {
+        console.log("ValidateTranslation()");
+        NotValid = false;
+
+        return NotValid;
     }
 
 </script>
@@ -1319,10 +1310,6 @@
         <div class="card card-primary card-outline">
             <div class="card-header">
                 <h3 class="card-title">LIST OF COURT CASES</h3>
-
-                @*<div class="card-tools">
-                        <button style="width:200px;" title="CREATE CASE" class="btn btn-success btn-lg" onclick="location.href='@Url.Action("Create", "CourtCases")';return false;">  CREATE CASE</button>
-                    </div>*@
             </div>
             <div class="card-body">
                 <div id="div_courtCasesMailButton" style="padding-bottom:10px;" class="col-sm-12">
@@ -1400,6 +1387,8 @@
     <input type="hidden" id="HFCaseId" value="@ViewBag.HFCaseId" />
     <input type="hidden" id="hidIsCourtFollow" value="@ViewBag.hidIsCourtFollow" />
     <input type="hidden" id="hidIsClientReply" value="@ViewBag.hidIsClientReply" />
+    <input type="hidden" id="hidIsCorporate" value="@ViewBag.hidIsCorporate" />
+    <input type="hidden" id="hidIsTranselation" value="@ViewBag.hidIsTranselation" />
     <input type="hidden" id="hidIsAgainstClient" value="N" />
     <input type="hidden" id="hidRequirement" value="" />
     <input type="hidden" id="hidFirstEmailDate" value="" />
@@ -1463,7 +1452,7 @@
     <!-- /.modal-dialog -->
 </div>
 <div class="modal fade" id="modal-preSubmit">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content bg-gradient-light">
             <div class="modal-header">
                 <h4 class="modal-title"></h4>
@@ -1499,11 +1488,11 @@
                 <div id="DIV_CHANGE_UPDATE_DATE" class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <label dir="auto" for="selUpdateDateYN">أنت لم تقم بتغيير تاريخ التحديث (تاريخ الجلسة)؟</label>
+                            <label dir="auto" for="selUpdateDateYN">Change (Update Date) to be today's date? هل تريد تغيير ( تاريخ التحديث ) ليكون تاريخ اليوم؟</label>
                             <select class="form-control select2bs4" id="selUpdateDateYN">
                                 <option value="">PLEASE SELECT</option>
-                                <option value="N">حفظ بدون تغيير CONTUNUE</option>
-                                <option value="Y">تغييرالتاريخ والحفظ CHANGE</option>
+                                <option value="Y">YES</option>
+                                <option value="N">NO</option>
                             </select>
                         </div>
                     </div>
@@ -1557,6 +1546,19 @@
                 _parameters = { ClassificationId: _PartialViewName, Mode: $('#HFCaseId').val() };
             else
                 _parameters = { ClassificationId: _PartialViewName, Mode: "C" };
+
+            if ($("#hidIsCorporate").val() == "Y") {
+                $("#div_IsCourtFollow").removeClass("AppHidden").addClass("AppHidden");
+                $("#div_courtCasesMailButton").removeClass("AppHidden").addClass("AppHidden");
+                $('.clsCourtCases').removeClass("active");
+                $(".clsCorporate").addClass("active");
+            }
+            else if ($("#hidIsTranselation").val() == "Y") {
+                $("#div_IsCourtFollow").removeClass("AppHidden").addClass("AppHidden");
+                $("#div_courtCasesMailButton").removeClass("AppHidden").addClass("AppHidden");
+                $('.clsCourtCases').removeClass("active");
+                $(".clsTranselation").addClass("active");
+            }
 
             GetTab(PartialContainer, GetClientClassificationURL, _parameters);
 
@@ -1654,21 +1656,50 @@
             });
 
             $('#selUpdateDateYN').on("change", function () {
-                if ($('#selUpdateDateYN').val() == "Y") {
-                    $('#modal-preSubmit').modal('hide');
+                if ($('#selUpdateDateYN').val() == "")
+                    return false;
+
+                if ($('#selUpdateDateYN').val() == "N") {
+                    $("#hidCourtDecisionChange").val("N");
                 }
-                else if ($('#selUpdateDateYN').val() == "N") {
+                else if ($('#selUpdateDateYN').val() == "Y") {
                     $("#CurrentHearingDate").datepicker("setDate", new Date).datepicker({
                         format: 'dd/mm/yyyy',
                         autoclose: true
                     });
                 }
+                ShowPreSubmit();
             });
 
             $('#selNextHearingDateYN').on("change", function () {
                 if ($('#selNextHearingDateYN').val() == "N") {
                     $('#modal-preSubmit').modal('hide');
                 }
+            });
+
+            $("body").on('propertychange change keyup paste input', "#CourtDecision", function (e) {
+                console.log("body change");
+
+                $("#hidCourtDecisionChange").val("N");
+                if (this.value.length) {
+                    $("#hidCourtDecisionChange").val("Y");
+                }
+
+                $('textarea').autoResize();
+            });
+
+            $("body").on('propertychange change keyup paste input', "#CourtDecisionTranslated", function (e) {
+                if (this.value.length) {
+                    var $hidCourtDecision = $("#hidCourtDecision").val() + '\n';
+                    var $CourtDecisionTranslated = $("#CourtDecisionTranslated").val();
+
+                    $("#CourtDecision").val($hidCourtDecision + $CourtDecisionTranslated);
+                }
+                else {
+                    $("#CourtDecision").val($("#hidCourtDecision").val());
+                }
+
+                $('textarea').autoResize();
             });
         });
     </script>

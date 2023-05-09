@@ -9,7 +9,10 @@
     var CheckDuplicateDetailURL = '@Url.Action("CheckDuplicateDetail", "CommonTask", new { area = string.Empty })';
     var GetDefaulterDetailURL = '@Url.Action("GetDefaulterDetail", "CourtCases", new { area = string.Empty })';
     var SubmitFormURL = '@Url.Action("TobeReg", "CourtCases", new { area = string.Empty })';
-
+    var CurrentCaseLevel = 0;
+    var ClientClassification = 0;
+    var ClientClassificationCode = "";
+    var CaseTypeCode = "";
     function ProcessAddClient() {
         if ($("#MstDesc").val() != "") {
 
@@ -284,47 +287,43 @@
         }
     }
     function ProcessClientClassificationChange() {
-        ClientClassificationCode = $('#ClientClassificationCode').val();
-        ClientClassification = parseInt($('#ClientClassificationCode').val());
         $("#div_CaseLevelPartialView").empty();
         $("#PartialViewContainerBoxCC").removeClass("AppHidden").addClass("AppHidden");
         $("#div_CurrentCaseLevel").removeClass("AppHidden").addClass("AppHidden");
         $("#div_ArabicData").removeClass("AppHidden").addClass("AppHidden");
 
-        if (ClientClassificationCode == "1") {
-            $("#ClassificationText").text("BANKS");
-        }
-        else if (ClientClassificationCode == "2") {
-            $("#ClassificationText").text("FINANCE");
-        }
-        else if (ClientClassificationCode == "3") {
-            $("#ClassificationText").text("REAL ESTATE");
-        }
-        else if (ClientClassificationCode == "4") {
-            $("#ClassificationText").text("INSURANCE");
-        }
-        else if (ClientClassificationCode == "5") {
-            $("#ClassificationText").text("COMPANIES");
-        }
-        else if (ClientClassificationCode == "6") {
-            $("#ClassificationText").text("INDIVIDUALS");
-        }
-
         if (CaseTypeCode == "6") {
-
-            $("#ClassificationText").text("CONSULTANCY");
+            ClientClassificationCode = "7";
+            $("#ClassificationText").text("CORPORATE");
         }
-
+        else {
+            if (ClientClassificationCode == "1") {
+                $("#ClassificationText").text("BANKS");
+            }
+            else if (ClientClassificationCode == "2") {
+                $("#ClassificationText").text("FINANCE");
+            }
+            else if (ClientClassificationCode == "3") {
+                $("#ClassificationText").text("REAL ESTATE");
+            }
+            else if (ClientClassificationCode == "4") {
+                $("#ClassificationText").text("INSURANCE");
+            }
+            else if (ClientClassificationCode == "5") {
+                $("#ClassificationText").text("COMPANIES");
+            }
+            else if (ClientClassificationCode == "6") {
+                $("#ClassificationText").text("INDIVIDUALS");
+            }
+        }
 
         var PartialContainer = $("#PartialViewContainerCC");
-        _parameters = { ClassificationId: $('#ClientClassificationCode').val(), Mode: $('#CaseId').val() };
+        _parameters = { ClassificationId: ClientClassificationCode, Mode: $('#CaseId').val() };
 
         GetTab(PartialContainer, GetClientClassificationURL, _parameters);
     }
 
     function ProcessNotConsultancy() {
-        ClientClassificationCode = $('#ClientClassificationCode').val();
-        ClientClassification = parseInt($('#ClientClassificationCode').val());
         $("#PartialViewContainerBoxCC").removeClass("AppHidden").addClass("AppHidden");
         $("#div_ArabicData").removeClass("AppHidden").addClass("AppHidden");
 
@@ -347,14 +346,8 @@
             $("#ClassificationText").text("INDIVIDUALS");
         }
 
-        if (CaseTypeCode == "6") {
-
-            $("#ClassificationText").text("CONSULTANCY");
-        }
-
-
         var PartialContainer = $("#PartialViewContainerCC");
-        _parameters = { ClassificationId: $('#ClientClassificationCode').val(), Mode: $('#CaseId').val() };
+        _parameters = { ClassificationId: ClientClassificationCode, Mode: $('#CaseId').val() };
 
         GetTab(PartialContainer, GetClientClassificationURL, _parameters);
     }
@@ -362,29 +355,20 @@
 
         var PartialContainer = $("#PartialViewContainerCC");
 
-        if ($('#CaseTypeCode').val() == "6") {
-            //$("#div_CaseLevelPartialView").empty();
+        if (CaseTypeCode == "6") {
             $("#PartialViewContainerBoxCC").removeClass("AppHidden").addClass("AppHidden");
-            //$("#div_CurrentCaseLevel").removeClass("AppHidden").addClass("AppHidden");
             $("#div_ArabicData").removeClass("AppHidden").addClass("AppHidden");
-            $("#ClassificationText").text("CONSULTANCY");
+            $("#ClassificationText").text("CORPORATE");
             _parameters = { ClassificationId: "7", Mode: $('#CaseId').val() };
             GetTab(PartialContainer, GetClientClassificationURL, _parameters);
         }
         else {
-            //$('#ClientClassificationCode').select2().trigger('change');
-            //ProcessClientClassificationChange();
             ProcessNotConsultancy();
         }
-
-        //if ($('#CaseTypeCode').val() == "6") {
-        //    $("#ClassificationText").text("CONSULTANCY");
-        //}
     }
     function ProcessCaseLevelChange() {
-        CurrentCaseLevel = parseInt($('#CaseLevelCode').val());
         if (CurrentCaseLevel > 0) {
-            if ($('#CaseLevelCode').val() == "7") {
+            if (CurrentCaseLevel == 7) {
                 if ($("#hidAllowCloseCase").val() == "N") {
 
                     Swal.fire({
@@ -450,11 +434,14 @@
                     //    title: 'Done!',
                     //    html: "Data Save Successfully"
                     //});
+                    if ($("#hidIsCorporate").val() == "Y") {
 
-                    $("#PartialViewContainer").empty();
-                    $("#PartialViewContainer").append("Loading...");
-                    $("#PartialViewContainer").html(result);
-
+                    }
+                    else {
+                        $("#PartialViewContainer").empty();
+                        $("#PartialViewContainer").append("Loading...");
+                        $("#PartialViewContainer").html(result);
+                    }
                     ResetHiddenItems();
 
                     LoadPrintRequirementForm("SaveResult");
@@ -467,8 +454,17 @@
     }
 
     $(document).ready(function () {
-        console.log("Modify Case Partail View Document Page");
-        console.log("ProcessClientClassificationChange()");
+        console.log("Modify Case Partail View Document Ready Page");
+        CurrentCaseLevel = parseInt($('#CaseLevelCode').val());
+        CaseTypeCode = $('#CaseTypeCode').val();
+        ClientClassificationCode = $('#ClientClassificationCode').val();
+        ClientClassification = parseInt($('#ClientClassificationCode').val());
+
+        console.log("CaseTypeCode :: " + CaseTypeCode);
+        console.log("CaseLevelCode :: " + CurrentCaseLevel);
+        console.log("ClientClassificationCode :: " + ClientClassificationCode);
+        console.log("ClientClassification :: " + ClientClassification);
+
         $('.datepicker').datepicker({
             format: "dd/mm/yyyy",
             todayBtn: "linked",
@@ -557,8 +553,8 @@
             }
 
             if (CaseTypeCode == "6") {
-
-                $("#ClassificationText").text("CONSULTANCY");
+                ClientClassificationCode = "7";
+                $("#ClassificationText").text("CORPORATE");
             }
 
 
@@ -578,7 +574,7 @@
                 else {
                     LoadClientByClassification($('#ClientClassificationCode').val())
 
-                    _parameters = { ClassificationId: $('#ClientClassificationCode').val(), Mode: $('#CaseId').val() };
+                    _parameters = { ClassificationId: ClientClassificationCode, Mode: $('#CaseId').val() };
 
                     GetTab(PartialContainer, GetClientClassificationURL, _parameters);
 
@@ -590,6 +586,7 @@
 
         });
         $('#CaseTypeCode').on("change", function () {
+            CaseTypeCode = $('#CaseTypeCode').val();
             ProcessCaseTypeChange();
         });
 
@@ -810,14 +807,6 @@
 
         $("#hidNextHearingDate").val($("#NextHearingDate").val());
         $("#hidCurrentHearingDate").val($("#CurrentHearingDate").val());
-
-        $('#CourtDecision').bind('input propertychange', function () {
-            $("#hidCourtDecisionChange").val("N");
-
-            if (this.value.length) {
-                $("#hidCourtDecisionChange").val("Y");
-            }
-        });
 
         $("#CurrentHearingDate").datepicker({
             todayBtn: 1,

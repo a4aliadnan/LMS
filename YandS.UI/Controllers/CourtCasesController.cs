@@ -43,6 +43,7 @@ namespace YandS.UI.Controllers
         private string OfficeFileFilterSR = Helper.getOfficeFileFilterSR();
         private string OfficeFileFilterENF = Helper.getOfficeFileFilterENF();
         private string OfficeFileFilterTBR = Helper.getOfficeFileFilterTBR();
+        private string OfficeFileFilterCORP = Helper.getOfficeFileFilterCORP();
         private string[] FileStatusCodesSR = Helper.getFileStatusCodesSR();
         private string[] FileStatusCodesTBR = Helper.getFileStatusCodesTBR();
 
@@ -233,7 +234,7 @@ namespace YandS.UI.Controllers
 
             }
         }
-        private void ProcessCourtDetail(object obj, string CastObjName = null, string PartialViewName = null)
+        private void ProcessCourtDetail(object obj, string CastObjName = null, string PartialViewName = null, bool ModifyCase = false)
         {
             var modal = (ToBeRegisterVM)obj;
 
@@ -276,7 +277,6 @@ namespace YandS.UI.Controllers
                     if (OldCourtRegNumber != NewCourtRegNumber)
                         Helper.ProcessCaseRegistrationProgress(obj);
                 }
-
             }
             else
             {
@@ -506,10 +506,13 @@ namespace YandS.UI.Controllers
                     ProcessSessionRollDetail(modal);
             }
 
-            if (!string.IsNullOrEmpty(PartialViewName))
-                UpdateCourtCases(obj, "", PartialViewName);
-            else
-                UpdateCourtCases(obj);
+            if (!ModifyCase)
+            {
+                if (!string.IsNullOrEmpty(PartialViewName))
+                    UpdateCourtCases(obj, "", PartialViewName);
+                else
+                    UpdateCourtCases(obj);
+            }
         }
         private void UpdateCourtCases(object obj, string CastObjName = null, string PartialViewName = null)
         {
@@ -613,7 +616,9 @@ namespace YandS.UI.Controllers
                 ViewModal.UpdatedBy = Helper.GetUserName(courtCases?.UpdatedBy ?? 0);
                 ViewModal.UpdateBoxBy = courtCases?.UpdateBoxBy;
                 ViewModal.UpdateBoxByName = Helper.GetUserName(courtCases?.UpdateBoxBy ?? 0);
-
+                ViewModal.OfficeFileStatus = courtCases.OfficeFileStatus;
+                ViewModal.CorporateFee = courtCases.CorporateFee;
+                ViewModal.CorporateWorkDetail = courtCases.CorporateWorkDetail;
 
                 #region BEFORE COURT
 
@@ -982,9 +987,10 @@ namespace YandS.UI.Controllers
         }
         private void ProcessModifyCase(ToBeRegisterVM RegModal)
         {
+            bool IsUpdate = Helper.IsUpdate(RegModal, "ToBeRegisterVM");
+
             ProcessCourtDecisionHistory(RegModal);
             CourtCases courtCases = db.CourtCase.Where(w => w.CaseId == RegModal.CaseId).FirstOrDefault();
-            //db.Entry(courtCases).Entity.OfficeFileNo = RegModal.OfficeFileNo;
             db.Entry(courtCases).Entity.ClientClassificationCode = RegModal.ClientClassificationCode;
             db.Entry(courtCases).Entity.ReceptionDate = RegModal.ReceptionDate;
             db.Entry(courtCases).Entity.ReceiveLevelCode = RegModal.ReceiveLevelCode;
@@ -998,6 +1004,7 @@ namespace YandS.UI.Controllers
             db.Entry(courtCases).Entity.SessionRollDefendentName = RegModal.SessionRollDefendentName;
 
             db.Entry(courtCases).Entity.CaseLevelCode = RegModal.CaseLevelCode;
+
             db.Entry(courtCases).Entity.CurrentHearingDate = RegModal.CurrentHearingDate;
             db.Entry(courtCases).Entity.CourtDecision = RegModal.CourtDecision;
             db.Entry(courtCases).Entity.SessionRemarks = RegModal.SessionRemarks;
@@ -1064,14 +1071,23 @@ namespace YandS.UI.Controllers
                 db.Entry(courtCases).Entity.ClaimAmount = RegModal.ClaimAmount;
             }
             else if (RegModal.ClientClassificationCode == "7")
+            {
+                RegModal.FileStatus = RegModal.OfficeFileStatus;
                 db.Entry(courtCases).Entity.Subject = RegModal.Subject;
+                db.Entry(courtCases).Entity.CorporateWorkDetail = RegModal.CorporateWorkDetail;
+                db.Entry(courtCases).Entity.CorporateFee = RegModal.CorporateFee;
+                db.Entry(courtCases).Entity.OfficeFileStatus = RegModal.OfficeFileStatus;
+            }
+
+            if (IsUpdate)
+            {
+                Helper.CreateTranslation(RegModal, "ToBeRegisterVM");
+                db.Entry(courtCases).Entity.UpdateBoxDate = DateTime.UtcNow.AddHours(4);
+                db.Entry(courtCases).Entity.UpdateBoxBy = User.Identity.GetUserId();
+            }
 
             db.Entry(courtCases).State = EntityState.Modified;
             db.SaveChanges();
-
-            /*
-             TO BE REGISTER need to created in Case Registration
-            */
 
             if (RegModal.CaseLevelCode == "1")
             {
@@ -1117,9 +1133,9 @@ namespace YandS.UI.Controllers
             else if (courtCases.CaseLevelCode == "2")
                 UpdateBeforeCourt("CREATEBEFORECOURT", RegModal);
             else if (int.Parse(courtCases.CaseLevelCode) >= 3 && int.Parse(courtCases.CaseLevelCode) <= 5)
-                ProcessCourtDetail(RegModal);
+                ProcessCourtDetail(RegModal, null, null, true);
             else if (courtCases.CaseLevelCode == "6")
-                ProcessCourtDetail(RegModal, "ENFORCEMENT");
+                ProcessCourtDetail(RegModal, "ENFORCEMENT", null, true);
         }
         private void ProcessModifyEnforcement(ToBeRegisterVM RegModal)
         {
@@ -1162,7 +1178,7 @@ namespace YandS.UI.Controllers
         {
             if (User.IsInRole("VoucherApproval") || User.IsSysAdmin())
             {
-                if (id == -3)
+                if (id == -3 || id == -5)
                 {
                     ViewBag.LocationId = "A";
                     ViewBag.LocationCheckALL = "checked";
@@ -1178,7 +1194,7 @@ namespace YandS.UI.Controllers
             }
             else
             {
-                if (id == -3)
+                if (id == -3 || id == -5)
                 {
                     ViewBag.LocationId = "A";
                     ViewBag.LocationCheckALL = "checked";
@@ -1200,6 +1216,8 @@ namespace YandS.UI.Controllers
             ViewBag.IsCourtFollow = "";
             ViewBag.hidIsCourtFollow = "N";
             ViewBag.hidIsClientReply = "N";
+            ViewBag.hidIsCorporate = "N";
+            ViewBag.hidIsTranselation = "N";
 
             if (id == null)
             {
@@ -1247,6 +1265,20 @@ namespace YandS.UI.Controllers
                     ViewBag.EnforcementActive = "EnforcementActive";
                     ViewBag.ViewToLoad = "_Enforcement";
                     ViewBag.hidIsClientReply = "Y";
+                }
+                else if(id == -4)
+                {
+                    ViewBag.ViewFollowUpTabs = "AppHidden";
+                    ViewBag.IsCourtFollow = "AppHidden";
+                    ViewBag.ViewToLoad = "_Corporate";
+                    ViewBag.hidIsCorporate = "Y";
+                }
+                else if(id == -5)
+                {
+                    ViewBag.ViewFollowUpTabs = "AppHidden";
+                    ViewBag.IsCourtFollow = "AppHidden";
+                    ViewBag.ViewToLoad = "_Translation";
+                    ViewBag.hidIsTranselation = "Y";
                 }
                 else
                 {
@@ -1476,6 +1508,9 @@ namespace YandS.UI.Controllers
                     else if (RegModal.ClientClassificationCode == "7")
                     {
                         courtCases.Subject = RegModal.Subject;
+                        courtCases.CorporateWorkDetail = RegModal.CorporateWorkDetail;
+                        courtCases.CorporateFee = RegModal.CorporateFee;
+                        courtCases.OfficeFileStatus = RegModal.OfficeFileStatus;
                     }
 
                     db.CourtCase.Add(courtCases);
@@ -1756,6 +1791,7 @@ namespace YandS.UI.Controllers
             ViewBag.ClientName = ClientName;
             ViewBag.Defendant = courtCases.Defendant;
             ViewBag.TransportationFee = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", courtCases.TransportationFee);
+            ViewBag.Translation = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", courtCases.Translation);
 
 
             return View(ViewModal);
@@ -1767,14 +1803,20 @@ namespace YandS.UI.Controllers
         {
             var errors = ModelState.Values.SelectMany(v => v.Errors);
             string UploadRoot = Helper.GetStorageRoot;
+
             CourtCases courtCases = db.CourtCase.Where(w => w.CaseId == modal.CaseId).FirstOrDefault();
 
             if (ModelState.IsValid)
             {
+                if (courtCases == null)
+                {
+                    return HttpNotFound();
+                }
 
                 db.Entry(courtCases).Entity.SpecialInstructions = modal.SpecialInstructions;
                 db.Entry(courtCases).Entity.ClosingNotes = modal.ClosingNotes;
                 db.Entry(courtCases).Entity.TransportationFee = modal.TransportationFee;
+                db.Entry(courtCases).Entity.Translation = modal.Translation;
 
                 db.Entry(courtCases).State = EntityState.Modified;
                 db.SaveChanges();
@@ -1790,6 +1832,11 @@ namespace YandS.UI.Controllers
                     upload.SaveAs(UploadPath);
                 }
 
+                if (modal.Translation == "1")
+                {
+                    Helper.CreateTranslation(modal, "FinanceVM");
+                }
+
                 Session["Message"] = new MessageVM
                 {
                     Category = "Success",
@@ -1801,10 +1848,7 @@ namespace YandS.UI.Controllers
                 //return RedirectToAction("Index");
             }
 
-            if (courtCases == null)
-            {
-                return HttpNotFound();
-            }
+            
 
             var ClientName = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.Client && w.Mst_Value == courtCases.ClientCode).FirstOrDefault().Mst_Desc;
 
@@ -2003,9 +2047,11 @@ namespace YandS.UI.Controllers
                 if (ModelState.IsValid)
                 {
                     ToBeRegisterVM ViewModal = new ToBeRegisterVM();
+                    bool IsUpdate = false;
 
                     switch (RegModal.SavePV_Data)
                     {
+                        #region "MODIFY CASE + CORPORATE"
                         case "_ModifyCase":
                             ProcessModifyCase(RegModal);
                             ViewModal = GetFilledPartailView(RegModal.CaseId);
@@ -2023,7 +2069,13 @@ namespace YandS.UI.Controllers
                             ViewModal.PartialViewName = RegModal.PartialViewName;
                             
                             break;
+                        #endregion
+
+                        #region "MONEY TRANSFER"
                         case "MoneyTransfer":
+                            ProcessCourtDecisionHistory(RegModal);
+                            IsUpdate = Helper.IsUpdate(RegModal, "ToBeRegisterVM");
+
                             DefendentTransferDTO objDTO = new DefendentTransferDTO();
                             objDTO.Userid = HttpContext.User.Identity.GetUserId();
                             objDTO.DataFor = RegModal.DataFor;
@@ -2057,36 +2109,38 @@ namespace YandS.UI.Controllers
                                 ViewModal.MoneyTrCompleteDate = defendentTransfer.MoneyTrCompleteDate;
                             }
 
-                            
+                            if (IsUpdate)
+                            {
+                                Helper.CreateTranslation(RegModal, "ToBeRegisterVM");
+                                Helper.UpdateBoxModified(RegModal);
+                            }
                             break;
+                        #endregion
+
+                        #region "ENFORCEMENT STAGE"
                         case "ENFInfoStage":
-                            Helper.UpdateBoxModified(RegModal);
+                            ProcessCourtDecisionHistory(RegModal);
+
+                            if (RegModal.UpdatePV_Type == "ENF_UPDATE_SESSION")
+                            {
+
+                            }
+                            else
+                                IsUpdate = Helper.IsUpdate(RegModal, "ToBeRegisterVM");
+
+                            if (IsUpdate)
+                            {
+                                Helper.CreateTranslation(RegModal, "ToBeRegisterVM");
+                                Helper.UpdateBoxModified(RegModal);
+                            }
+
                             ProcessModifyEnforcement(RegModal);
-
-                            if (upload != null && upload.ContentLength > 0)
-                            {
-                                string FileExtension = Path.GetExtension(upload.FileName);
-
-                                string FileName = RegModal.CaseId + FileExtension;
-
-                                string UploadPath = Path.Combine(UploadRoot, "DEF_Lawyer_Docs", FileName);
-
-                                upload.SaveAs(UploadPath);
-                            }
-
-                            if (uploadAddress != null && uploadAddress.ContentLength > 0)
-                            {
-                                string FileExtension = Path.GetExtension(uploadAddress.FileName);
-
-                                string FileName = RegModal.CaseId + FileExtension;
-
-                                string UploadPath = Path.Combine(UploadRoot, "DEF_Address_Docs", FileName);
-
-                                uploadAddress.SaveAs(UploadPath);
-                            }
                             ViewModal = GetFilledPartailView(RegModal.CaseId);
                             ViewModal.PartialViewName = "ENFInfoStage";
                             break;
+                        #endregion
+
+                        #region "ENFORCEMENT ADDRESS DETAIL"
                         case "ENFAddressDetail":
                         case "ENFDetail":
                             ProcessModifyEnforcement(RegModal);
@@ -2114,6 +2168,9 @@ namespace YandS.UI.Controllers
                             ViewModal = GetFilledPartailView(RegModal.CaseId);
                             ViewModal.PartialViewName = "ENFInfoStage";
                             break;
+                        #endregion
+
+                        #region "PAYMENT VOUCHER CREATE"
                         case "PVCreate":
                             int Voucher_No = CreatePayVoucher(RegModal);
                             RegModal.PVDetail.Voucher_No = Voucher_No;
@@ -2132,6 +2189,7 @@ namespace YandS.UI.Controllers
                             ViewModal = GetFilledPartailView(RegModal.CaseId);
                             ViewModal.PartialViewName = "ENFInfoStage";
                             break;
+                            #endregion
                     }
 
 
@@ -2525,8 +2583,10 @@ namespace YandS.UI.Controllers
                     }
                     else if (ClassificationId == "7")
                     {
-                        ViewBag.ClasificationName = "CONSULTANCY";
+                        ViewBag.ClasificationName = "CORPORATE";
                         PartialViewName = "_ClientClassificationConsulatancy";
+                        ViewBag.OfficeFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterCORP), "Mst_Value", "Mst_Desc");
+
                     }
                     else
                         PartialViewName = ClassificationId;
@@ -2725,8 +2785,9 @@ namespace YandS.UI.Controllers
                     }
                     else if (ClassificationId == "7")
                     {
-                        ViewBag.ClasificationName = "CONSULTANCY";
+                        ViewBag.ClasificationName = "CORPORATE";
                         PartialViewName = "_ClientClassificationConsulatancy";
+                        ViewBag.OfficeFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterCORP), "Mst_Value", "Mst_Desc", ViewModal.OfficeFileStatus);
                     }
                     else
                         PartialViewName = ClassificationId;
@@ -2985,6 +3046,42 @@ namespace YandS.UI.Controllers
                             ViewBag.CourtFollow_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow_LawyerId);
                             ViewModal.UpdatePV_Type = "ENF_UPDATE_SESSION";
 
+                        }
+                        else if (PartialViewName == "_PartViewTranslation")
+                        {
+                            DecisionTranslationVM RetModel = new DecisionTranslationVM();
+                            CourtCases courtCases = db.CourtCase.Find(caseid);
+                            var decisionTranslation = db.DecisionTranslation.Where(w => w.CaseId == courtCases.CaseId && !w.TranslationDone).OrderByDescending(o => o.TranslationId).FirstOrDefault();
+
+                            if (decisionTranslation == null)
+                                return HttpNotFound();
+                            else
+                            {
+                                RetModel.TranslationId = decisionTranslation.TranslationId;
+                                RetModel.CaseId = decisionTranslation.CaseId;
+                                RetModel.CourtDecision = courtCases.CourtDecision;
+
+                                ViewBag.hidCourtDecision = courtCases.CourtDecision;
+
+                                //// Set up the Arabic text
+                                //string arabicText = courtCases.CourtDecision;
+
+                                //System.Text.Encoding originalEncoding = System.Text.Encoding.GetEncoding("windows-1256");
+
+                                //// Convert the string to UTF-8
+                                //byte[] utf8Bytes = System.Text.Encoding.Convert(originalEncoding, System.Text.Encoding.UTF8, originalEncoding.GetBytes(arabicText));
+                                //string utf8String = System.Text.Encoding.UTF8.GetString(utf8Bytes);
+                                //// Create a CultureInfo object for Arabic
+                                //System.Globalization.CultureInfo arabicCulture = new System.Globalization.CultureInfo("ar");
+
+                                //// Use the TextInfo object to convert the Arabic text to English
+                                //System.Globalization.TextInfo arabicTextInfo = arabicCulture.TextInfo;
+                                //string englishText = arabicTextInfo.ToTitleCase(utf8String);
+
+                                //RetModel.CourtDecisionTranslated = englishText;
+
+                                return PartialView(PartialViewName, RetModel);
+                            }
                         }
                     }
                     else
@@ -3407,6 +3504,11 @@ namespace YandS.UI.Controllers
 
                     CourtCases courtCases = db.CourtCase.Find(_ModalToSave.CaseId);
 
+                    Helper.ProcessCourtDecisionHistory(courtCasesDetail, HttpContext.User.Identity.GetUserId(), "CourtCasesDetailVM");
+                                        
+                    bool IsUpdate = Helper.IsUpdate(courtCasesDetail, "CourtCasesDetailVM");
+
+
                     //db.Entry(courtCases).Entity.CaseLevelCode = SelectCaseLevel;
                     db.Entry(courtCases).Entity.YandSNotes = courtCasesDetail.YandSNotesUpdate;
                     db.Entry(courtCases).Entity.CurrentHearingDate = courtCasesDetail.CurrentHearingDate;
@@ -3421,6 +3523,13 @@ namespace YandS.UI.Controllers
                     db.Entry(courtCases).Entity.ClientReply = courtCasesDetail.ClientReply;
                     db.Entry(courtCases).Entity.NextHearingDate = courtCasesDetail.NextHearingDate;
                     db.Entry(courtCases).Entity.TransportationSource = courtCasesDetail.TransportationSource;
+
+                    if (IsUpdate)
+                    {
+                        Helper.CreateTranslation(courtCasesDetail, "CourtCasesDetailVM");
+                        db.Entry(courtCases).Entity.UpdateBoxDate = DateTime.UtcNow.AddHours(4);
+                        db.Entry(courtCases).Entity.UpdateBoxBy = User.Identity.GetUserId();
+                    }
 
                     db.Entry(courtCases).State = EntityState.Modified;
                     db.SaveChanges();
@@ -3473,6 +3582,11 @@ namespace YandS.UI.Controllers
                     _ModalToSave = db.CourtCasesDetail.Find(_ModalToSave.DetailId);
 
                     CourtCases courtCases = db.CourtCase.Find(_ModalToSave.CaseId);
+
+                    Helper.ProcessCourtDecisionHistory(courtCasesDetail, HttpContext.User.Identity.GetUserId(), "CourtCasesDetailVM");
+
+                    bool IsUpdate = Helper.IsUpdate(courtCasesDetail, "CourtCasesDetailVM");
+
                     //db.Entry(courtCases).Entity.CaseLevelCode = SelectCaseLevel;
                     db.Entry(courtCases).Entity.YandSNotes = courtCasesDetail.YandSNotesUpdate;
                     db.Entry(courtCases).Entity.CurrentHearingDate = courtCasesDetail.CurrentHearingDate;
@@ -3487,6 +3601,13 @@ namespace YandS.UI.Controllers
                     db.Entry(courtCases).Entity.ClientReply = courtCasesDetail.ClientReply;
                     db.Entry(courtCases).Entity.NextHearingDate = courtCasesDetail.NextHearingDate;
                     db.Entry(courtCases).Entity.TransportationSource = courtCasesDetail.TransportationSource;
+
+                    if (IsUpdate)
+                    {
+                        Helper.CreateTranslation(courtCasesDetail, "CourtCasesDetailVM");
+                        db.Entry(courtCases).Entity.UpdateBoxDate = DateTime.UtcNow.AddHours(4);
+                        db.Entry(courtCases).Entity.UpdateBoxBy = User.Identity.GetUserId();
+                    }
 
                     db.Entry(courtCases).State = EntityState.Modified;
                     db.SaveChanges();

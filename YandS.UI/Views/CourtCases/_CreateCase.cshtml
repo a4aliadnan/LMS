@@ -314,13 +314,13 @@
         }
 
         if (CaseTypeCode == "6") {
-
-            $("#ClassificationText").text("CONSULTANCY");
+            ClientClassificationCode = "7";
+            $("#ClassificationText").text("CORPORATE");
         }
 
 
         var PartialContainer = $("#PartialViewContainerCC");
-        _parameters = { ClassificationId: $('#ClientClassificationCode').val(), Mode: "C" };
+        _parameters = { ClassificationId: ClientClassificationCode, Mode: "C" };
 
         GetTab(PartialContainer, GetClientClassificationURL, _parameters);
     }
@@ -333,7 +333,7 @@
             $("#PartialViewContainerBoxCC").removeClass("AppHidden").addClass("AppHidden");
             $("#div_CurrentCaseLevel").removeClass("AppHidden").addClass("AppHidden");
             $("#div_ArabicData").removeClass("AppHidden").addClass("AppHidden");
-            $("#ClassificationText").text("CONSULTANCY");
+            $("#ClassificationText").text("CORPORATE");
             _parameters = { ClassificationId: "7", Mode: "C" };
             GetTab(PartialContainer, GetClientClassificationURL, _parameters);
         }
@@ -497,7 +497,7 @@
                     $("#ClassificationText").text("INDIVIDUALS");
                 }
                 else if ($(this).val() == "7") {
-                    $("#ClassificationText").text("CONSULTANCY");
+                    $("#ClassificationText").text("CORPORATE");
                 }
             }
         });

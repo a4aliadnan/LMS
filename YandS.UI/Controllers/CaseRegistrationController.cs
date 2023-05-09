@@ -860,7 +860,7 @@ namespace YandS.UI.Controllers
         private void UpdateCourtCaseUpdate(CaseRegistrationVM modal)
         {
             Helper.ProcessCourtDecisionHistory(modal, HttpContext.User.Identity.GetUserId(), "CaseRegistrationVM");
-
+            bool IsUpdate = Helper.IsUpdate(modal, "CaseRegistrationVM");
             var CourtCase = db.CourtCase.Find(modal.CaseId);
 
             db.Entry(CourtCase).Entity.CurrentHearingDate = modal.CurrentHearingDate;
@@ -871,6 +871,14 @@ namespace YandS.UI.Controllers
             db.Entry(CourtCase).Entity.FirstEmailDate = modal.FirstEmailDate;
             db.Entry(CourtCase).Entity.NextHearingDate = modal.NextHearingDate;
             db.Entry(CourtCase).Entity.OfficeFileStatus = modal.FileStatus;
+
+            if (IsUpdate)
+            {
+                Helper.CreateTranslation(modal, "CaseRegistrationVM");
+                db.Entry(CourtCase).Entity.UpdateBoxDate = DateTime.UtcNow.AddHours(4);
+                db.Entry(CourtCase).Entity.UpdateBoxBy = User.Identity.GetUserId();
+            }
+
             db.Entry(CourtCase).State = EntityState.Modified;
             db.SaveChanges();
 

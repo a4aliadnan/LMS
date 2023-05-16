@@ -604,7 +604,6 @@ namespace YandS.UI.Controllers
             //else
             //    ModalToReturn.SessionRollDefendentName = GetDefendentName(CaseId);
         }
-
         private void SaveModel(SessionsRollVM modal, ref SessionsRoll ModelToSave)
         {
             if(modal.PartialViewName == "_SessionJudgementSupreme" || modal.PartialViewName == "_SessionRollSupremeUpdate" || modal.PartialViewName == "_SessionFollowSupreme" || modal.PartialViewName == "_SessionUpdate"|| modal.PartialViewName == "_SessionUpdateSupreme" || modal.PartialViewName == "_SessionClose")
@@ -1285,6 +1284,9 @@ namespace YandS.UI.Controllers
                 if (modal.Update_Addreass == "Y")
                     UpdateSessionDEFAddress(modal);
 
+                if (modal.Update_CourtTransfer == "Y")
+                    CreateCourtMoneyTransfer(modal);
+
                 if (modal.Update_PV == "Y")
                 {
                     int Voucher_No = CreatePayVoucher(modal);
@@ -1892,6 +1894,10 @@ namespace YandS.UI.Controllers
         {
             Helper.UpdateOfficeFileStatus(CaseId, OfficeFileStatus);
         }
+        private void CreateCourtMoneyTransfer(SessionsRollVM modal)
+        {
+            Helper.CreateCourtMoneyTransfer(modal, "SessionsRollVM");
+        }
 
         #endregion
 
@@ -1919,20 +1925,22 @@ namespace YandS.UI.Controllers
                 string LawyerId = string.Empty;
                 int MCTRecords = 0;
                 int SLLRecords = 0;
+                string ProcedureName = string.Empty;
 
                 try
                 {
                     DataFor = request.Params["DataTableName"].ToString();
                     LocationId = request.Params["LocationId"].ToString();
 
-                    if (DataFor == "SUPREME")
+                    if (DataFor.In("TO_RECEIVE_JUDGEMENT","SUPREME"))
                     {
                         List<string> parName = Helper.getDefaultParNames();
                         List<object> parValues = Helper.getDefaultParValues();
+                        ProcedureName = request.Params["ProcedureName"].ToString();
                         parName.AddRange(new[] { "@UserName", "@DataFor", "@Location" });
                         parValues.AddRange(new[] { User.Identity.Name, DataFor, LocationId });
 
-                        var ds = Helper.getDataSet(parName.ToArray(), parValues.ToArray(), TableNames: new string[] { "data", "summary" }, procedureName: "CASE_MANAGEMENT-GET_SUPREME");
+                        var ds = Helper.getDataSet(parName.ToArray(), parValues.ToArray(), TableNames: new string[] { "data", "summary" }, procedureName: ProcedureName);
                         DataTable dt = ds.Tables["data"];
                         DataTable Summarydt = ds.Tables["summary"];
 
@@ -2627,6 +2635,9 @@ namespace YandS.UI.Controllers
 
                 ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", modal.ClientReply);
                 ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", modal.TransportationSource);
+
+                ViewBag.CourtFollow = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", modal.CourtFollow);
+                ViewBag.CourtFollow_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", modal.CourtFollow_LawyerId);
 
                 ViewBag.HFCurrentHearingDate = modal.CurrentHearingDate?.ToString("dd/MM/yyyy");
                 ViewBag.HFCourtDecision = modal.CourtDecision;

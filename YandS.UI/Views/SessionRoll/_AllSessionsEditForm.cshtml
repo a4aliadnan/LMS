@@ -321,6 +321,64 @@
         return NotValid;
 
     }
+    function ValidateMoneyTransfer() {
+        if ($("#MoneyTrRequestDate").val() == "") {
+            ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER REQUEST DATE" : ValidationMessage + "<br />" + "PLEASE ENTER REQUEST DATE";
+            NotValid = true;
+        }
+        else {
+
+            var today = new Date();
+
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = dd + '/' + mm + '/' + yyyy;
+
+            console.log(today);
+            console.log($("#MoneyTrRequestDate").val());
+
+            if (process($("#MoneyTrRequestDate").val()) > process(today)) {
+                ValidationMessage = ValidationMessage == "" ? "REQUEST DATE CANNOT BE GREATER THEN CURRENT DATE" : ValidationMessage + "<br />" + "REQUEST DATE CANNOT BE GREATER THEN CURRENT DATE";
+                NotValid = true;
+            }
+        }
+
+        if ($("#TransferDate").val() == "") {
+            //ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER TRANSFER DATE" : ValidationMessage + "<br />" + "PLEASE ENTER TRANSFER DATE";
+            //NotValid = true;
+        }
+        else {
+
+            var today = new Date();
+
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = dd + '/' + mm + '/' + yyyy;
+
+            console.log(today);
+            console.log($("#TransferDate").val());
+
+            if (process($("#TransferDate").val()) > process(today)) {
+                ValidationMessage = ValidationMessage == "" ? "TRANSFER DATE CANNOT BE GREATER THEN CURRENT DATE" : ValidationMessage + "<br />" + "TRANSFER DATE CANNOT BE GREATER THEN CURRENT DATE";
+                NotValid = true;
+            }
+
+            if ($('#TransferAmount').val() == "") {
+                ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER VALID TRANSFER AMOUNT" : ValidationMessage + "<br />" + "PLEASE ENTER VALID TRANSFER AMOUNT";
+                NotValid = true;
+            }
+            else if (parseFloat($('#TransferAmount').val()) <= 0) {
+                ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER VALID TRANSFER AMOUNT" : ValidationMessage + "<br />" + "PLEASE ENTER VALID TRANSFER AMOUNT";
+                NotValid = true;
+            }
+        }
+
+        return NotValid;
+    }
 
 
     function ShowSessionNoteBanner() {
@@ -458,7 +516,7 @@
                 }
             }
 
-            if (!$("#CourtFollowDIV").hasClass("AppHidden")) {
+            if ($('#CourtFollow').val() == "1") {
                 NotValid = ValidateCourtFollow();
 
                 if (NotValid) {
@@ -505,6 +563,19 @@
                         type: "error",
                         title: 'ERROR...',
                         html: "*** DEFENDANT CONTACT AND ADDRESS عنوان الخصم ووكيله القانوني ***<br />" + ValidationMessage
+                    });
+                    return false;
+                }
+            }
+
+            if (!$("#CourtTransferDIV").hasClass("AppHidden")) {
+                NotValid = ValidateMoneyTransfer();
+
+                if (NotValid) {
+                    Swal.fire({
+                        type: "error",
+                        title: 'ERROR...',
+                        html: "*** TO FOLLOW  MONEY TRANSFER متابعة تحويل أموال من المحكمة ***<br />" + ValidationMessage
                     });
                     return false;
                 }
@@ -570,6 +641,9 @@
         
         $('#DIV_FORM_HIDDEN_ITEMS').removeClass("AppHidden").addClass("AppHidden");
 
+        console.log("ShowSessionNotes");
+        console.log($('#SessionRollId').val());
+        ShowSessionNotes($('#SessionRollId').val())
     });
 </script>
 @using (Html.BeginForm("Index", "SessionRoll", FormMethod.Post, new { id = "frm_SessionRollEditForm", enctype = "multipart/form-data", onsubmit = "return onPreSubmit(this);" }))

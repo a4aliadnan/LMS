@@ -12,7 +12,7 @@
             "orderMulti": false,
             "destroy": true,
             "ordering": true,
-            "pageLength": 25,
+            "pageLength": 500,
             "lengthMenu": [[5, 10, 25, 50, 100, 500], [5, 10, 25, 50, 100, 500]],
             "ajax": {
                 "url": GetIndexDataURL,
@@ -30,6 +30,7 @@
                 { data: 'CaseLevelName', name: 'CaseLevelName', autoWidth: true },
                 { data: 'COURT', name: 'COURT', autoWidth: false },
                 { data: 'CourtRefNo', name: 'CourtRefNo', autoWidth: false, render: function (data) { if (data) return data.split("^ ").join("<br/>"); else return ""; } },
+                { data: 'FileStatusName', name: 'FileStatusName', autoWidth: false },
                 { data: 'CurrentHearingDate', name: 'CurrentHearingDate', autoWidth: false },
                 { data: 'CourtDecision', name: 'CourtDecision', autoWidth: false },
                 {
@@ -54,7 +55,7 @@
                         else
                             return "";
                     },
-                    targets: [0, 1, 2, 3, 4, 5]
+                    targets: [0, 1, 2, 3, 4, 5, 6]
                 },
                 {
                     render: function (data) {
@@ -63,10 +64,10 @@
                         else
                             return "";
                     },
-                    targets: 6
+                    targets: 7
                 },
                 {
-                    targets: [7], render: function (data) {
+                    targets: [8], render: function (data) {
                         if (data) {
                             return "<div dir = 'auto' class='text-right text-wrap'>" + data.replace(/(\r\n|\n|\r)/g, "<br />"); +"</div>";
                         }
@@ -77,6 +78,14 @@
             ],
             "drawCallback": function (settings) {
                 $("#ModificationContainer").empty();
+            },
+            "createdRow": function (row, data, dataIndex) {
+                var rowColor = "";
+
+                if (data.DaysCounter >= 3)
+                    rowColor = "tableColorDarkRed";
+
+                $(row).addClass(rowColor);
             },
             initComplete: function () {
                 console.log("DataTable Initiated !!");
@@ -150,6 +159,7 @@
                     <th style="width:120px !important;" class="VMiddle text-center">CURRENT LEVEL</th>
                     <th style="width:80px !important;" class="VMiddle text-center">COURT</th>
                     <th style="width:150px !important;" class="VMiddle text-center">CASE NO</th>
+                    <th style="width:150px !important;" class="VMiddle text-center">FILE STATUS</th>
                     <th style="width:50px !important;" class="VMiddle text-center">UPDATE DATE</th>
                     <th class="VMiddle text-center">UPDATE</th>
                     <th style="width:10px !important;" class="all"></th>

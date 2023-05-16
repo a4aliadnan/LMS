@@ -81,11 +81,11 @@ namespace YandS.UI.Controllers
                 Session["User"] = Employee;
             }
 
-            if (User.Identity.Name == "22" || User.Identity.Name == "10")
+            if (User.Identity.Name.In("22", "10"))
                 return RedirectToAction("Index", "SessionRoll");
             else
             {
-                if (User.Identity.Name == "31")
+                if (User.Identity.Name.In("31", "50"))
                     return RedirectToAction("Index", "CourtCases", new RouteValueDictionary(new { id = -4 }));
                 if (User.Identity.Name == "9")
                     return RedirectToAction("Index", "CourtCases", new RouteValueDictionary(new { id = -5 }));

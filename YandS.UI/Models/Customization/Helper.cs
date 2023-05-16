@@ -284,6 +284,23 @@ namespace YandS.UI
                 ReturnResult = Image.ToString();
             return ReturnResult;
         }
+        public static string GetClosingEmail_Doc(int id)
+        {
+            string ReturnResult = string.Empty;
+
+            string UploadRoot = GetStorageRoot;
+
+            string UploadPath = Path.Combine(UploadRoot, "ClosingEmail");
+
+            DirectoryInfo d = new DirectoryInfo(UploadPath);
+            var Image = d.GetFiles(id + ".*").OrderByDescending(f => f.FullName).FirstOrDefault();
+
+            if (Image == null)
+                ReturnResult = "#";
+            else
+                ReturnResult = Image.ToString();
+            return ReturnResult;
+        }
         public static List<MasterSetups> GetFileStatusList(string ddlfor, bool forMainIndex = true)
         {
             RBACDbContext db = new RBACDbContext();
@@ -3704,6 +3721,7 @@ namespace YandS.UI
             {
                 DecisionTranslation decisionTranslation = new DecisionTranslation();
                 CourtCases courtCases = new CourtCases();
+                string CurrentCourtDecision = string.Empty;
 
                 using (var db = new RBACDbContext())
                 {
@@ -3716,36 +3734,95 @@ namespace YandS.UI
                     {
                         var modal = (ToBeRegisterVM)objmodal;
                         courtCases = db.CourtCase.Find(modal.CaseId);
+                        CurrentCourtDecision = modal.CourtDecision;
                     }
                     else if (objName == "CaseRegistrationVM")
                     {
                         var modal = (CaseRegistrationVM)objmodal;
                         courtCases = db.CourtCase.Find(modal.CaseId);
+                        CurrentCourtDecision = modal.CourtDecision;
                     }
                     else if (objName == "CourtCasesDetailVM")
                     {
                         var modal = (CourtCasesDetailVM)objmodal;
                         courtCases = db.CourtCase.Find(modal.CaseId);
+                        CurrentCourtDecision = modal.CourtDecision;
                     }
                     else
                     {
                         var modal = (SessionsRollVM)objmodal;
                         courtCases = db.CourtCase.Find(modal.CaseId);
+                        CurrentCourtDecision = modal.CourtDecision;
                     }
                     
                     decisionTranslation = db.DecisionTranslation.Where(w => w.CaseId == courtCases.CaseId && !w.TranslationDone).OrderByDescending(o => o.TranslationId).FirstOrDefault();
 
                     if (decisionTranslation == null)
                     {
-                        decisionTranslation = new DecisionTranslation();
-                        decisionTranslation.CaseId = courtCases.CaseId;
-                        decisionTranslation.CurrentHearingDate = courtCases.CurrentHearingDate;
-                        decisionTranslation.CourtDecision = courtCases.CourtDecision;
+                        bool containsEnglishCharacters = System.Text.RegularExpressions.Regex.IsMatch(CurrentCourtDecision, @"[a-zA-Z]");
 
-                        db.DecisionTranslation.Add(decisionTranslation);
-                        db.SaveChanges();
+                        if (!containsEnglishCharacters)
+                        {
+                            decisionTranslation = new DecisionTranslation();
+                            decisionTranslation.CaseId = courtCases.CaseId;
+                            decisionTranslation.CurrentHearingDate = courtCases.CurrentHearingDate;
+                            decisionTranslation.CourtDecision = courtCases.CourtDecision;
+
+                            db.DecisionTranslation.Add(decisionTranslation);
+                            db.SaveChanges();
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+        public static void CreateCourtMoneyTransfer(object objmodal, string objName)
+        {
+            try
+            {
+                DecisionTranslation decisionTranslation = new DecisionTranslation();
+                DefendentTransferDTO objDTO = new DefendentTransferDTO();
+                objDTO.Userid = HttpContext.Current.User.Identity.GetUserId();
+                
+                using (var db = new RBACDbContext())
+                {
+                    if (objName == "FinanceVM")
+                    {
+                        var modal = (FinanceVM)objmodal;
+                    }
+                    else if (objName == "ToBeRegisterVM")
+                    {
+                        var modal = (ToBeRegisterVM)objmodal;
+                    }
+                    else if (objName == "CaseRegistrationVM")
+                    {
+                        var modal = (CaseRegistrationVM)objmodal;
+                    }
+                    else if (objName == "CourtCasesDetailVM")
+                    {
+                        var modal = (CourtCasesDetailVM)objmodal;
+                    }
+                    else
+                    {
+                        var modal = (SessionsRollVM)objmodal;
+                        objDTO.DataFor = modal.DataFor;
+                        objDTO.DefendentTransferId = modal.DefendentTransferId;
+                        objDTO.CaseId = modal.CaseId;
+                        objDTO.CaseLevelCode = modal.SessionLevel;
+                        objDTO.TransferDate = modal.TransferDate;
+                        objDTO.Amount = modal.TransferAmount ?? 0;
+                        objDTO.MoneyTrRequestDate = modal.MoneyTrRequestDate;
+                        objDTO.MoneyTrCompleteDate = modal.MoneyTrCompleteDate;
 
                     }
+
+                    DataTable _result = Helper.ProcessDefendentTransfer(objDTO);
+
+                    string ProcessFlag = _result.Rows[0]["ProcessFlag"].ToString();
+                    string ProcessMessage = _result.Rows[0]["ProcessMessage"].ToString();
 
                 }
             }
@@ -3753,6 +3830,18 @@ namespace YandS.UI
             {
 
             }
+        }
+        public static string GetSessionRemarks(int Id)
+        {
+            string RetSessionRemarks = string.Empty;
+
+            using (var context = new RBACDbContext())
+            {
+                SessionsRoll _obj = context.SessionsRoll.Find(Id);
+                if (_obj != null)
+                    RetSessionRemarks = _obj.SessionNote_Remark;
+            }
+            return RetSessionRemarks;
         }
 
     }

@@ -29,6 +29,31 @@
         $("#TotalAmount").val(p_TtlAmt);
 
     }
+    function processDefendentTransfer(data) {
+        console.log(data);
+        _parameters = { objDTO: data };
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data: JSON.stringify(_parameters),
+            url: DefendentTransferURL,
+            success: function (Result) {
+
+                if (Result.ProcessFlag == "Y") {
+                    $("#btn_CourtTransferDIV").trigger("click");
+                }
+                else {
+                    Swal.fire({
+                        type: "error",
+                        title: 'Error...',
+                        html: Result.ProcessMessage
+                    });
+                }
+            }
+        });
+    }
 
     $(document).ready(function () {
         console.log("Session Common Task");
@@ -50,7 +75,7 @@
         var DIV_TO_HIDE = [
             "#FollowDIV",
             "#ForMemoDIV",
-            "#CourtFollowDIV",
+            "#CourtTransferDIV",
             "#NotesDIV",
             "#AddressDIV",
             "#PVDIV",
@@ -73,8 +98,8 @@
                         $("#Update_Suspend").val("N");
                         $("#ShowSuspend").val("False");
                         break;
-                    case "CourtFollowDIV":
-                        $("#Update_CourtFollow").val("N");
+                    case "CourtTransferDIV":
+                        $("#Update_CourtTransfer").val("N");
                         break;
                     case "AddressDIV":
                         $("#Update_Addreass").val("N");
@@ -98,8 +123,8 @@
                         $("#Update_Suspend").val("Y");
                         $("#ShowSuspend").val("True");
                         break;
-                    case "CourtFollowDIV":
-                        $("#Update_CourtFollow").val("Y");
+                    case "CourtTransferDIV":
+                        $("#Update_CourtTransfer").val("Y");
                         break;
                     case "AddressDIV":
                         $("#Update_Addreass").val("Y");
@@ -126,21 +151,11 @@
             ShowSessionNoteBanner();
         });
 
-
         $('#btnNOTESClear').on("click", function () {
             $("#DIV_NOTES_BANNER").removeClass("AppHidden").addClass("AppHidden");
             $("#spnNotesBanner").text("");
             $("#SessionNote_Remark").val("");
             $('textarea').autoResize();
-        });
-        
-        $('#CourtFollow').on("change", function () {
-            $(".clsLawerFollow").removeClass("AppHidden").addClass("AppHidden");
-
-            if ($('#CourtFollow').val() == "1") {
-                $(".clsLawerFollow").removeClass("AppHidden");
-                $('textarea').autoResize();
-            }
         });
 
         $("#DEF_DateOfContact").datepicker({
@@ -148,6 +163,31 @@
             autoclose: true,
             format: "dd/mm/yyyy",
         }).change(dateChanged);
+
+        $('#btnResetForm').on("click", function () {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.value) {
+
+                    objDTO = {
+                        DataFor: "DELETE_ALL",
+                        CaseId: parseInt($("#HFCaseId").val()),
+                        CaseLevelCode: $('#SessionLevel').val()
+                    };
+
+                    processDefendentTransfer(objDTO);
+
+                    $('#MoneyTrRequestDate').val("");
+                }
+            });
+        });
 
         /*Pay Voucher*/
         $("#Amount").val("0");
@@ -198,6 +238,7 @@
 @Html.HiddenFor(model => model.Update_Follow)
 @Html.HiddenFor(model => model.Update_Suspend)
 @Html.HiddenFor(model => model.Update_CourtFollow)
+@Html.HiddenFor(model => model.Update_CourtTransfer)
 @Html.HiddenFor(model => model.Update_Addreass)
 @Html.HiddenFor(model => model.Update_PV)
 
@@ -212,7 +253,7 @@
         <button style="font-size:1rem !important;" type="button" id="btn_ForMemoDIV" class="btn btn-block btn-lg btn-Detail">WRITING PLEADINGS<br />كتابة مذكرات الرد أو التعقيب</button>
     </div>
     <div class="col">
-        <button style="font-size:1rem !important;" type="button" id="btn_CourtFollowDIV" class="btn btn-block btn-lg btn-Detail">COURT FOLLOW<br />مراجعة المحكمة</button>
+        <button style="font-size:1rem !important;" type="button" id="btn_CourtTransferDIV" class="btn btn-block btn-lg btn-Detail">COURT TRANSFER<br />تحويل أموال من المحكمة</button>
     </div>
     <div class="col">
         <button style="font-size:1rem !important;" type="button" id="btn_NotesDIV" class="btn btn-block btn-lg btn-Detail"> NOTES<br />ملاحظات</button>
@@ -304,39 +345,39 @@
         </div>
     </div>
 </div>
-<div style="padding-top:10px" id="CourtFollowDIV" class="">
-    <div class="sessionRunningCategoryBar">
+<div style="padding-top:10px" id="CourtTransferDIV" class="">
+    <div class="card-header MoneyTransferActive">
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-10 text-center">
-                <h5>COURT FOLLOW مطلوب متابعة من المحامي</h5>
-            </div>
-            <div style="padding-bottom:10px;padding-right:20px;" class="col-sm-1"><button style="float:right" type="button" onclick="ClearDivElements('CourtFollow,CourtFollow_LawyerId,CourtFollowRequirement,CommissioningDate','select2,select2,text,text',',0,,','CourtFollowDIV')" class="btn btn-sm btn-danger"><i class="fas fa-trash"> </i> CLEAR</button></div>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8 text-center"><h3 class="text-center">TO FOLLOW  MONEY TRANSFER متابعة تحويل أموال من المحكمة</h3></div>
+            <div class="col-sm-2"><span style="float:right"><button id="btnResetForm" type="button" class="btn btn-lg btn-warning"><i class="fas fa-trash"> </i> DELETE</button></span></div>
         </div>
     </div>
     <div style="padding-top:10px" class="row">
+        @Html.HiddenFor(model => model.DefendentTransferId)
+        @Html.HiddenFor(model => model.DataFor, new { @Value = "CREATE" })
         <div class="col-sm-3">
             <div class="form-group">
-                @Html.LabelFor(model => model.CourtFollow)
-                @Html.DropDownList("CourtFollow", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                <label for="MoneyTrRequestDate">REQUEST DATE تاريخ الطلب</label>
+                @Html.EditorFor(model => model.MoneyTrRequestDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
             </div>
         </div>
         <div class="col-sm-3">
-            <div class="form-group clsLawerFollow">
-                <label for="LawyerId">LAWYER المحامي</label>
-                @Html.DropDownList("CourtFollow_LawyerId", null, htmlAttributes: new { @class = "form-control select2bs4" })
+            <div class="form-group">
+                <label for="TransferDate">COURT TRANSFER DATE تاريخ تحويل المحكمة</label>
+                @Html.EditorFor(model => model.TransferDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
             </div>
         </div>
         <div class="col-sm-3">
-            <div class="form-group clsLawerFollow">
-                <label for="CourtFollowRequirement">LAWYER 'S REQUIREMENT المطلوب من المحامي</label>
-                @Html.TextAreaFor(model => model.CourtFollowRequirement, 1, 200, new { @class = "form-control", @dir = "auto", @placeholder = "PLEASE ENTER LAWYER 'S REQUIREMENT" })
+            <div class="form-group">
+                <label for="TransferAmount">AMOUNT</label>
+                @Html.EditorFor(model => model.TransferAmount, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
         <div class="col-sm-3">
-            <div class="form-group clsLawerFollow">
-                @Html.LabelFor(model => model.CommissioningDate)
-                @Html.EditorFor(model => model.CommissioningDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+            <div class="form-group">
+                <label for="MoneyTrCompleteDate">TRANSFER COMPLETED  DATE تاريخ استلام الموكل للتحويل</label>
+                @Html.EditorFor(model => model.MoneyTrCompleteDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
             </div>
         </div>
     </div>
@@ -353,12 +394,6 @@
             </div>
         </div>
     </div>
-    @*<div class="card-header">
-        <div class="justify-content-between">
-            <span style="float:left; padding-top:30px;"><strong>NOTES ملاحظات</strong></span>
-            <span style="float:right"><a title="CLEAR" id="btnNOTESClear" class="btn btn-lg btn-danger" href="javascript:void(0)">CLEAR</a></span>
-        </div>
-    </div>*@
     <div style="padding-top:1rem" class="col-sm-12">
         <div class="form-group">
             @Html.TextAreaFor(model => model.SessionNote_Remark, 1, 200, new { @class = "form-control", @dir = "auto", @placeholder = "Please Enter Notes" })

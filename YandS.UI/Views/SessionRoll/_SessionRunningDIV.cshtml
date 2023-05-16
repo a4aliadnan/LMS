@@ -12,7 +12,8 @@
         var DIV_TO_HIDE = [
             "#txtRequirement",
             "#txtFirstEmailDate",
-            "#DIV_TRSOURCE"
+            "#DIV_TRSOURCE",
+            ".clsLawerFollow"
         ];
 
         var i;
@@ -42,6 +43,15 @@
             else {
                 $("#FirstEmailDate").val("");
                 $("#Requirements").val("");
+            }
+        });
+
+        $('#CourtFollow').on("change", function () {
+            $(".clsLawerFollow").removeClass("AppHidden").addClass("AppHidden");
+
+            if ($('#CourtFollow').val() == "1") {
+                $(".clsLawerFollow").removeClass("AppHidden");
+                $('textarea').autoResize();
             }
         });
 
@@ -96,18 +106,18 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label for="NextHearingDate">NEXT HEARING DATE موعد الجلسة القادمة</label>
+                @Html.EditorFor(model => model.NextHearingDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+            </div>
+        </div>
+        <div class="col-sm-2">
             <div class="form-group">
                 <label for="SessionRemarks">LAWYER SCHEDULE توجيهات إلى المحامي</label>
                 <div class="form-group">
                     @Html.TextAreaFor(model => model.SessionRemarks, 1, 200, new { @class = "form-control", @dir = "auto" })
                 </div>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
-                <label for="NextHearingDate">NEXT HEARING DATE موعد الجلسة القادمة</label>
-                @Html.EditorFor(model => model.NextHearingDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
             </div>
         </div>
     </div>
@@ -136,6 +146,33 @@
             <div id="DIV_TRSOURCE" class="form-group">
                 @Html.LabelFor(model => model.TransportationSource)
                 @Html.DropDownList("TransportationSource", null, htmlAttributes: new { @class = "form-control select2bs4" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="form-group">
+                @Html.LabelFor(model => model.CourtFollow)
+                @Html.DropDownList("CourtFollow", null, htmlAttributes: new { @class = "form-control select2bs4" })
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group clsLawerFollow">
+                <label for="CourtFollowRequirement">LAWYER 'S REQUIREMENT المطلوب من المحامي</label>
+                @Html.TextAreaFor(model => model.CourtFollowRequirement, 1, 200, new { @class = "form-control", @dir = "auto", @placeholder = "PLEASE ENTER LAWYER 'S REQUIREMENT" })
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-group clsLawerFollow">
+                <label for="LawyerId">LAWYER المحامي</label>
+                @Html.DropDownList("CourtFollow_LawyerId", null, htmlAttributes: new { @class = "form-control select2bs4" })
+            </div>
+        </div>
+
+        <div class="col-sm-2">
+            <div class="form-group clsLawerFollow">
+                @Html.LabelFor(model => model.CommissioningDate)
+                @Html.EditorFor(model => model.CommissioningDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
             </div>
         </div>
     </div>

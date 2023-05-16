@@ -1,5 +1,7 @@
 ﻿<script type="text/javascript">
     var table;
+    var dataForTable = "SUPREME";
+    var SP_NAME = "CASE_MANAGEMENT-GET_SUPREME";
     $(document).ready(function () {
         if (typeof table != 'undefined')
             table.destroy();
@@ -18,7 +20,8 @@
                 "type": "POST",
                 "datatype": "json",
                 data: function (d) {
-                    d.DataTableName = "SUPREME";
+                    d.DataTableName = dataForTable;
+                    d.ProcedureName = SP_NAME;
                     d.LocationId = $('#txtUserRole').val() == "VoucherApproval" ? $('input[name="rdoLocation"]:checked').val() : $('#txtLocationId').val();
                 }
             },

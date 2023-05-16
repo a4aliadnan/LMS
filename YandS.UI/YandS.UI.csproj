@@ -678,6 +678,10 @@
     <Compile Include="Migrations\202305072238553_AddedNewTableForTranslation.Designer.cs">
       <DependentUpon>202305072238553_AddedNewTableForTranslation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202305102242322_AddedClosingDateColumn.cs" />
+    <Compile Include="Migrations\202305102242322_AddedClosingDateColumn.Designer.cs">
+      <DependentUpon>202305102242322_AddedClosingDateColumn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\CaseInvoiceFeeCalculation.cs" />
     <Compile Include="Models\CaseInvoiceFee.cs" />
     <Compile Include="Models\CaseInvoice.cs" />
@@ -4014,6 +4018,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\UserImage\" />
     <Folder Include="Uploads\CaseAgreement\" />
+    <Folder Include="Uploads\ClosingEmail\" />
     <Folder Include="Uploads\DEF_Address_Docs\" />
     <Folder Include="Uploads\DEF_Lawyer_Docs\" />
     <Folder Include="Uploads\INVDocuments\" />
@@ -4537,6 +4542,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202305072238553_AddedNewTableForTranslation.resx">
       <DependentUpon>202305072238553_AddedNewTableForTranslation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305102242322_AddedClosingDateColumn.resx">
+      <DependentUpon>202305102242322_AddedClosingDateColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

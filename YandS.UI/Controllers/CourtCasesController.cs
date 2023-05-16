@@ -44,6 +44,7 @@ namespace YandS.UI.Controllers
         private string OfficeFileFilterENF = Helper.getOfficeFileFilterENF();
         private string OfficeFileFilterTBR = Helper.getOfficeFileFilterTBR();
         private string OfficeFileFilterCORP = Helper.getOfficeFileFilterCORP();
+        private string OfficeFileFilterCLOSING = Helper.getOfficeFileFilterCLOSING();
         private string[] FileStatusCodesSR = Helper.getFileStatusCodesSR();
         private string[] FileStatusCodesTBR = Helper.getFileStatusCodesTBR();
 
@@ -531,12 +532,12 @@ namespace YandS.UI.Controllers
             db.Entry(courtCases).Entity.RealEstateDetail = modal.RealEstateDetail; //BASIC INFO 12
             db.Entry(courtCases).Entity.GovernorateId = modal.GovernorateId; //BASIC INFO 4
             db.Entry(courtCases).Entity.AgainstInsurance = modal.AgainstInsurance; //BASIC INFO 6
-            db.Entry(courtCases).Entity.OfficeFileStatus = modal.EnforcementlevelId; //NEW
 
             if (!string.IsNullOrEmpty(PartialViewName))
             {
                 db.Entry(courtCases).Entity.SessionClientId = modal.SessionClientId; //BASIC INFO 1
                 db.Entry(courtCases).Entity.SessionRollDefendentName = modal.SessionRollDefendentName; //BASIC INFO 2
+                db.Entry(courtCases).Entity.OfficeFileStatus = modal.EnforcementlevelId; //NEW
 
                 db.Entry(courtCases).Entity.ReceiveLevelCode = modal.ReceiveLevelCode; //BASIC INFO 7
                 db.Entry(courtCases).Entity.AgainstCode = modal.AgainstCode; //BASIC INFO 8
@@ -976,7 +977,7 @@ namespace YandS.UI.Controllers
                 ViewModal.StatusDate = courtCases.ClosureDate;
                 ViewModal.CurrentCaseLevel = courtCases.CaseLevelCode;
                 ViewModal.JudRecRedStamp = courtCases.JudRecRedStamp;
-
+                ViewModal.ClosingNotesDate = courtCases.ClosingNotesDate;
             }
 
             return ViewModal;
@@ -1085,6 +1086,22 @@ namespace YandS.UI.Controllers
                 db.Entry(courtCases).Entity.UpdateBoxDate = DateTime.UtcNow.AddHours(4);
                 db.Entry(courtCases).Entity.UpdateBoxBy = User.Identity.GetUserId();
             }
+
+            if (courtCases.CaseLevelCode.In("3", "4", "5", "6"))
+            {
+                db.Entry(courtCases).Entity.ClaimSummary = RegModal.ClaimSummary;
+                db.Entry(courtCases).Entity.RealEstateYesNo = RegModal.RealEstateYesNo;
+                db.Entry(courtCases).Entity.RealEstateDetail = RegModal.RealEstateDetail;
+                db.Entry(courtCases).Entity.GovernorateId = RegModal.GovernorateId;
+
+            }
+
+            if (courtCases.CaseLevelCode == "6") {
+                db.Entry(courtCases).Entity.AgainstInsurance = RegModal.AgainstInsurance;
+                db.Entry(courtCases).Entity.OfficeFileStatus = RegModal.EnforcementlevelId;
+            }
+
+
 
             db.Entry(courtCases).State = EntityState.Modified;
             db.SaveChanges();
@@ -1610,7 +1627,8 @@ namespace YandS.UI.Controllers
 
             ViewBag.StatusCode = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", ViewModal.StatusCode);
             ViewBag.FileAllocation = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.FileAllocation), "Mst_Value", "Mst_Desc", ViewModal.FileAllocation);
-            ViewBag.ReasonCode = new SelectList(Helper.GetCaseClosingReasons(), "Mst_Value", "Mst_Desc", ViewModal.ReasonCode);
+            //ViewBag.ReasonCode = new SelectList(Helper.GetCaseClosingReasons(), "Mst_Value", "Mst_Desc", ViewModal.ReasonCode);
+            ViewBag.ReasonCode = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterCLOSING), "Mst_Value", "Mst_Desc", ViewModal.ReasonCode);
             ViewBag.ReceiveLevelCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ReceiveLevel), "Mst_Value", "Mst_Desc", ViewModal.ReceiveLevelCode);
             ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType).OrderBy(o => o.DisplaySeq), "Mst_Value", "Mst_Desc", ViewModal.CaseTypeCode);
             ViewBag.AgainstCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseAgainst), "Mst_Value", "Mst_Desc", ViewModal.AgainstCode);
@@ -1629,15 +1647,29 @@ namespace YandS.UI.Controllers
             ViewBag.Defendant = courtCases.Defendant;
             ViewBag.ClosureLevel = CaseLevelName;
 
+            string ClosingEmailDoc = Helper.GetClosingEmail_Doc(ViewModal.CaseId);
+
+            if (ClosingEmailDoc == "#")
+            {
+                ViewBag.ViewClosingEmail = "AppHidden";
+            }
+            else
+            {
+                ViewBag.ViewClosingEmail = "";
+                ViewBag.ClosingEmailDoc = ClosingEmailDoc;
+            }
+
+
             return View(ViewModal);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult FileClosure(FileClosureEnteryVM modal)
+        public ActionResult FileClosure(FileClosureEnteryVM modal, HttpPostedFileBase upload)
         {
             var errors = ModelState.Values.SelectMany(v => v.Errors);
             CourtCases courtCases = db.CourtCase.Where(w => w.CaseId == modal.CaseId).FirstOrDefault();
+            string UploadRoot = Helper.GetStorageRoot;
 
             if (ModelState.IsValid)
             {
@@ -1661,18 +1693,36 @@ namespace YandS.UI.Controllers
 
                 if(modal.btnSave == "btnFileClosureSave")
                 {
-                    db.Entry(courtCases).Entity.ClosureDate = modal.StatusDate;
-                    db.Entry(courtCases).Entity.ClosedbyStaff = User.Identity.Name;
-                    db.Entry(courtCases).Entity.CaseStatus = modal.StatusCode;
-                    db.Entry(courtCases).Entity.ClosingNotes = modal.ClosingNotes;
+                    db.Entry(courtCases).Entity.FileAllocation = modal.FileAllocation;
                     db.Entry(courtCases).Entity.FinalOnvoiceOnHold = modal.FinalOnvoiceOnHold;
                     db.Entry(courtCases).Entity.SuggestedDate = modal.SuggestedDate;
                     db.Entry(courtCases).Entity.JudRecRedStamp = modal.JudRecRedStamp;
-
-                    db.Entry(courtCases).Entity.ReasonCode = modal.ReasonCode;
-                    db.Entry(courtCases).Entity.FileAllocation = modal.FileAllocation;
                     db.Entry(courtCases).Entity.LitigationFileClosureDate = modal.LitigationFileClosureDate;
 
+                }
+                else if(modal.btnSave == "btnFinalClosureSave")
+                {
+                    db.Entry(courtCases).Entity.CaseStatus = modal.StatusCode;
+                    db.Entry(courtCases).Entity.ReasonCode = modal.ReasonCode;
+                    db.Entry(courtCases).Entity.OfficeFileStatus = modal.ReasonCode;
+                    db.Entry(courtCases).Entity.ClosureDate = modal.StatusDate;
+
+                    db.Entry(courtCases).Entity.ClosingNotes = modal.ClosingNotes;
+                    db.Entry(courtCases).Entity.ClosingNotesDate = modal.ClosingNotesDate;
+
+                    db.Entry(courtCases).Entity.ClosedbyStaff = User.Identity.Name;
+                    db.Entry(courtCases).Entity.LitigationFileClosureDate = modal.LitigationFileClosureDate;
+
+                    if (upload != null && upload.ContentLength > 0)
+                    {
+                        string FileExtension = Path.GetExtension(upload.FileName);
+
+                        string FileName = courtCases.CaseId + FileExtension;
+
+                        string UploadPath = Path.Combine(UploadRoot, "ClosingEmail", FileName);
+
+                        upload.SaveAs(UploadPath);
+                    }
                 }
                 else if(modal.btnSave == "btnLitigationSave")
                 {
@@ -1730,7 +1780,8 @@ namespace YandS.UI.Controllers
             ViewBag.ClosureLevel = CaseLevelName;
 
             ViewBag.StatusCode = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", modal.StatusCode);
-            ViewBag.ReasonCode = new SelectList(Helper.GetCaseClosingReasons(), "Mst_Value", "Mst_Desc", modal.ReasonCode);
+            //ViewBag.ReasonCode = new SelectList(Helper.GetCaseClosingReasons(), "Mst_Value", "Mst_Desc", modal.ReasonCode);
+            ViewBag.ReasonCode = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterCLOSING), "Mst_Value", "Mst_Desc", modal.ReasonCode);
             ViewBag.FileAllocation = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.FileAllocation), "Mst_Value", "Mst_Desc", modal.FileAllocation);
 
             ViewBag.ReceiveLevelCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ReceiveLevel), "Mst_Value", "Mst_Desc", modal.ReceiveLevelCode);
@@ -1744,6 +1795,18 @@ namespace YandS.UI.Controllers
             ViewBag.ReOpenEnforcement = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", modal.ReOpenEnforcement);
             ViewBag.FinalOnvoiceOnHold = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", modal.FinalOnvoiceOnHold);
             ViewBag.JudRecRedStamp = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", modal.JudRecRedStamp);
+
+            string ClosingEmailDoc = Helper.GetClosingEmail_Doc(modal.CaseId);
+
+            if (ClosingEmailDoc == "#")
+            {
+                ViewBag.ViewClosingEmail = "AppHidden";
+            }
+            else
+            {
+                ViewBag.ViewClosingEmail = "";
+                ViewBag.ClosingEmailDoc = ClosingEmailDoc;
+            }
 
             Session["Message"] = new MessageVM
             {

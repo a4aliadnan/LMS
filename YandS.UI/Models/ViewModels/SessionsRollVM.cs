@@ -166,6 +166,7 @@
         public string Update_Follow { get; set; }
         public string Update_Suspend { get; set; }
         public string Update_CourtFollow { get; set; }
+        public string Update_CourtTransfer { get; set; }
         public string Update_Addreass { get; set; }
         public string Update_PV { get; set; }
         [Display(Name = "COURT FOLLOW مراجعة المحكمة")]
@@ -255,6 +256,20 @@
         public DateTime? DisputrRegisterDate { get; set; }
         #endregion
 
+        #region MONEY TRANSFER
+
+        public int DefendentTransferId { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? MoneyTrRequestDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? TransferDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:###0.000#}", ApplyFormatInEditMode = true)]
+        public decimal? TransferAmount { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? MoneyTrCompleteDate { get; set; }
+        public string DataFor { get; set; }
+
+        #endregion
         [Display(Name = "JUDGMENT الحكم")]
         public string JudgementLevel { get; set; }
         public string StopEnfRequest { get; set; }

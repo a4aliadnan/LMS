@@ -161,6 +161,10 @@
         color: white !important;
         font-weight: bold;
     }
+
+    .tableColorDarkRed {
+        color: #c00000 !important;
+    }
 </style>
 <script>
     var GetIndexDataURL = '@Url.Action("AjaxIndexData", "SessionRoll", new { DataFor = @ViewBag.DataFor })';
@@ -1584,6 +1588,26 @@
             }
         });
     }
+    function ShowSessionNotes(P_ID) {
+
+        _parameters = { P_SessionRollId: parseInt(P_ID) };
+
+        $.ajax({
+            url: GetSessionNotesURL,
+            type: "POST",
+            data: _parameters,
+            success: function (data, textStatus, jqXHR) {
+                if (data.length > 0) {
+                    $("#txtArea_SessionNote_Remark").text(data);
+                    $('#SessionNotesPopupModal').modal('show');
+                    $('textarea').autoResize();
+                }
+                else {
+                    $('#SessionNotesPopupModal').modal('hide');
+                }
+            }
+        });
+    }
 
     function ProcessPreSubmit() {
         var IsShowCientReply = false; //DIV_WAITING_CLIENT_REPLY
@@ -1959,7 +1983,7 @@
                 <div class="col-sm-12 @ViewBag.ViewFollowUpTabs">
                     <div style="padding-bottom:10px;" class="row">
                         <div class="col">
-                            <button type="button" id="btn_SessionJudgementFollowup" style="font-size: 1.1rem !important;" class="btn btn-block SessionJudgementFollowup @ViewBag.SessionJudgementFollowupActive btn-lg navButton">أحكام مطابقة<br />JUDGMENT</button>
+                            <button type="button" id="btn_SessionJudgementFollowup" style="font-size: 1.1rem !important;" class="btn btn-block SessionJudgementFollowup @ViewBag.SessionJudgementFollowupActive btn-lg navButton">استلام الأحكام<br />TO RECEIVE JUDGEMENT</button>
                         </div>
                         <div class="col">
                             <button type="button" id="btn_SessionJudgementCorrected" style="font-size: 1.1rem !important;" class="btn btn-block SessionJudgementCorrected @ViewBag.SessionJudgementCorrectedActive btn-lg navButton">تصحيح الحكم<br />JUDGMENT CORRECTED</button>
@@ -2151,6 +2175,32 @@
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
                         <button type="button" onclick="ShowPreSubmit()" class="btn btn-outline-dark">Save changes</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <div class="modal fade" id="SessionNotesPopupModal">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content bg-gradient-light">
+                    <div class="modal-header">
+                        <h4 class="modal-title">NOTES ملاحظات</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="DIV_NOTES_BANNER" class="card-header GeneralActive">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <h3><span id="txtArea_SessionNote_Remark"></span></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->

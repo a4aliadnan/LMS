@@ -168,6 +168,7 @@
         public string Subject { get; set; }
         [Display(Name = "NOTES")]
         public string ClosingNotes { get; set; }
+        public DateTime? ClosingNotesDate { get; set; }
         public string SessionRemarks { get; set; }
         [Column(TypeName = "datetime2")]
         public DateTime? CurrentHearingDate { get; set; }
@@ -819,11 +820,11 @@
         [Display(Name = "CASE STATUS")]
         public string StatusCode { get; set; } //Dropdown Case Status
 
-        [Display(Name = "FINAL CLOSURE DATE")]
+        [Display(Name = "CLOSURE DATE تاريخ الغلق")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? StatusDate { get; set; }
 
-        [Display(Name = "REASON")]
+        [Display(Name = "FILE STATUS")]
         public string ReasonCode { get; set; } //Dropdown Case Status
 
         [Display(Name = "CURRENT CASE LEVEL")]
@@ -843,13 +844,17 @@
 
         [Display(Name = "CLOSURE NOTES")]
         public string ClosingNotes { get; set; }
-
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name = "NOTES DATE تاريخ الملاحظة")]
+        public DateTime? ClosingNotesDate { get; set; }
         public string ReOpenEnforcement { get; set; } //DROP DOWN
 
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "FINANCE FILE CLOSURE DATE")]
         public DateTime? FinanceFileClosureDate { get; set; }
-
+        [DataType(DataType.Password)]
+        [Display(Name = "PASS كلمة المرور")]
+        public string Password { get; set; }
         #region BASIC INFO
         public string ClientClassificationCode { get; set; } // FOR CONDITION PURPOSE not Entry
         public string ClientCode { get; set; } // FOR CONDITION PURPOSE not Entry

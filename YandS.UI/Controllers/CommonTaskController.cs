@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -15,6 +17,40 @@ namespace YandS.UI.Controllers
     public class CommonTaskController : Controller
     {
         private RBACDbContext db = new RBACDbContext();
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
+
+        public CommonTaskController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+        public CommonTaskController()
+        {
+        }
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
 
         [HttpPost]
         public ActionResult CreateMasterTableDetail(string Mst_Desc, int MstParentId, string Remarks = null)
@@ -897,6 +933,64 @@ namespace YandS.UI.Controllers
             {
                 return Json(new { Category = "Error", Message = e.Message });
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ValidateUserPassword(string Password)
+        {
+            try
+            {
+                string UserName = User.Identity.Name;
+                var model = new LoginViewModel();
+                model.UserName = UserName;
+                model.Password = Password;
+
+                List<string> _errors = new List<string>();
+                string ValidUserMessage = "";
+
+                int USER_ID = 0;
+                using (var context = new RBACDbContext())
+                {
+                    var users = context.Users.Where(w => w.UserName == model.UserName && !w.Inactive).FirstOrDefault();
+                    if (users == null)
+                    {
+                        ValidUserMessage = "YOUR ACCOUNT IS BLOCKED, CONTACT YOUR ADMIN";
+                        _errors.Add(ValidUserMessage);
+                    }
+                    else
+                        USER_ID = users.Id;
+                }
+
+                if (USER_ID > 0)
+                {
+
+                    RBACStatus _retVal = this.Login(model, this.UserManager, this.SignInManager, out _errors);
+
+                    switch (_retVal)
+                    {
+                        case RBACStatus.Success:
+                            {
+                                return Json(new { Category = "OK", Message = "Valid User" }, JsonRequestBehavior.AllowGet);
+                            }
+                        default:
+                            return Json(new { Category = "Error", Message = "Invalid Password" }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                    return Json(new { Category = "Error", Message = ValidUserMessage }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Category = "Error", ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GetSessionNotes(int P_SessionRollId)
+        {
+            var SessionNotes = Helper.GetSessionRemarks(P_SessionRollId);
+            return this.Json(SessionNotes, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -166,6 +166,20 @@ namespace YandS.UI.Controllers
                             uploadPVBTDocs.SaveAs(UploadPath);
                         }
                     }
+                    else if (modal.FileStatus == OfficeFileStatus.Registered.ToString())
+                    {
+                        //Process Attachment Payment Vouchers
+                        if (uploadPVSupDocs != null && uploadPVSupDocs.ContentLength > 0)
+                        {
+                            string FileExtension = Path.GetExtension(uploadPVSupDocs.FileName);
+
+                            string FileName = ModelToSave.Voucher_No + FileExtension;
+
+                            string UploadPath = Path.Combine(UploadRoot, "PVDocuments", FileName);
+
+                            uploadPVSupDocs.SaveAs(UploadPath);
+                        }
+                    }
                     
                     #endregion
 
@@ -333,6 +347,7 @@ namespace YandS.UI.Controllers
                 else
                     db.Entry(ModelToSave).Entity.FileStatus = modal.FileStatus;
 
+
                 db.Entry(ModelToSave).Entity.ActionDate = modal.ActionDate;
                 db.Entry(ModelToSave).Entity.Remarks = modal.MainRemarks;
 
@@ -379,7 +394,6 @@ namespace YandS.UI.Controllers
                     else
                     {
                         db.Entry(ModelToSave).Entity.LawyerId = "0";
-
                         db.Entry(courtCases).Entity.CourtFollow = "0";
                         db.Entry(courtCases).Entity.CourtFollowRequirement = "";
                         db.Entry(courtCases).Entity.CommissioningDate = CommissioningDate;
@@ -470,17 +484,12 @@ namespace YandS.UI.Controllers
                         break;
                     case "TBR-REGISTERED":
                         Process_TBR_REGISTERED(modal);
-                        courtCases = db.CourtCase.Find(modal.CaseId);
-
-                        db.Entry(courtCases).Entity.CaseLevelCode = modal.CaseLevelCode;
-                        db.Entry(courtCases).Entity.SessionRemarks = modal.SessionRemarks;
-
-                        if (modal.AgainstCode == "3")
-                            courtCases.StopEnfRequest = modal.StopEnfRequest;
 
                         if (modal.CaseLevelCode != "5")
                         {
                             //CREATE OR UPDATE SESSION ROLL
+                            ProcessSessionRollDetail(modal);
+                            /*
                             SessionsRoll sessionRoll = db.SessionsRoll.Where(w => w.CaseId == modal.CaseId && w.DeletedOn == null).OrderByDescending(o => o.SessionRollId).FirstOrDefault();
                             if (sessionRoll == null)
                             {
@@ -507,12 +516,33 @@ namespace YandS.UI.Controllers
                             }
 
                             db.Entry(ModelToSave).Entity.SessionRollId = sessionRoll.SessionRollId;
+                            */
+                        }
+
+                        if (modal.Update_Addreass == "Y")
+                            UpdateSessionDEFAddress(modal);
+
+                        if (modal.Update_CourtTransfer == "Y")
+                            CreateCourtMoneyTransfer(modal);
+
+                        if (modal.Update_PV == "Y")
+                        {
+                            int Voucher_No = CreatePayVoucher(modal);
+                            modal.Voucher_No = Voucher_No;
                         }
 
                         db.Entry(ModelToSave).Entity.IsDeleted = true;
                         db.Entry(ModelToSave).Entity.CourtLocationid = modal.CourtLocationid;
                         db.Entry(ModelToSave).Entity.RegistrationDate = modal.RegistrationDate;
                         db.Entry(ModelToSave).Entity.FileStatusRemarks = modal.CourtRefNo;
+
+                        courtCases = db.CourtCase.Find(modal.CaseId);
+
+                        db.Entry(courtCases).Entity.CaseLevelCode = modal.CaseLevelCode;
+                        db.Entry(courtCases).Entity.SessionRemarks = modal.SessionRemarks;
+
+                        if (modal.AgainstCode == "3")
+                            courtCases.StopEnfRequest = modal.StopEnfRequest;
 
                         db.Entry(courtCases).State = EntityState.Modified;
                         db.SaveChanges();
@@ -870,7 +900,11 @@ namespace YandS.UI.Controllers
             db.Entry(CourtCase).Entity.TransportationSource = modal.TransportationSource;
             db.Entry(CourtCase).Entity.FirstEmailDate = modal.FirstEmailDate;
             db.Entry(CourtCase).Entity.NextHearingDate = modal.NextHearingDate;
-            db.Entry(CourtCase).Entity.OfficeFileStatus = modal.FileStatus;
+
+            if (modal.FileStatus == OfficeFileStatus.Registered.ToString())
+                db.Entry(CourtCase).Entity.OfficeFileStatus = "OFS-16";// modal.FileStatus;
+            else
+                db.Entry(CourtCase).Entity.OfficeFileStatus = modal.FileStatus;
 
             if (IsUpdate)
             {
@@ -883,7 +917,22 @@ namespace YandS.UI.Controllers
             db.SaveChanges();
 
         }
-
+        private void ProcessSessionRollDetail(CaseRegistrationVM modal)
+        {
+            Helper.ProcessSessionRollDetail(modal, "CaseRegistrationVM");
+        }
+        private void UpdateSessionDEFAddress(CaseRegistrationVM modal)
+        {
+            Helper.UpdateSessionDEFAddress(modal, "CaseRegistrationVM");
+        }
+        private void CreateCourtMoneyTransfer(CaseRegistrationVM modal)
+        {
+            Helper.CreateCourtMoneyTransfer(modal, "CaseRegistrationVM");
+        }
+        private int CreatePayVoucher(CaseRegistrationVM modal)
+        {
+            return Helper.CreatePaymentVoucher(modal, "CaseRegistrationVM");
+        }
         public ActionResult AjaxIndexData(string DataFor)
         {
             var request = HttpContext.Request;

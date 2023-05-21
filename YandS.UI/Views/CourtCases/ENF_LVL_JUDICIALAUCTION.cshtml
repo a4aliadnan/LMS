@@ -5,8 +5,16 @@
             $("#div_Def_AnnType").removeClass("AppHidden");
             LoadUpdate($('#EnforcementlevelId').val());
         }
-        else
+        else {
             $("#div_Def_AnnType").removeClass("AppHidden").addClass("AppHidden");
+
+            if ($('#EnforcementlevelId').val() == OfficeFileStatus.AuctionSession) {
+                $('#EnforcementlevelId').val(OfficeFileStatus.JudicalSale);
+                
+            }
+
+            LoadUpdate($('#EnforcementlevelId').val());
+        }
     }
     $(document).ready(function () {
         $('.select2bs4').select2({

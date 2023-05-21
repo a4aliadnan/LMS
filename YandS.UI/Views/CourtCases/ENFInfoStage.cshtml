@@ -18,6 +18,7 @@
         switch (Enforcementlevel) {
             case OfficeFileStatus.MeetJudge:
             case OfficeFileStatus.Dispute:
+            case OfficeFileStatus.AuctionSession:
                 UpdateViewName = "ENF_UPDATE_SESSION";
                 break;
             case OfficeFileStatus.JudicalSale:
@@ -93,7 +94,6 @@
         switch (Enforcementlevel) {
             case OfficeFileStatus.PleaseSelect:
             case OfficeFileStatus.RequestMeetJudge:
-            case OfficeFileStatus.AuctionSession:
             case OfficeFileStatus.OnlineRegENF:
             case OfficeFileStatus.ArrestApplication:
             case OfficeFileStatus.RecoveryRedStamp_Close:
@@ -118,6 +118,7 @@
                 EnforcementLevelHeaderClass = "InquiryActive";
                 break;
             case OfficeFileStatus.JudicalSale:
+            case OfficeFileStatus.AuctionSession:
                 _PartialViewName = partialViewPrefix + "JUDICIALAUCTION";
                 EnforcementLevelHeading = "JUDICIAL AUCTION البيع القضائي"
                 EnforcementLevelHeaderClass = "InquiryActive";
@@ -1137,6 +1138,10 @@
 
         /*END Pay Voucher*/
         $('textarea').autoResize();
+
+        //console.log($('#SessionRollId').val());
+        ShowSessionNotes($('#SessionRollId').val());
+
     });
 
 </script>
@@ -1158,6 +1163,7 @@
     @Html.HiddenFor(model => model.DEF_MobileNo4)
     @Html.HiddenFor(model => model.DEF_MobileNo5)
     @Html.HiddenFor(model => model.SavePV_Data)
+    @Html.HiddenFor(model => model.SessionRollId)
     <input type="hidden" id="hidUpdatedOn" value="@ViewBag.UpdatedOn" />
 
     <div class="card cls_EnfMainAll cls_ENFDetail">

@@ -237,6 +237,13 @@
 
                 }
             }
+
+            if ($("#FileStatus").val() == OfficeFileStatus.Registered) {
+                $("#DIV_TBR_UPDATED").empty();
+                _parameters = { ClassificationId: "_TBR_UPDATED_REG", Mode: $("#HFCaseId").val(), DefendentTransfer: "", CaseRegistrationId: $("#hidCaseRegistrationId").val() };
+                GetTab($("#DIV_TBR_UPDATED"), GetClientClassificationURL, _parameters);
+
+            }
         }
         else if (container.attr("id") == "DIV_REMARKS") {
 

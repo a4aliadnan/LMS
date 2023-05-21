@@ -4013,6 +4013,7 @@
     <Content Include="Views\CourtCases\_Corporate.cshtml" />
     <Content Include="Views\CourtCases\_Translation.cshtml" />
     <Content Include="Views\CourtCases\_PartViewTranslation.cshtml" />
+    <Content Include="Views\CourtCases\_SessionFooterBanner_TBR.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

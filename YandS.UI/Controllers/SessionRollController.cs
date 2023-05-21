@@ -1706,42 +1706,7 @@ namespace YandS.UI.Controllers
         }
         private void UpdateSessionDEFAddress(SessionsRollVM modal)
         {
-            CourtCasesEnforcement courtCasesEnforcement = db.CourtCasesEnforcement.Where(w=> w.CaseId == modal.CaseId).FirstOrDefault();
-
-            if(courtCasesEnforcement == null)
-            {
-                courtCasesEnforcement = new CourtCasesEnforcement();
-
-                courtCasesEnforcement.CaseId = modal.CaseId;
-                courtCasesEnforcement.Courtid = "4";
-                courtCasesEnforcement.EnforcementlevelId = "0";
-                courtCasesEnforcement.AnnouncementTypeId = modal.AnnouncementTypeId;
-                courtCasesEnforcement.DEF_DateOfContact = modal.DEF_DateOfContact;
-                courtCasesEnforcement.DEF_MobileNo = modal.DEF_MobileNo;
-                courtCasesEnforcement.DEF_Corresponding = modal.DEF_Corresponding;
-                courtCasesEnforcement.DEF_CallerName = modal.DEF_CallerName;
-                courtCasesEnforcement.DEF_LawyerId = modal.DEF_LawyerId;
-                courtCasesEnforcement.DEF_VisitDate = modal.DEF_VisitDate;
-
-                db.CourtCasesEnforcement.Add(courtCasesEnforcement);
-
-            }
-            else
-            {
-                db.Entry(courtCasesEnforcement).Entity.AnnouncementTypeId = modal.AnnouncementTypeId;
-                db.Entry(courtCasesEnforcement).Entity.DEF_DateOfContact = modal.DEF_DateOfContact;
-                db.Entry(courtCasesEnforcement).Entity.DEF_MobileNo = modal.DEF_MobileNo;
-                db.Entry(courtCasesEnforcement).Entity.DEF_Corresponding = modal.DEF_Corresponding;
-                db.Entry(courtCasesEnforcement).Entity.DEF_CallerName = modal.DEF_CallerName;
-                db.Entry(courtCasesEnforcement).Entity.DEF_LawyerId = modal.DEF_LawyerId;
-                db.Entry(courtCasesEnforcement).Entity.DEF_VisitDate = modal.DEF_VisitDate;
-
-                db.Entry(courtCasesEnforcement).State = EntityState.Modified;
-
-            }
-            db.SaveChanges();
-
-
+            Helper.UpdateSessionDEFAddress(modal);
         }
         private int CreatePayVoucher(SessionsRollVM modal)
         {

@@ -282,6 +282,12 @@ namespace YandS.UI.Controllers
             else
             {
                 CourtCasesEnforcement _ModalToSave = new CourtCasesEnforcement();
+                string FileStatusToSave;
+
+                if(modal.EnforcementlevelId == OfficeFileStatus.JudicalSale.ToString() && modal.AuctionProcess == "11")
+                    FileStatusToSave = OfficeFileStatus.AuctionSession.ToString();
+                else
+                    FileStatusToSave = modal.EnforcementlevelId;
 
                 if (modal.DetailId == 0)
                 {
@@ -296,7 +302,7 @@ namespace YandS.UI.Controllers
                     _ModalToSave.CaseLevelCode = modal.CaseLevelCode;
                     _ModalToSave.EnforcementAdmin = modal.EnforcementAdmin;
                     _ModalToSave.EnforcementBy = modal.ApealByWho;
-                    _ModalToSave.EnforcementlevelId = modal.EnforcementlevelId;
+                    _ModalToSave.EnforcementlevelId = FileStatusToSave;
 
                     if (!string.IsNullOrEmpty(PartialViewName))
                     {
@@ -403,7 +409,7 @@ namespace YandS.UI.Controllers
                     db.Entry(_ModalToSave).Entity.CaseLevelCode = modal.CaseLevelCode;
                     db.Entry(_ModalToSave).Entity.EnforcementBy = modal.ApealByWho; //BASIC INFO 1
                     db.Entry(_ModalToSave).Entity.EnforcementAdmin = modal.EnforcementAdmin; //Common
-                    db.Entry(_ModalToSave).Entity.EnforcementlevelId = modal.EnforcementlevelId; //Common
+                    db.Entry(_ModalToSave).Entity.EnforcementlevelId = FileStatusToSave; //Common
 
                     if (!string.IsNullOrEmpty(PartialViewName))
                     {
@@ -519,6 +525,12 @@ namespace YandS.UI.Controllers
         {
             var modal = (ToBeRegisterVM)obj;
             string SelectCaseLevel = (int.Parse(modal.Courtid) + 2).ToString();
+            string FileStatusToSave;
+
+            if (modal.EnforcementlevelId == OfficeFileStatus.JudicalSale.ToString() && modal.AuctionProcess == "11")
+                FileStatusToSave = OfficeFileStatus.AuctionSession.ToString();
+            else
+                FileStatusToSave = modal.EnforcementlevelId;
 
             CourtCases courtCases = db.CourtCase.Find(modal.CaseId);
 
@@ -535,9 +547,10 @@ namespace YandS.UI.Controllers
 
             if (!string.IsNullOrEmpty(PartialViewName))
             {
+
                 db.Entry(courtCases).Entity.SessionClientId = modal.SessionClientId; //BASIC INFO 1
                 db.Entry(courtCases).Entity.SessionRollDefendentName = modal.SessionRollDefendentName; //BASIC INFO 2
-                db.Entry(courtCases).Entity.OfficeFileStatus = modal.EnforcementlevelId; //NEW
+                db.Entry(courtCases).Entity.OfficeFileStatus = FileStatusToSave; //NEW
 
                 db.Entry(courtCases).Entity.ReceiveLevelCode = modal.ReceiveLevelCode; //BASIC INFO 7
                 db.Entry(courtCases).Entity.AgainstCode = modal.AgainstCode; //BASIC INFO 8
@@ -2371,7 +2384,6 @@ namespace YandS.UI.Controllers
                 {
                     return HttpNotFound();
                 }
-                
 
                 if (PartialViewName.IndexOf("TBR-") >= 0)
                 {
@@ -2517,7 +2529,7 @@ namespace YandS.UI.Controllers
                         }
 
                     }
-                    else if (PartialViewName == "TBR-REGISTERED_PRI" || PartialViewName == "TBR-REGISTERED_APL" || PartialViewName == "TBR-REGISTERED_SUP")
+                    else if (PartialViewName.In("TBR-REGISTERED_PRI", "TBR-REGISTERED_APL", "TBR-REGISTERED_SUP"))
                     {
                         ViewBag.Courtid = ViewModal.ActionLevel;
                         if (int.Parse(ViewBag.Courtid) <= 3 && int.Parse(ViewBag.Courtid) >= 1)
@@ -2527,6 +2539,12 @@ namespace YandS.UI.Controllers
                             ViewBag.StopEnfRequest = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc", ViewModal.StopEnfRequest);
                             ViewBag.CourtDepartment = new SelectList(Helper.GetSupremeStage(), "Mst_Value", "Mst_Desc", ViewModal.CourtDepartment);
                             ViewBag.ApealByWho = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc", ViewModal.ApealByWho);
+                            ViewBag.Session_CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc");
+                            ViewBag.Session_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc");
+                            ViewBag.CourtFollow = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow);
+                            ViewBag.CourtFollow_LawyerId = new SelectList(Helper.GetCommonNameList(), "Mst_Value", "Mst_Desc", ViewModal.LawyerId);
+                            ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
+                            ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
 
                         }
                     }
@@ -2559,8 +2577,8 @@ namespace YandS.UI.Controllers
                         ViewBag.DepartmentType = new SelectList(Helper.GetInvestmentYN(), "Mst_Value", "Mst_Desc", ViewModal.DepartmentType);
                         ViewBag.DisputeLevel = new SelectList(Helper.GetDisputeLevel(), "Mst_Value", "Mst_Desc", ViewModal.DisputeLevel);
                         ViewBag.DisputeType = new SelectList(Helper.GetDisputeType(), "Mst_Value", "Mst_Desc", ViewModal.DisputeType);
-                        ViewBag.Session_CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc");
-                        ViewBag.Session_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc");
+                        //ViewBag.Session_CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc");
+                        //ViewBag.Session_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc");
 
                         ViewBag.CaseRegistrationId = caseRegistrationId;
 
@@ -2582,12 +2600,81 @@ namespace YandS.UI.Controllers
                         ViewBag.DepartmentType = new SelectList(Helper.GetInvestmentYN(), "Mst_Value", "Mst_Desc", ViewModal.DepartmentType);
                         ViewBag.DisputeLevel = new SelectList(Helper.GetDisputeLevel(), "Mst_Value", "Mst_Desc", ViewModal.DisputeLevel);
                         ViewBag.DisputeType = new SelectList(Helper.GetDisputeType(), "Mst_Value", "Mst_Desc", ViewModal.DisputeType);
-                        ViewBag.Session_CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc");
-                        ViewBag.Session_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc");
+                        //ViewBag.Session_CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc");
+                        //ViewBag.Session_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc");
 
                         ViewBag.CaseRegistrationId = caseRegistrationId;
 
                         PartialViewName = "_TBR_Modify";
+                    }
+                    else if (PartialViewName == "_TBR_UPDATED_REG")
+                    {
+                        ViewModal = new CaseRegistrationVM();
+                        Helper.GetCaseRegistrationVM(caseRegistrationId, ref ViewModal);
+
+                        ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
+                        ViewBag.CourtFollow = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow);
+                        ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
+
+                        ViewBag.Session_CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc", ViewModal.Session_CaseType);
+                        ViewBag.Session_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", ViewModal.Session_LawyerId);
+
+                        ViewBag.FollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", ViewModal.FollowerId);
+                        ViewBag.SuspendedFollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", ViewModal.SuspendedFollowerId);
+
+                        ViewBag.CourtFollow = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow);
+                        ViewBag.CourtFollow_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow_LawyerId);
+
+                        #region ADDRESS
+
+                        ViewBag.DEF_CallerName = new SelectList(Helper.GetCallerNames(), "Mst_Value", "Mst_Desc", ViewModal.DEF_CallerName);
+                        ViewBag.AnnouncementTypeId = new SelectList(Helper.GetAnnouncementType(), "Mst_Value", "Mst_Desc", ViewModal.AnnouncementTypeId);
+
+                        string LawyerDoc = Helper.GetDEF_Lawyer_Doc(ViewModal.CaseId);
+                        string AddressDoc = Helper.GetDEF_Address_Doc(ViewModal.CaseId);
+
+                        if (LawyerDoc == "#")
+                        {
+                            ViewBag.ViewDEF_LawyerDocs = "AppHidden";
+                        }
+                        else
+                        {
+                            ViewBag.ViewDEF_LawyerDocs = "";
+                            ViewBag.DEF_Lawyer_Docs = LawyerDoc;
+                        }
+
+                        if (AddressDoc == "#")
+                        {
+                            ViewBag.ViewDEF_AddressDocs = "AppHidden";
+                        }
+                        else
+                        {
+                            ViewBag.ViewDEF_AddressDocs = "";
+                            ViewBag.DEF_Address_Docs = AddressDoc;
+                        }
+
+                        #endregion
+
+                        #region Pay Voucher
+                        List<MasterSetups> Payment_Head_List = new List<MasterSetups>();
+                        MasterSetups PleaseSelect = new MasterSetups();
+                        PleaseSelect.Mst_Value = "0";
+                        PleaseSelect.Mst_Desc = "PLEASE SELECT";
+                        Payment_Head_List.Add(PleaseSelect);
+                        Payment_Head_List.AddRange(Helper.LoadPayFor("R"));
+
+
+                        ViewBag.CourtType = new SelectList(Helper.GetCaseLevelList("D"), "Mst_Value", "Mst_Desc");
+                        ViewBag.Debit_Account = new SelectList(Helper.GetBankList(), "Mst_Value", "Mst_Desc");
+                        ViewBag.Credit_Account = new SelectList(Helper.GetBankList(), "Mst_Value", "Mst_Desc");
+                        ViewBag.Payment_Head = new SelectList(Payment_Head_List, "Mst_Value", "Mst_Desc");
+                        ViewBag.Payment_To = new SelectList(Helper.GetListForPayTo(), "Mst_Value", "Mst_Desc");
+
+                        #endregion
+
+
+                        ViewModal.UpdatePV_Type = "TBR_UPDATED_REG";
+
                     }
                 }
                 ViewBag.hid_DetailId = ViewModal.DetailId;

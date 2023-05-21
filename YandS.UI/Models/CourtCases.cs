@@ -803,6 +803,33 @@
         public string FollowerId { get; set; }
         public string SuspendedWorkRequired { get; set; }
         public string SuspendedSessionNotes { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? SuspendedLastDate { get; set; }
+        public string SuspendedFollowerId { get; set; }
+        public string SessionNote_Remark { get; set; }
+        #endregion
+
+        #region MONEY TRANSFER
+
+        public int DefendentTransferId { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? MoneyTrRequestDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? TransferDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:###0.000#}", ApplyFormatInEditMode = true)]
+        public decimal? TransferAmount { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? MoneyTrCompleteDate { get; set; }
+        public string DataFor { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? DEF_DateOfContact { get; set; }
+        public string DEF_MobileNo { get; set; }
+        public string DEF_Corresponding { get; set; }
+        public string DEF_CallerName { get; set; }
+        public string DEF_LawyerId { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? DEF_VisitDate { get; set; }
 
         #endregion
         public string SessionRollDefendentName { get; set; }

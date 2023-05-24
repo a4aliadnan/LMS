@@ -85,36 +85,36 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="SupremeJudgements">SUPREME SENTENCE منطوق الحكم العليا</label>
-                @Html.TextAreaFor(model => model.SupremeJudgements, 1, 200, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="form-group clsAgainstClient">
                 <label for="SupremeFinalJDAmount">SUP. JUG. AMOUNT مبلغ الحكم العليا</label>
                 @Html.EditorFor(model => model.SupremeFinalJDAmount, new { htmlAttributes = new { @class = "form-control clsDecimal" } })
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="form-group clsAgainstClient">
                 <label for="SupremeFinalJudgedInterests">SUP. JUG. INTEREST نسبة الحكم العليا</label>
                 @Html.EditorFor(model => model.SupremeFinalJudgedInterests, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="col-sm-4 AppHidden">
+            <div class="form-group">
+                <label for="SupremeJDReceiveDate">SUP.JUG.RECEIVE تاريخ استلام الحكم العليا</label>
+                @Html.EditorFor(model => model.SupremeJDReceiveDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
-                <label for="SupremeJudgements">SUPREME CLAIM SUMMARY طلباتنا في العليا</label>
-                @Html.TextAreaFor(model => model.ClaimSummary, 1, 200, new { @class = "form-control" })
+                <label for="SupremeJudgements">SUPREME SENTENCE منطوق الحكم العليا</label>
+                @Html.TextAreaFor(model => model.SupremeJudgements, 1, 200, new { @class = "form-control" })
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-6">
             <div class="form-group">
-                <label for="SupremeJDReceiveDate">SUP.JUG.RECEIVE تاريخ استلام الحكم العليا</label>
-                @Html.EditorFor(model => model.SupremeJDReceiveDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                <label for="SupremeJudgements">SUPREME CLAIM SUMMARY طلباتنا في العليا</label>
+                @Html.TextAreaFor(model => model.ClaimSummary, 1, 200, new { @class = "form-control" })
             </div>
         </div>
     </div>
@@ -122,13 +122,13 @@
     <div class="row clsAgainstClient">
         <div class="col-sm-3">
             <div class="form-group">
-                <label for="SupremeFinalJDAmount">FINAL JD AMOUNT</label>
+                <label for="FinalJDAmount">FINAL JD AMOUNT</label>
                 @Html.EditorFor(model => model.FinalJDAmount, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
             </div>
         </div>
         <div class="col-sm-3">
             <div class="form-group">
-                <label for="SupremeFinalJudgedInterests">FINAL JUDGED INTEREST</label>
+                <label for="FinalJudgedInterests">FINAL JUDGED INTEREST</label>
                 @Html.EditorFor(model => model.FinalJudgedInterests, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
             </div>
         </div>

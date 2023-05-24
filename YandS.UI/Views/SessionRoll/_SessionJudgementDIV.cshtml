@@ -1,5 +1,10 @@
 ﻿<script type="text/javascript">
-
+    function ShowInvesmentBanner() {
+        if ($('#DepartmentType').val() == "2")
+            $("#DIV_INVESTMENT_BANNER").removeClass("AppHidden");
+        else
+            $("#DIV_INVESTMENT_BANNER").removeClass("AppHidden").addClass("AppHidden");
+    }
     function LoadJudgementLevelPV(JudgementLevelId) {
         _parameters = "";
         _PartialViewName = "";
@@ -42,7 +47,6 @@
         ShowSessionNoteBanner();
         ShowDIV();
     }
-
     function LoadCaseRegistrationPV(ActionLevel) {
 
         console.log("function LoadCaseRegistrationPV(" + ActionLevel + ")");
@@ -73,24 +77,24 @@
 
         GetTab(PartialContainer, GetSessionRollURL, _parameters);
     }
-
     function processFileStatusChange(FileStatusId) {
         console.log("function processFileStatusChange(" + FileStatusId + ")");
         $("#ActionDate").datepicker("setDate", new Date());
         $("#DIV_ACTION_DATE").removeClass("AppHidden");
+        $("#DIV_UPDATE").removeClass("AppHidden");
         $("#DIV_OnHoldReason").removeClass("AppHidden").addClass("AppHidden");
         switch (FileStatusId) {
             case "0":
                 $("#DIV_ACTION_DATE").removeClass("AppHidden").addClass("AppHidden");
+                $("#DIV_UPDATE").removeClass("AppHidden").addClass("AppHidden");
                 break;
             case "4":
                 $("#DIV_OnHoldReason").removeClass("AppHidden");
                 break;
         }
 
-
+        $('textarea').autoResize();
     }
-
 
     $(document).ready(function () {
         $('.datepicker').datepicker({

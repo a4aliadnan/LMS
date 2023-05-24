@@ -2766,25 +2766,36 @@ namespace YandS.UI
                 OfficeFileStatus.JudicalSale.ToString()
             };
         }
-        public static string[] getFileStatusCodesTBR() {
-            return new[] 
+        public static string[] getFileStatusCodesTBR(bool OnlyTransfer = false) {
+            if (OnlyTransfer)
             {
-                OfficeFileStatus.PleaseSelect.ToString(),
-                OfficeFileStatus.Transfer.ToString(),
-                OfficeFileStatus.WritingSubmission.ToString(),
-                OfficeFileStatus.SubmissionApproval.ToString(),
-                OfficeFileStatus.Scanned.ToString(),
-                OfficeFileStatus.OnlineRegTBR.ToString(),
-                OfficeFileStatus.CourtMsg.ToString(),
-                OfficeFileStatus.ForPayment.ToString(),
-                OfficeFileStatus.Registered.ToString(),
-                OfficeFileStatus.ApprovalForAppeal.ToString(),
-                OfficeFileStatus.ApprovalForSupreme.ToString(),
-                OfficeFileStatus.WithLawyer.ToString(),
-                OfficeFileStatus.CompletingDocs.ToString(),
-                OfficeFileStatus.ReceiptOfFees.ToString(),
-                OfficeFileStatus.Translation.ToString()
-            };
+                return new[]
+                {
+                    OfficeFileStatus.PleaseSelect.ToString(),
+                    OfficeFileStatus.Transfer.ToString()
+                };
+            }
+            else
+            {
+                return new[]
+                {
+                    OfficeFileStatus.PleaseSelect.ToString(),
+                    OfficeFileStatus.Transfer.ToString(),
+                    OfficeFileStatus.WritingSubmission.ToString(),
+                    OfficeFileStatus.SubmissionApproval.ToString(),
+                    OfficeFileStatus.Scanned.ToString(),
+                    OfficeFileStatus.OnlineRegTBR.ToString(),
+                    OfficeFileStatus.CourtMsg.ToString(),
+                    OfficeFileStatus.ForPayment.ToString(),
+                    OfficeFileStatus.Registered.ToString(),
+                    OfficeFileStatus.ApprovalForAppeal.ToString(),
+                    OfficeFileStatus.ApprovalForSupreme.ToString(),
+                    OfficeFileStatus.WithLawyer.ToString(),
+                    OfficeFileStatus.CompletingDocs.ToString(),
+                    OfficeFileStatus.ReceiptOfFees.ToString(),
+                    OfficeFileStatus.Translation.ToString()
+                };
+            }
         }
         public static DataTable getDataTable(string[] ParaName, object[] ParaValue, string procedureName = null)
         {
@@ -3681,7 +3692,16 @@ namespace YandS.UI
                         db.Entry(courtCases).Entity.CourtFollow = modal.CourtFollow;
                         db.Entry(courtCases).Entity.CommissioningDate = modal.CommissioningDate;
                         db.Entry(courtCases).Entity.CourtFollowRequirement = modal.CourtFollowRequirement;
-                        db.Entry(courtCases).Entity.OfficeFileStatus = modal.SessionFileStatus;
+
+                        if (modal.SessionFileStatus == OfficeFileStatus.JudgIssued.ToString())
+                        {
+                            if (modal.buttonToGo == "CR")
+                                db.Entry(courtCases).Entity.OfficeFileStatus = modal.FileStatus;
+                            else
+                                db.Entry(courtCases).Entity.OfficeFileStatus = modal.SessionFileStatus;
+                        }
+                        else
+                            db.Entry(courtCases).Entity.OfficeFileStatus = modal.SessionFileStatus;
 
                         if (modal.SessionFileStatus == OfficeFileStatus.JudgIssued.ToString())
                             db.Entry(courtCases).Entity.ClaimSummary = modal.ClaimSummary;
@@ -4111,6 +4131,33 @@ namespace YandS.UI
             {
 
             }
+        }
+        public static decimal GetTotalFinalJDAmount(int CaseId)
+        {
+            decimal RetResult = 0;
+            using (var context = new RBACDbContext())
+            {
+                try
+                {
+                    var p_CaseId = new SqlParameter { ParameterName = "@CaseId", Value = CaseId };
+                    RetResult = context.Database.SqlQuery<decimal>("SELECT dbo.FnGetTotalFinalJDAmount(@CaseId)", p_CaseId).FirstOrDefault();
+                }
+                catch(Exception e)
+                {
+                    RetResult = 0;
+                }
+            }
+            return RetResult;
+        }
+        public static string GetFinalJudgedInterests(int CaseId)
+        {
+            string RetResult = string.Empty;
+            using (var context = new RBACDbContext())
+            {
+                var p_CaseId = new SqlParameter { ParameterName = "@CaseId", Value = CaseId };
+                RetResult = context.Database.SqlQuery<string>("SELECT dbo.FnGetFinalJudgedInterests(@CaseId)", p_CaseId).FirstOrDefault();
+            }
+            return RetResult;
         }
 
     }

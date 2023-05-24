@@ -11,6 +11,21 @@
             this.ClaimAmount = 0;
             this.ClaimAmountFrom = 0;
             this.PartialViewName = "_litigation";
+            this.Location = "A";
+            this.ClientCode = "0";
+            this.AgainstCode = "0";
+            this.InvoiceStatus = "0";
+            this.CaseStatus = "0";
+            this.ParentCourtId = "0";
+            this.GovernorateId = "0";
+            this.AgainstInsurance = "0";
+            this.ODBBankBranch = "0";
+            this.ClientCaseType = "0";
+            this.OmaniExp = "0";
+            this.EnforcementlevelId = "0";
+            this.ReOpenEnforcement = "0";
+            this.CourtLocationid = "0";
+            this.ReasonCode = "0";
         }
 
         [Display(Name = "Y & S BRANCH")]

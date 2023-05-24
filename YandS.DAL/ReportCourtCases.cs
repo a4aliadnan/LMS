@@ -497,6 +497,118 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                         }
 
                     }
+                    else if (P_TemplateName == "ShortDataEN")
+                    {
+
+                        int rowstart = 2;
+                        int rowend = rowstart + 1;
+                        int colend = ds.Tables[0].Columns.Count;
+                        MemoryStream ResultStream = new MemoryStream();
+
+                        using (ExcelPackage pck = new ExcelPackage(ResultStream, ms))
+                        {
+                            ExcelWorksheet ws = pck.Workbook.Worksheets.First();
+                            var dt = ds.Tables[0];
+
+                            var modelCells = ws.Cells["A3"];
+                            var modelRows = dt.Rows.Count + 2;
+                            string modelRangeSheet = "A1:M" + modelRows.ToString();
+                            string modelRange = "A3:M" + modelRows.ToString();
+                            var modelTableSheet = ws.Cells[modelRangeSheet];
+                            var modelTable = ws.Cells[modelRange];
+
+                            // Assign borders
+                            modelTable.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
+                            System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#f2f2f2");
+                            modelTable.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            modelTable.Style.Fill.BackgroundColor.SetColor(colFromHex);
+
+                            // Fill worksheet with data to export
+                            modelCells.LoadFromDataTable(dt, false);
+
+
+                            pck.SaveAs(ResultStream);
+                            ms = ResultStream;
+                            //pck.Save();
+                        }
+
+                    }
+                    else if (P_TemplateName == "ShortDataAR")
+                    {
+
+                        int rowstart = 2;
+                        int rowend = rowstart + 1;
+                        int colend = ds.Tables[0].Columns.Count;
+                        MemoryStream ResultStream = new MemoryStream();
+
+                        using (ExcelPackage pck = new ExcelPackage(ResultStream, ms))
+                        {
+                            ExcelWorksheet ws = pck.Workbook.Worksheets.First();
+
+                            var dt = ds.Tables[0];
+
+                            var modelCells = ws.Cells["A3"];
+                            var modelRows = dt.Rows.Count + 2;
+                            string modelRangeSheet = "A1:P" + modelRows.ToString();
+                            string modelRange = "A3:P" + modelRows.ToString();
+                            var modelTableSheet = ws.Cells[modelRangeSheet];
+                            var modelTable = ws.Cells[modelRange];
+
+                            // Assign borders
+                            modelTable.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
+                            System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#f2f2f2");
+                            modelTable.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            modelTable.Style.Fill.BackgroundColor.SetColor(colFromHex);
+
+                            // Fill worksheet with data to export
+                            modelCells.LoadFromDataTable(dt, false);
+
+
+                            pck.SaveAs(ResultStream);
+                            ms = ResultStream;
+                            //pck.Save();
+                        }
+
+                    }
+                    else if (P_TemplateName == "BD_REPORT")
+                    {
+
+                        int rowstart = 2;
+                        int rowend = rowstart + 1;
+                        int colend = ds.Tables[0].Columns.Count;
+                        MemoryStream ResultStream = new MemoryStream();
+
+                        using (ExcelPackage pck = new ExcelPackage(ResultStream, ms))
+                        {
+                            ExcelWorksheet ws = pck.Workbook.Worksheets.First();
+
+                            ws.Cells["A2"].LoadFromDataTable(ds.Tables[0], false);
+
+                            var modelRows = ds.Tables[0].Rows.Count + 2;
+                            string modelRange = "A2:AB" + modelRows.ToString();
+                            var modelTable = ws.Cells[modelRange];
+
+                            // Assign borders
+                            modelTable.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
+
+                            pck.SaveAs(ResultStream);
+                            ms = ResultStream;
+                        }
+
+                    }
+
                 }
             }
             catch (Exception e)

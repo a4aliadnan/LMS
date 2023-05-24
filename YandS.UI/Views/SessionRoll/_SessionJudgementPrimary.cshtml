@@ -66,6 +66,14 @@
         if ($('#hidJudFilter').val() == "Y") {
             $('.clsAgainstClient').removeClass("AppHidden").addClass("AppHidden");
         }
+
+        ShowInvesmentBanner();
+
+        $('#DepartmentType').on("change", function () {
+            ShowInvesmentBanner();
+        });
+
+        $('textarea').autoResize();
     });
 </script>
 @model YandS.UI.Models.SessionsRollVM
@@ -87,25 +95,25 @@
         </div>
         <div class="col-sm-4">
             <div class="form-group">
-                <label for="PrimaryJudgementsDate">PRIMARY JUDGMENT DATE تاريخ الحكم</label>
-                @Html.EditorFor(model => model.PrimaryJudgementsDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                <label for="DepartmentType">INVESTMENT تبسيط الإجراءات</label>
+                @Html.DropDownList("DepartmentType", null, htmlAttributes: new { @class = "form-control select2bs4" })
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <div class="form-group">
-                <label for="PrimaryJudgements">PRIMARY SENTENCE منطوق الحكم الإبتدائي</label>
-                @Html.TextAreaFor(model => model.PrimaryJudgements, 1, 200, new { @class = "form-control", @dir = "auto" })
+                <label for="PrimaryJudgementsDate">PRIMARY JUDGMENT DATE تاريخ الحكم</label>
+                @Html.EditorFor(model => model.PrimaryJudgementsDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="form-group clsAgainstClient">
                 <label for="PrimaryFinalJDAmount">PRI. JUG. AMOUNT مبلغ الحكم الابتدائي</label>
                 @Html.EditorFor(model => model.PrimaryFinalJDAmount, new { htmlAttributes = new { @class = "form-control clsDecimal" } })
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="form-group clsAgainstClient">
                 <label for="PrimaryFinalJudgedInterests">PRI. JUG. INTEREST نسبة الحكم الابتدائي</label>
                 @Html.EditorFor(model => model.PrimaryFinalJudgedInterests, new { htmlAttributes = new { @class = "form-control" } })
@@ -113,36 +121,44 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <div class="form-group">
-                <label for="PrimaryJudgements">PRI CLAIM SUMMARY طلباتنا في الإبتدائي </label>
+                <label for="ClaimSummary">PRI CLAIM SUMMARY طلباتنا في الإبتدائي </label>
                 @Html.TextAreaFor(model => model.ClaimSummary, 1, 200, new { @class = "form-control", @dir = "auto" })
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="form-group">
-                <label for="PrimaryJDReceiveDate">PRI.JUG.RECEIVE تاريخ استلام الحكم الابتدائي</label>
-                @Html.EditorFor(model => model.PrimaryJDReceiveDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                <label for="PrimaryJudgements">PRIMARY SENTENCE منطوق الحكم الإبتدائي</label>
+                @Html.TextAreaFor(model => model.PrimaryJudgements, 1, 200, new { @class = "form-control", @dir = "auto" })
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="form-group">
                 <label for="">FAVORABLE مطابقة الحكم</label>
                 @Html.DropDownList("PrimaryIsFavorable", null, htmlAttributes: new { @class = "form-control select2bs4" })
             </div>
         </div>
     </div>
-    
-    <div class="row clsAgainstClient">
-        <div class="col-sm-3">
+    <div class="row">
+        <div class="col-sm-4">
             <div class="form-group">
-                <label for="PrimaryFinalJDAmount">FINAL JD AMOUNT</label>
+                <label for="PrimaryJDReceiveDate">PRI.JUG.RECEIVE تاريخ استلام الحكم الابتدائي</label>
+                @Html.EditorFor(model => model.PrimaryJDReceiveDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+            </div>
+        </div>
+    </div>
+   
+    <div class="row clsAgainstClient">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="FinalJDAmount">FINAL JD AMOUNT</label>
                 @Html.EditorFor(model => model.FinalJDAmount, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="form-group">
-                <label for="PrimaryFinalJudgedInterests">FINAL JUDGED INTEREST</label>
+                <label for="FinalJudgedInterests">FINAL JUDGED INTEREST</label>
                 @Html.EditorFor(model => model.FinalJudgedInterests, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
             </div>
         </div>

@@ -4014,6 +4014,9 @@
     <Content Include="Views\CourtCases\_Translation.cshtml" />
     <Content Include="Views\CourtCases\_PartViewTranslation.cshtml" />
     <Content Include="Views\CourtCases\_SessionFooterBanner_TBR.cshtml" />
+    <Content Include="Template\ShortDataAR.xlsx" />
+    <Content Include="Template\ShortDataEN.xlsx" />
+    <Content Include="Template\BD_REPORT.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

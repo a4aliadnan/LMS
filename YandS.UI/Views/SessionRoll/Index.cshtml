@@ -911,16 +911,20 @@
     function LoadTable(FileStatusId) {
 
         switch (FileStatusId) {
-            case "0":
+            case OfficeFileStatus.PleaseSelect:
                 return false;
                 break;
-            case "OFS-16":
+            case OfficeFileStatus.RunningCase:
+            case OfficeFileStatus.Dispute:
+            case OfficeFileStatus.MeetJudge:
+            case OfficeFileStatus.AuctionSession:
                 _PartialViewName = "_AllSessions";
                 break;
-            case "OFS-18":
+            case OfficeFileStatus.ToKnowSessionDate:
+            case OfficeFileStatus.DifferentPanel:
                 _PartialViewName = "_SessionOnHold";
                 break;
-            case "OFS-17":
+            case OfficeFileStatus.JudgIssued:
                 _PartialViewName = "_SessionJudgement";
                 break;
             case "4":
@@ -1850,25 +1854,16 @@
 
             console.log("IsFavorable :: " + IsFavorable);
             console.log("JudgementReceivedDate :: " + JudgementReceivedDate);
-            if (IsFavorable == "Y") {
+
+            if (JudgementReceivedDate == "")
+                $('#IsDelete').val("N");
+            else 
                 $('#IsDelete').val("Y");
-                ProcessPreSubmit();
-            }
-            else {
-                if (IsFavorable == "N" && JudgementReceivedDate != "") {
-                    $('#IsDelete').val("Y");
-                    ProcessPreSubmit();
-                }
-                else {
-                    $('#IsDelete').val("N");
-                    ProcessPreSubmit();
-                }
-            }
         }
-        else {
+        else
             $('#IsDelete').val("N");
-            ProcessPreSubmit();
-        }
+
+        ProcessPreSubmit();
     }
 </script>
 <div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>

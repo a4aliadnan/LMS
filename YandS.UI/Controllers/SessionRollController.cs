@@ -561,12 +561,12 @@ namespace YandS.UI.Controllers
 
                 decimal? strFinalJDAmount = modal.SupremeFinalJDAmount > 0 ? modal.SupremeFinalJDAmount : modal.AppealFinalJDAmount;
                 strFinalJDAmount = strFinalJDAmount > 0 ? strFinalJDAmount : modal.PrimaryFinalJDAmount;
-                ModalToReturn.FinalJDAmount = strFinalJDAmount;
+                ModalToReturn.FinalJDAmount = Helper.GetTotalFinalJDAmount(modal.CaseId);// strFinalJDAmount;
 
                 string strFinalJudgedInterests = string.IsNullOrEmpty(modal.SupremeFinalJudgedInterests) ? modal.AppealFinalJudgedInterests : modal.SupremeFinalJudgedInterests;
                 strFinalJudgedInterests = string.IsNullOrEmpty(strFinalJudgedInterests) ? modal.PrimaryFinalJudgedInterests : strFinalJudgedInterests;
 
-                ModalToReturn.FinalJudgedInterests = strFinalJudgedInterests;
+                ModalToReturn.FinalJudgedInterests = Helper.GetFinalJudgedInterests(modal.CaseId);//strFinalJudgedInterests;
 
                 if (modal.CaseRegistrationId == null)
                 {
@@ -1374,6 +1374,11 @@ namespace YandS.UI.Controllers
             }
             else if (modal.JudgementLevel == "4")
             {
+                modal.DisputrRegisterDate = modal.EnforcementJudgementsDate;
+
+                db.Entry(ModelToSave).Entity.EnforcementJudgements = modal.EnforcementJudgements;
+                db.Entry(ModelToSave).Entity.EnforcementJDReceiveDate = modal.EnforcementJDReceiveDate;
+                db.Entry(ModelToSave).Entity.EnforcementJudgementsDate = modal.EnforcementJDReceiveDate;
                 db.Entry(ModelToSave).Entity.EnforcementIsFavorable = modal.EnforcementIsFavorable;
             }
         }
@@ -1785,6 +1790,7 @@ namespace YandS.UI.Controllers
 
                     db.Entry(ModelToSave).State = EntityState.Modified;
                     db.SaveChanges();
+                    modal.buttonToGo = "CR";
                 }
             }
             else
@@ -1849,7 +1855,7 @@ namespace YandS.UI.Controllers
 
                         db.Entry(ModelToSave).State = EntityState.Modified;
                         db.SaveChanges();
-
+                        modal.buttonToGo = "CR";
                     }
                 }
             }
@@ -2275,6 +2281,7 @@ namespace YandS.UI.Controllers
                 mapSessionRollVM(CaseId, SessionRollId, ref modal);
 
                 ViewBag.PrimaryIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.PrimaryIsFavorable);
+                ViewBag.DepartmentType = new SelectList(Helper.GetInvestmentYN(), "Mst_Value", "Mst_Desc", modal.DepartmentType);
 
                 return PartialView(PartialViewName, modal);
 
@@ -2294,6 +2301,7 @@ namespace YandS.UI.Controllers
                 mapSessionRollVM(CaseId, SessionRollId, ref modal);
 
                 ViewBag.AppealIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.AppealIsFavorable);
+                ViewBag.DepartmentType = new SelectList(Helper.GetInvestmentYN(), "Mst_Value", "Mst_Desc", modal.DepartmentType);
 
                 return PartialView(PartialViewName, modal);
             }
@@ -2359,12 +2367,11 @@ namespace YandS.UI.Controllers
                     return new HttpStatusCodeResult(HttpStatusCode.NotFound);
 
                 mapSessionRollVM(CaseId, SessionRollId, ref modal);
-
+                FileStatusCodesTBR = Helper.getFileStatusCodesTBR(true);
                 ViewBag.EnforcementIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.EnforcementIsFavorable);
                 ViewBag.DisputeLevel = new SelectList(Helper.GetDisputeLevel(), "Mst_Value", "Mst_Desc", modal.DisputeLevel);
                 ViewBag.ConsultantId = new SelectList(Helper.GetCommonNameList(), "Mst_Value", "Mst_Desc", modal.ConsultantId);
-                ViewBag.OnHoldReasonDDL = new SelectList(Helper.GetOnHoldReason(), "Mst_Value", "Mst_Desc", modal.FileStatus == "4" ? modal.FileStatusRemarks : "0");
-                ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR), "Mst_Value", "Mst_Desc", modal.FileStatus);
+                ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR, FileStatusCodesTBR), "Mst_Value", "Mst_Desc", modal.FileStatus);
 
                 return PartialView(PartialViewName, modal);
             }
@@ -2679,10 +2686,10 @@ namespace YandS.UI.Controllers
                 ViewBag.SessionRollId = modal.SessionRollId;
                 ViewBag.HFCaseId = modal.CaseId;
 
-                ViewBag.DepartmentType = new SelectList(Helper.GetInvestmentYN(), "Mst_Value", "Mst_Desc", modal.DepartmentType);
+                FileStatusCodesTBR = Helper.getFileStatusCodesTBR(true);
+
                 ViewBag.ConsultantId = new SelectList(Helper.GetCommonNameList(), "Mst_Value", "Mst_Desc", modal.ConsultantId);
-                ViewBag.OnHoldReasonDDL = new SelectList(Helper.GetOnHoldReason(), "Mst_Value", "Mst_Desc", modal.FileStatus == "4" ? modal.FileStatusRemarks : "0");
-                ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR), "Mst_Value", "Mst_Desc", modal.FileStatus);
+                ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR, FileStatusCodesTBR), "Mst_Value", "Mst_Desc", modal.FileStatus);
 
                 return PartialView(PartialViewName, modal);
             }
@@ -2699,10 +2706,9 @@ namespace YandS.UI.Controllers
                 mapSessionRollVM(CaseId, SessionRollId, ref modal);
                 ViewBag.SessionRollId = modal.SessionRollId;
                 ViewBag.HFCaseId = modal.CaseId;
-
+                FileStatusCodesTBR = Helper.getFileStatusCodesTBR(true);
                 ViewBag.ConsultantId = new SelectList(Helper.GetCommonNameList(), "Mst_Value", "Mst_Desc", modal.ConsultantId);
-                ViewBag.OnHoldReasonDDL = new SelectList(Helper.GetOnHoldReason(), "Mst_Value", "Mst_Desc", modal.FileStatus == "4" ? modal.FileStatusRemarks : "0");
-                ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR), "Mst_Value", "Mst_Desc", modal.FileStatus);
+                ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR, FileStatusCodesTBR), "Mst_Value", "Mst_Desc", modal.FileStatus);
 
                 return PartialView(PartialViewName, modal);
             }

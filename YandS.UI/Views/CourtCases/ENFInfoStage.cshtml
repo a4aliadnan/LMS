@@ -1,14 +1,41 @@
 ﻿@model YandS.UI.Models.ToBeRegisterVM
+@{
+    ViewBag.UpdateBoxUser = Model.UpdateBoxByName;
+}
 <script type="text/javascript">
-
-    var CreateMasterTableDetailURL = '@Url.Action("CreateMasterTableDetail", "CommonTask", new { area = string.Empty })';
+    var GetPayVoucherCreatedListURL = '@Url.Action("GetPayVoucherCreatedList", "CommonTask", new { area = string.Empty })';
     var SubmitFormURL = '@Url.Action("TobeReg", "CourtCases", new { area = string.Empty })';
-    var IsDigitmask = new RegExp(/^\d*\.?(?:\d{1,3})?$/);
     var GetGetDefendentTransferDataURL = '@Url.Action("GetDefendentTransferData", "CommonTask", new { area = string.Empty })';
-    var DefendentTransferURL = '@Url.Action("ProcessDefendentTransferData", "CommonTask", new { area = string.Empty })';
     var DefendentTRansferDataTable;
+    var PVDetailTable;
     var objDTO = {};
+    function LoadUpdate(Enforcementlevel) {
+        var _Updateparameters = "";
 
+        var UpdateViewName = "";
+        var UpdateViewContainer = $("#ENF_DIV_UPDATE");
+
+        switch (Enforcementlevel) {
+            case OfficeFileStatus.MeetJudge:
+            case OfficeFileStatus.Dispute:
+            case OfficeFileStatus.AuctionSession:
+                UpdateViewName = "ENF_UPDATE_SESSION";
+                break;
+            case OfficeFileStatus.JudicalSale:
+                if ($("#AuctionProcess").val() == "11")
+                    UpdateViewName = "ENF_UPDATE_SESSION";
+                else
+                    UpdateViewName = "ENF_UPDATE";
+
+                break;
+            default:
+                UpdateViewName = "ENF_UPDATE";
+        }
+
+        _Updateparameters = { ClassificationId: UpdateViewName, Mode: $("#HFCaseId").val() };
+
+        GetTab(UpdateViewContainer, GetClientClassificationURL, _Updateparameters);
+    }
     function ProcessAddClient() {
         if ($("#MstDesc").val() != "") {
             console.log(parseInt($("#MstParentId").val()));
@@ -57,90 +84,68 @@
         }
     }
     function LoadEnforcementStage(Enforcementlevel) {
-
+        $("#div_Def_AnnType").removeClass("AppHidden").addClass("AppHidden");
         var partialViewPrefix = "CEL-ENF_LVL_";
         var _parameters = "";
 
         var _PartialViewName = "";
-        var EnforcementLevelHeading = "";
-        var EnforcementLevelHeaderClass = "";
         var PartialContainer = $("#EnforcementLevelContainer");
 
         switch (Enforcementlevel) {
-            case "0":
+            case OfficeFileStatus.PleaseSelect:
+            case OfficeFileStatus.RequestMeetJudge:
+            case OfficeFileStatus.OnlineRegENF:
+            case OfficeFileStatus.ArrestApplication:
+            case OfficeFileStatus.RecoveryRedStamp_Close:
+            case OfficeFileStatus.FileReview:
                 $("#EnforcementLevelContainer").empty();
+                LoadUpdate($('#EnforcementlevelId').val());
                 return false;
                 break;
-            case "1":
-                $("#EnforcementLevelContainer").empty();
+            case OfficeFileStatus.MeetJudge:
+                $("#div_Def_AnnType").removeClass("AppHidden");
+                LoadUpdate($('#EnforcementlevelId').val());
                 return false;
                 break;
-            case "2":
+            case OfficeFileStatus.Announcement:
                 _PartialViewName = partialViewPrefix + "ANNOUNCEMENT";
                 EnforcementLevelHeading = "ANNOUNCEMENT إعلان المنفذ ضده بالسند التنفيذي"
                 EnforcementLevelHeaderClass = "AnnouncementActive";
-
                 break;
-            case "3":
+            case OfficeFileStatus.ContactingAuthorities:
                 _PartialViewName = partialViewPrefix + "INQUIRY";
                 EnforcementLevelHeading = "INQUIRY ( الإستعلام ( مخاطبة الجهات"
                 EnforcementLevelHeaderClass = "InquiryActive";
                 break;
-            case "4":
+            case OfficeFileStatus.JudicalSale:
+            case OfficeFileStatus.AuctionSession:
                 _PartialViewName = partialViewPrefix + "JUDICIALAUCTION";
                 EnforcementLevelHeading = "JUDICIAL AUCTION البيع القضائي"
                 EnforcementLevelHeaderClass = "InquiryActive";
                 break;
-            case "5":
-                $("#EnforcementLevelContainer").empty();
-                return false;
-                break;
-            case "6":
+            case OfficeFileStatus.ArrestOrder:
                 _PartialViewName = partialViewPrefix + "ARRESTORDER";
                 EnforcementLevelHeading = "ARREST ORDER تفاصيل أمر الحبس الصادر"
                 EnforcementLevelHeaderClass = "ArrestOrderActive";
                 break;
-            case "7":
+            case OfficeFileStatus.Suspendfd:
                 _PartialViewName = partialViewPrefix + "SUSPENDED";
                 EnforcementLevelHeading = "SUSPENDED تم وقف إجراءات التنفيذ بصفة مؤقتة"
                 EnforcementLevelHeaderClass = "SuspendedActive";
                 break;
-            case "8":
-                $("#EnforcementLevelContainer").empty();
-                return false;
-                break;
-            case "9":
+            case OfficeFileStatus.RecoveryRedStamp_Re_Open:
                 _PartialViewName = partialViewPrefix + "RECOVERYANDREOPEN";
                 EnforcementLevelHeading = "RECOVERY AND REOPEN استرداد الصيغة"
                 EnforcementLevelHeaderClass = "RecoveryFromCourtActive";
                 break;
-            case "10":
-                _PartialViewName = partialViewPrefix + "CLOSEFILE";
-                EnforcementLevelHeading = "CLOSE FILE تم غلق ملف التنفيذ"
-                EnforcementLevelHeaderClass = "GeneralActive";
-                break;
-            case "11":
+            case OfficeFileStatus.Dispute:
                 _PartialViewName = partialViewPrefix + "DISPUTE";
                 EnforcementLevelHeading = "DISPUTE منازعة تنفيذ"
                 EnforcementLevelHeaderClass = "GeneralActive";
+                $("#div_Def_AnnType").removeClass("AppHidden");
                 break;
-            case "12":
-                $("#EnforcementLevelContainer").empty();
-                return false;
-                break;
-            case "13":
-                $("#EnforcementLevelContainer").empty();
-                return false;
-                break;
-            case "14":
-                $("#EnforcementLevelContainer").empty();
-                return false;
-                break;
-
         }
 
-        //$("#EnforcementLevelText").text(EnforcementLevelHeading);
-        //$("#EnforcementLevelHeader").addClass(EnforcementLevelHeaderClass);
         _parameters = { ClassificationId: _PartialViewName, Mode: $("#HFCaseId").val() };
 
         GetTab(PartialContainer, GetClientClassificationURL, _parameters);
@@ -662,6 +667,10 @@
         NotValid = false;
         return NotValid;
     }
+    function ValidateCreatePV() {
+        NotValid = false;
+        return NotValid;
+    }
     function LoadPrintRequirementForm(PartialViewName) {
         var _PartialViewName = PartialViewName;
         P_CaseId = parseInt($("#HFCaseId").val());
@@ -724,9 +733,9 @@
                     //    html: "Data Save Successfully"
                     //});
 
-                    $("#ENF_Modify_Detail").empty();
-                    $("#ENF_Modify_Detail").append("Loading...");
-                    $("#ENF_Modify_Detail").html(result);
+                    //$("#ENF_Modify_Detail").empty();
+                    //$("#ENF_Modify_Detail").append("Loading...");
+                    //$("#ENF_Modify_Detail").html(result);
                     ResetHiddenItems();
                     LoadPrintRequirementForm("SaveResult");
                 }
@@ -750,7 +759,6 @@
         var sum = $('#DefendentTRansferHtmlTable').DataTable().column(1).data().sum();
         $('#frmTotal').val(sum);
     }
-
     function processDefendentTransfer(data) {
         console.log(data);
         _parameters = { objDTO: data };
@@ -808,11 +816,19 @@
             }
         });
     }
+    function CalcTotal() {
+        var p_Amt = $("#PVDetail_Amount").val() == "" ? 0 : parseFloat($("#PVDetail_Amount").val());
+        var p_VarAmt = $("#PVDetail_VatAmount").val() == "" ? 0 : parseFloat($("#PVDetail_VatAmount").val());
+
+        var p_TtlAmt = p_Amt + p_VarAmt;
+
+        $("#PVDetail_TotalAmount").val(p_TtlAmt);
+
+    }
 
     $(document).ready(function () {
         console.log("Modify Enforcement --> INFO STAGE Partail View Document Page");
         var AllowedUsers = ["1", "2", "3", "4", "5", "6", "9"];
-
         $.fn.regexMask = function (mask) {
             $(this).keypress(function (event) {
                 if (!event.charCode) return true;
@@ -822,7 +838,6 @@
                     return false;
             });
         };
-
         $.fn.autoResize = function () {
             let r = e => {
                 e.style.height = '';
@@ -836,14 +851,10 @@
                 })
             })
         };
-        $('textarea').autoResize();
-
         bsCustomFileInput.init();
-
         $('.select2bs4').select2({
             theme: 'bootstrap4'
         });
-
         $('.datepicker').datepicker({
             format: "dd/mm/yyyy",
             todayBtn: "linked",
@@ -886,12 +897,9 @@
             }
         }
 
-        $("#txtRequirement").removeClass("AppHidden").addClass("AppHidden");
-        $("#txtFirstEmailDate").removeClass("AppHidden").addClass("AppHidden");
-        $("#DIV_TRSOURCE").removeClass("AppHidden").addClass("AppHidden");
         $(".clsDateOfContactView").removeClass("AppHidden").addClass("AppHidden");
-        $(".clsLawerFollow").removeClass("AppHidden").addClass("AppHidden");
         $(".cls_EnfMainAll").removeClass("AppHidden").addClass("AppHidden");
+        $("#div_Def_AnnType").removeClass("AppHidden").addClass("AppHidden");
 
         if ($("#hidCurrentTableName").val() == "ENF-DEFTRANS") {
             $(".cls_MoneyTransfer").removeClass("AppHidden");
@@ -899,9 +907,6 @@
         else {
             $(".cls_ENFInfoStage").removeClass("AppHidden");
         }
-        
-
-        $('textarea').autoResize();
 
         $('.AddNewMaster').on("click", function () {
             console.log(this.id);
@@ -956,6 +961,26 @@
 
             if (!$('.cls_MoneyTransfer').hasClass("AppHidden")) {
                 NotValid = ValidateMoneyTransfer();
+
+                if (NotValid) {
+                    Swal.fire({
+                        type: "error",
+                        title: 'ERROR...',
+                        html: ValidationMessage
+                    });
+                    return false;
+                }
+                else {
+                    $('#PartialViewName').val("MoneyTransfer");
+                    if (parseInt($("#hidDefendentTransferId").val()) > 0)
+                        $('#DataFor').val("UPDATE");
+                    else
+                        $('#DataFor').val("CREATE");
+                }
+            }
+
+            if (!$('.cls_PVCreate').hasClass("AppHidden")) {
+                NotValid = ValidateCreatePV();
 
                 if (NotValid) {
                     Swal.fire({
@@ -1034,71 +1059,11 @@
                 LoadEnforcementStage($('#EnforcementlevelId').val());
         });
 
-        if ($('#ClientReply').val() == "1") {
-            $("#txtRequirement").removeClass("AppHidden");
-            $("#txtFirstEmailDate").removeClass("AppHidden");
-
-            console.log($("#Requirements").val());
-            console.log($("#FirstEmailDate").val());
-
-            $("#hidRequirement").val($("#Requirements").val());
-            $("#hidFirstEmailDate").val($("#FirstEmailDate").val());
-
-            console.log($("#hidRequirement").val());
-            console.log($("#hidFirstEmailDate").val());
-
-
-
-            if ($("#FirstEmailDate").val() == "") {
-                $("#FirstEmailDate").datepicker("setDate", new Date());
-            }
-        }
-
-        if ($('#CourtFollow').val() == "1") {
-            $(".clsLawerFollow").removeClass("AppHidden");
-            $('textarea').autoResize();
-        }
-
-        if ($('#TransportationFee').val() == "1") {
-            $("#DIV_TRSOURCE").removeClass("AppHidden");
-        }
-
         if ($('#DEF_DateOfContact').val() !== "") {
             console.log($('#DEF_DateOfContact').val());
             $(".clsDateOfContactView").removeClass("AppHidden");
             $('textarea').autoResize();
         }
-
-        $('#ClientReply').on("change", function () {
-            $("#txtRequirement").removeClass("AppHidden").addClass("AppHidden");
-            $("#txtFirstEmailDate").removeClass("AppHidden").addClass("AppHidden");
-
-            if ($('#ClientReply').val() == "1") {
-                $("#txtRequirement").removeClass("AppHidden");
-                $("#txtFirstEmailDate").removeClass("AppHidden");
-
-                if ($("#Requirements").val() == "" && $("#FirstEmailDate").val() == "") {
-                    console.log($("#hidRequirement").val());
-                    console.log($("#hidFirstEmailDate").val());
-                    $("#Requirements").val($("#hidRequirement").val());
-                    $("#FirstEmailDate").datepicker("setDate", $("#hidFirstEmailDate").val());
-                }
-            }
-            else {
-                $("#FirstEmailDate").val("");
-                $("#Requirements").val("");
-            }
-            $('textarea').autoResize();
-        });
-
-        $('#CourtFollow').on("change", function () {
-            $(".clsLawerFollow").removeClass("AppHidden").addClass("AppHidden");
-
-            if ($('#CourtFollow').val() == "1") {
-                $(".clsLawerFollow").removeClass("AppHidden");
-                $('textarea').autoResize();
-            }
-        });
 
         $(".clsRealEstate").removeClass("AppHidden").addClass("AppHidden");
 
@@ -1121,33 +1086,6 @@
             $(".clsClientReply").removeClass("AppHidden").addClass("AppHidden");
         }
 
-        $("#hidNextHearingDate").val($("#NextHearingDate").val());
-        $("#hidCurrentHearingDate").val($("#CurrentHearingDate").val());
-
-        $('#CourtDecision').bind('input propertychange', function () {
-            $("#hidCourtDecisionChange").val("N");
-
-            if (this.value.length) {
-                $("#hidCourtDecisionChange").val("Y");
-            }
-        });
-
-        $("#CurrentHearingDate").datepicker({
-            todayBtn: 1,
-            autoclose: true,
-            format: "dd/mm/yyyy",
-        }).on('changeDate', function (selected) {
-            if ($("#hidCurrentHearingDate").val() == $("#CurrentHearingDate").val()) {
-
-            }
-            else {
-                if ($('#TransportationFee').val() == "1") {
-                    $("#TransportationSource").val("0").trigger('change');
-                }
-            }
-        });
-
-
         if (AllowedUsers.indexOf($("#hidUserName").val()) == -1) {
             $(".AddNewMaster").prop("disabled", true);
             $("#EnforcementActionDate").datepicker('remove');
@@ -1159,6 +1097,51 @@
             autoclose: true,
             format: "dd/mm/yyyy",
         }).change(dateChanged);
+
+        /*Pay Voucher*/
+        $("#PVDetail_Amount").val("0");
+        var IsDigitmask = new RegExp(/^\d*\.?(?:\d{1,3})?$/);
+        $("#PVDetail_Amount").regexMask(IsDigitmask);
+        $("#PVDetail_VatAmount").regexMask(IsDigitmask);
+
+        $('.txtCalc').on("blur", function () { CalcTotal(); });
+
+
+        if (typeof PVDetailTable != 'undefined')
+            PVDetailTable.destroy();
+
+        PVDetailTable = $('#tblPVDetail').DataTable({
+            lengthChange: false,
+            "dom": 't',
+            ajax: {
+                url: GetPayVoucherCreatedListURL,
+                "dataSrc": "",
+                type: 'POST',
+                data: function (d) {
+                    d.P_OfficeFileNo = $("#PV_OFFICE_FILE_NO").val();
+                }
+            },
+            "columns": [
+                { data: 'CaseLevel' },
+                { data: 'PaymentHeadName' },
+                { data: 'PaymentToName' },
+                { data: 'TotalAmount' },
+                { data: 'W_D_Date' }
+            ],
+            //"columnDefs": [{ 'orderable': false, "targets": "_all" }],
+            "order": [],
+            "columnDefs": [{
+                "targets": [0, 1, 2, 3, 4],
+                "orderable": false
+            }]
+        });
+
+        /*END Pay Voucher*/
+        $('textarea').autoResize();
+
+        //console.log($('#SessionRollId').val());
+        ShowSessionNotes($('#SessionRollId').val());
+
     });
 
 </script>
@@ -1174,12 +1157,13 @@
     @Html.HiddenFor(model => model.DetailId)
     @Html.HiddenFor(model => model.SessionClientId)
     @Html.HiddenFor(model => model.SessionRollDefendentName)
-    @Html.HiddenFor(model => model.TransportationFee)
     @Html.HiddenFor(model => model.UpdatedOn)
     @Html.HiddenFor(model => model.DEF_MobileNo2)
     @Html.HiddenFor(model => model.DEF_MobileNo3)
     @Html.HiddenFor(model => model.DEF_MobileNo4)
     @Html.HiddenFor(model => model.DEF_MobileNo5)
+    @Html.HiddenFor(model => model.SavePV_Data)
+    @Html.HiddenFor(model => model.SessionRollId)
     <input type="hidden" id="hidUpdatedOn" value="@ViewBag.UpdatedOn" />
 
     <div class="card cls_EnfMainAll cls_ENFDetail">
@@ -1358,6 +1342,14 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <div id="div_Def_AnnType" style="padding-top:10px" class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.AnnouncementTypeId)
+                                @Html.DropDownList("AnnouncementTypeId", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="col-sm-12">
@@ -1437,104 +1429,175 @@
             </div>
         </div>
     </div>
-    <div id="DIV_LAWYER_FOLLOW" class="row">
-        <div class="col-sm-12">
-            <div style="padding-bottom:0px !important;padding-top:10px;background-color: #50634d !important; color: white !important;">
-                <div class="row">
-                    <div class="col-sm-12 text-center"><h3>LAWYER FOLLOW متابعة المحامي</h3></div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.CourtFollow)
-                            @Html.DropDownList("CourtFollow", null, htmlAttributes: new { @class = "form-control select2bs4" })
+    
+    <div class="card cls_EnfMainAll cls_PVCreate">
+        <div id="PVDIV">
+            <div class="col-sm-12">
+                <div style="padding-bottom:0px !important;padding-top:10px" class="sessionRunningCategoryBar">
+                    <div class="row">
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-10 text-center">
+                            <h5>EXPENSES طلب رسوم</h5>
                         </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group clsLawerFollow">
-                            <label for="LawyerId">LAWYER المحامي</label>
-                            @Html.DropDownList("LawyerId", null, htmlAttributes: new { @class = "form-control select2bs4" })
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group clsLawerFollow">
-                            <label for="CourtFollowRequirement">LAWYER 'S REQUIREMENT المطلوب من المحامي</label>
-                            @Html.TextAreaFor(model => model.CourtFollowRequirement, 1, 200, new { @class = "form-control", @dir = "auto", @placeholder = "PLEASE ENTER LAWYER 'S REQUIREMENT" })
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group clsLawerFollow">
-                            @Html.LabelFor(model => model.CommissioningDate)
-                            @Html.EditorFor(model => model.CommissioningDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
-                        </div>
+                        <div style="padding-bottom:10px;padding-right:20px;" class="col-sm-1"><button style="float:right" type="button" onclick="ClearDivElements('CourtType,Payment_Head,Remarks,Payment_To,Amount,VatAmount,TotalAmount,BillNumber','select2,select2,text,select2,text,text,text,text','0,0,,0,0,,,','PVDIV')" class="btn btn-sm btn-danger"><i class="fas fa-trash"> </i> CLEAR</button></div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div id="DIV_UPDATE" class="row">
-        <div class="col-sm-12">
-            <div style="padding-bottom:0px !important;padding-top:10px;background-color: #336c85 !important; color: white !important; border-color:yellow !important; border:3px solid;">
-                <div class="row">
-                    <div class="col-sm-12 text-center"><h3>UPDATE التحديث</h3></div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label for="CurrentHearingDate">UPDATE DATE تاريخ التحديث</label>
-                            @Html.EditorFor(model => model.CurrentHearingDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="CourtDecision">ENFORCEMENT UPDATES تحديث ملف التنفيذ</label>
-                            <div class="form-group">
-                                @Html.TextAreaFor(model => model.CourtDecision, 1, 200, new { @class = "form-control", @dir = "auto" })
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-2 AppHidden">
-                        <div class="form-group">
-                            <label for="NextHearingDate">NEXT HEARING DATE موعد الجلسة القادمة</label>
-                            @Html.EditorFor(model => model.NextHearingDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ClientReply)
-                            @Html.DropDownList("ClientReply", null, htmlAttributes: new { @class = "form-control select2bs4" })
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group" id="txtRequirement">
-                            <label for="Requirements">REQUIREMENT المطلوب من الموكل</label>
-                            <div class="form-group">
-                                @Html.TextAreaFor(model => model.Requirements, 1, 200, new { @class = "form-control", @dir = "auto" })
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group" id="txtFirstEmailDate">
-                            @Html.LabelFor(model => model.FirstEmailDate)
-                            @Html.EditorFor(model => model.FirstEmailDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
-                        </div>
-                    </div>
+                @Html.HiddenFor(model => model.PVDetail.Payment_Type, new { @Value = "1" })
+                @Html.HiddenFor(model => model.PVDetail.Payment_Mode, new { @Value = "3" })
+                @Html.HiddenFor(model => model.PVDetail.VoucherType, new { @Value = "1" })
+                @Html.HiddenFor(model => model.PVDetail.Status, new { @Value = "0" })
+                @Html.HiddenFor(model => model.PVDetail.VoucherStatus, new { @Value = "0" })
+                @Html.HiddenFor(model => model.PVDetail.LocationCode, new { @Value = "0" })
+                @Html.HiddenFor(model => model.PVDetail.Credit_Account, new { @Value = 0 })
+                @Html.HiddenFor(model => model.PVDetail.TransTypeCode, new { @Value = "-2" })
+                @Html.HiddenFor(model => model.PVDetail.TransReasonCode, new { @Value = "0" })
 
-                    <div class="col-sm-2">
-                        <div id="DIV_TRSOURCE" class="form-group">
-                            @Html.LabelFor(model => model.TransportationSource)
-                            @Html.DropDownList("TransportationSource", null, htmlAttributes: new { @class = "form-control select2bs4" })
+            </div>
+            
+                
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="form-group clearfix">
+                            <div style="padding-right:15px" class="icheck-primary d-inline">
+                                @Html.RadioButtonFor(m => m.PVDetail.VoucherType, "1", new { id = "VoucherType1", @checked = "checked" })
+                                <label for="VoucherType1">REFUNDABLE</label>
+                            </div>
+                            <div class="icheck-primary d-inline">
+                                @Html.RadioButtonFor(m => m.PVDetail.VoucherType, "2", new { id = "VoucherType2", disabled = "disabled" })
+                                <label for="VoucherType2">NON-REFUNDABLE</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group clearfix">
+                            <div style="padding-right:10px" class="icheck-primary d-inline">
+                                @Html.RadioButtonFor(m => m.PVDetail.Payment_Mode, "1", new { id = "Payment_Mode1", disabled = "disabled" })
+                                <label for="Payment_Mode1">CHEQUE</label>
+                            </div>
+                            <div class="icheck-primary d-inline">
+                                @Html.RadioButtonFor(m => m.PVDetail.Payment_Mode, "2", new { id = "Payment_Mode2", disabled = "disabled" })
+                                <label for="Payment_Mode2">CASH</label>
+                            </div>
+                            <div style="padding-left:10px" class="icheck-primary d-inline">
+                                @Html.RadioButtonFor(m => m.PVDetail.Payment_Mode, "3", new { id = "Payment_Mode3", @checked = "checked" })
+                                <label for="Payment_Mode3">BANK TRANSFER</label>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div id="divRefundable" class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="CourtType">CASE LEVEL مرحلة التقاضي</label>
+                            @Html.DropDownList("CourtType", null, htmlAttributes: new { id = "PVDetail_CourtType", Name = "PVDetail.CourtType", @class = "form-control select2bs4" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <label for="Payment_Head">PAY FOR سبب طلب الرسوم</label>
+                                <div class="input-group mb-3">
+                                    @Html.DropDownList("Payment_Head", null, htmlAttributes: new { id = "PVDetail_Payment_Head", Name = "PVDetail.Payment_Head", @class = "form-control select2bs4" })
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-info AddNewMaster" id="7">
+                                            ADD
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="Remarks">REMARKS ملاحظات</label>
+                            @Html.EditorFor(model => model.PVDetail.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                @Html.LabelFor(model => model.PVDetail.Payment_To)
+                                <div class="input-group mb-3">
+                                    @Html.DropDownList("Payment_To", null, htmlAttributes: new { id = "PVDetail_Payment_To", Name = "PVDetail.Payment_To", @class = "form-control select2bs4" })
+                                    <div class="input-group-append">
+                                        <button title="ADD EXCEPT EMPLOYEE AND LOCATION" type="button" class="btn btn-info AddNewMaster" id="214">
+                                            ADD
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PVDetail.Amount)
+                            @Html.EditorFor(model => model.PVDetail.Amount, new { htmlAttributes = new { @class = "form-control txtCalc" } })
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PVDetail.VatAmount)
+                            @Html.EditorFor(model => model.PVDetail.VatAmount, new { htmlAttributes = new { @class = "form-control txtCalc" } })
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PVDetail.TotalAmount)
+                            @Html.EditorFor(model => model.PVDetail.TotalAmount, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PVDetail.BillNumber)
+                            @Html.EditorFor(model => model.PVDetail.BillNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+                    <div class="col-4">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="UploadedFile">SUPPORTING DOCUMENT ارفاق المستندات الداعمة</label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="uploadPVSupDocs" name="uploadPVSupDocs">
+                                    <label class="custom-file-label" for="uploadPVSupDocs">CHOOSE DOCUMENT</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6"></div>
+                </div>
+            </div>
+            
+            <div class="card-header bg-gradient-purple">
+                <h3 class="card-title">ALREADY CREATED PAYMENT VOUCHER<span style="float:right">آخر التحويلات في هذا الملف</span></h3>
+            </div>
+            <div class="card-body">
+                <table id="tblPVDetail" class="table table-bordered table-striped dataTable dt-responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>CASE LEVEL</th>
+                            <th>PAY FOR</th>
+                            <th>PAY TO</th>
+                            <th>AMOOUNT</th>
+                            <th>W/D DATE</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
+
+    </div>
+
+    <div id="ENF_DIV_UPDATE" class="card cls_EnfMainAll cls_MoneyTransfer cls_ENFInfoStage">
     </div>
     <div class="row">
         <div class="card-footer text-center col-sm-12">

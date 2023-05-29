@@ -4,8 +4,6 @@
 <script>
     var SubmitFormURL = '@Url.Action("IndexMain", "CaseRegistration", new { area = string.Empty })';
     var GetCaseDetailURL = '@Url.Action("GetExistingOfficeInTBR", "CommonTask", new { area = string.Empty })';
-    var GetClientClassificationURL = '@Url.Action("GetTab", "CourtCases", new { area = string.Empty })';
-    var CreateMasterTableDetailForPayToURL = '@Url.Action("CreateMasterTableDetailForPayTo", "CommonTask", new { area = string.Empty })';
     var CreateClientMasterURL = '@Url.Action("CreateMasterTableDetailForPayTo", "CommonTask", new { area = string.Empty })';
     var CheckDuplicateDetailURL = '@Url.Action("CheckDuplicateDetail", "CommonTask", new { area = string.Empty })';
     var GetDefaulterDetailURL = '@Url.Action("GetDefaulterDetail", "CourtCases", new { area = string.Empty })';
@@ -113,11 +111,6 @@
                                 LoadPrintRequirementForm("SaveResult");
                             }
                             else {
-                                //Swal.fire({
-                                //    type: 'success',
-                                //    title: 'Done!',
-                                //    html: "Data Save Successfully"
-                                //});
                                 CancelTBR();
                                 table.ajax.reload(function (json) {
                                     var info = table.page.info();
@@ -167,45 +160,50 @@
         _PartialViewName = "";
         PartialContainer = $("#TBR_Modify_Detail");
         switch (FileStatusId) {
-            case "0":
+            case OfficeFileStatus.PleaseSelect:
                 $("#TBR_Modify_Detail").empty();
                 return false;
                 break;
-            case "1":
+            case OfficeFileStatus.Transfer:
                 _PartialViewName = "TBR-TRANSFER";
                 break;
-            case "2":
+            case OfficeFileStatus.LegalNotice:
                 _PartialViewName = "TBR-LEGAL_NOTICE";
                 break;
-            case "3":
+            case OfficeFileStatus.WritingSubmission:
                 _PartialViewName = "TBR-WRITING_SUBMISSION";
                 //$("#TBR_Modify_Detail").empty();
                 //return false;
                 break;
-            case "4":
+            case OfficeFileStatus.ApprovalForAppeal:
+            case OfficeFileStatus.ApprovalForSupreme:
+            case OfficeFileStatus.SubmissionApproval:
+            case OfficeFileStatus.CompletingDocs:
+            case OfficeFileStatus.ReceiptOfFees:
+            case OfficeFileStatus.Translation:
                 _PartialViewName = "TBR-ON_HOLD";
                 break;
-            case "5":
+            case OfficeFileStatus.Scanned:
                 _PartialViewName = "TBR-SCANNED";
                 //$("#TBR_Modify_Detail").empty();
                 //return false;
                 break;
-            case "6":
+            case OfficeFileStatus.OnlineRegTBR:
                 _PartialViewName = "TBR-ONLINE_SUBMISSION";
                 break;
-            case "7":
+            case OfficeFileStatus.CourtMsg:
                 _PartialViewName = "TBR-COURT_NOTES";
                 break;
-            case "8":
+            case OfficeFileStatus.ForPayment:
                 _PartialViewName = "TBR-PAYMENT";
                 break;
-            case "9":
+            case OfficeFileStatus.Registered:
                 _PartialViewName = "TBR-REGISTERED";
                 break;
             case "11":
                 _PartialViewName = "TBR-STOP_REGISTRATION";
                 break;
-            case "12":
+            case OfficeFileStatus.WithLawyer:
                 _PartialViewName = "TBR-WITH_LAWYER";
                 break;
         }
@@ -220,7 +218,7 @@
         //    $(".sessionDetail").removeClass("AppHidden").addClass("AppHidden");
         //}
 
-        if ($('#FileStatus').val() == "1" || $('#FileStatus').val() == "9") {
+        if ($('#FileStatus').val() == OfficeFileStatus.Transfer || $('#FileStatus').val() == OfficeFileStatus.Registered) {
             $("#DIV_REMARKS").empty();
             $('textarea').autoResize();
         }
@@ -231,7 +229,7 @@
     }
     function ValidateTBRMain() {
         console.log("ValidateTBRMain()");
-        if ($("#FileStatus").val() == "0") {
+        if ($("#FileStatus").val() == OfficeFileStatus.PleaseSelect) {
             ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT FILE STATUS" : ValidationMessage + "<br />" + "PLEASE SELECT FILE STATUS";
             NotValid = true;
         }
@@ -881,4 +879,3 @@
         <button type="button" id="btn_TBRUrgent" style="font-size: 1rem !important;" class="btn btn-block TBRUrgent TBRUrgentActive @ViewBag.TBRUrgentActive btn-lg tbrNavButton">قضايا عاجلة<br />URGENT</button>
     </div>
 </div>
-<div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>

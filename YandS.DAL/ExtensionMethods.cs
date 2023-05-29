@@ -195,7 +195,21 @@ namespace YandS.DAL
                     return "";
             }
         }
-
+        public static bool In(this string @this, params string[] strings)
+        {
+            return strings.Contains(@this);
+        }
+        public static bool IsTranslated(this string str)
+        {
+            foreach (char ch in str)
+            {
+                if (!(ch >= 'A' && ch <= 'Z') && !(ch >= 'a' && ch <= 'z'))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         #region "-----------------------------------------------------------Methods-----------------------------------------------------------------------------------------------------------------"
         /// <summary>
         /// The key
@@ -343,6 +357,7 @@ namespace YandS.DAL
         }
 
         #endregion
+
 
     }
 

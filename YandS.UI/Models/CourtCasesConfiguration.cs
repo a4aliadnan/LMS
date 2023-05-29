@@ -16,6 +16,7 @@ public class CourtCasesConfiguration : EntityTypeConfiguration<CourtCases>
              .WillCascadeOnDelete(false);
 
         Property(a => a.ClaimAmount).HasPrecision(18, 3);
+        Property(a => a.CorporateFee).HasPrecision(18, 3);
 
     }
 }

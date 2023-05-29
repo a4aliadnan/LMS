@@ -44,26 +44,130 @@
     }
 
     .SessionJudgementFollowup {
-        background-color: #e8e8e8 !important;
-        color: black !important;
+        background-color: #57257d !important;
+        color: white !important;
     }
 
         .SessionJudgementFollowup:hover {
-            background-color: #dae3f3 !important;
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
         }
 
     .SessionJudgementFollowupActive {
-        background-color: #dae3f3 !important;
-        color: black !important;
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionJudgementCorrected {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+    .SessionJudgementCorrected:hover {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionJudgementCorrectedActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionBlueStamp {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionBlueStamp:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionBlueStampActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionPeriodOfAppeal {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionPeriodOfAppeal:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionPeriodOfAppealActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionRedStamp {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionRedStamp:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionRedStampActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionMissingDocuments {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionMissingDocuments:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionMissingDocumentsActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionRefund34 {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionRefund34:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionRefund34Active {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .tableColorDarkRed {
+        color: #c00000 !important;
     }
 </style>
 <script>
-    var GetSessionRollURL = '@Url.Action("GetTab", "SessionRoll", new { area = string.Empty })';
-    var GetCaseDetailURL = '@Url.Action("GetCaseDetail", "SessionRoll", new { area = string.Empty })';
     var GetIndexDataURL = '@Url.Action("AjaxIndexData", "SessionRoll", new { DataFor = @ViewBag.DataFor })';
-    var CreateMasterTableDetailURL = '@Url.Action("CreateMasterTableDetail", "CommonTask", new { area = string.Empty })';
-    var GetDetailTableURL = '@Url.Action("GetDetailTable", "CommonTask", new { area = string.Empty })';
-    var SubmitFormURL = '@Url.Action("Index", "SessionRoll", new { area = string.Empty })';
     var bkClientReply = "";
     var bkRequirements = "";
     var bkFirstEmailDate = "";
@@ -98,10 +202,71 @@
     var searchFileNoToGo = "";
     var CaseIdToGo = 0;
     var SessionRollIdToGo = 0;
+    function LoadPrintRequirementForm(PartialViewName) {
+        var _PartialViewName = PartialViewName;
+        P_CaseId = parseInt($("#CaseId").val());
+        P_SessionRollId = parseInt($("#SessionRollId").val());
+        var _Mode = "C";
+
+        var PartialContainer = $("#div_PrintRequirementForm");
+        PartialContainer.empty();
+
+        _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
+
+
+        $.ajax({
+            url: GetSessionRollURL,
+            type: "POST",
+            data: _parameters,
+            success: function (data, textStatus, jqXHR) {
+                PartialContainer.html(data);
+                //window.clipboardData.setData('text', '');
+                Swal.fire({
+                    type: 'success',
+                    title: '',
+                    width: 700,
+                    html: $("#ContentDIV").html()
+                }).then(function () {
+                    CopyToClipboard('swal2-content');
+                    console.log("Table Copied");
+                    $("#ModificationContainer").empty();
+                    table.ajax.reload(function (json) {
+                        var info = table.page.info();
+                        var MCTRecords = table.ajax.json().MuscatTotal;
+                        var SLLRecords = table.ajax.json().SalalahTotal;
+                        var recordsTotal = table.ajax.json().recordsTotal;
+
+                        if ($("#txtUserRole").val() == "VoucherApproval") {
+                            $('#MCTTTL').text("MUSCAT : " + MCTRecords);
+                            $('#SLLTTL').text("SALALAH : " + SLLRecords);
+                            $('#TTL').text(recordsTotal);
+                        }
+                    });
+                    $('html, body').animate({
+                        scrollTop: $("#PartialViewContainer").offset().top
+                    }, 1000);
+                });
+            }
+        });
+    }
+
     function sleep(time) {
         return new Promise((resolve) => setTimeout(resolve, time));
     }
     function ShowDIV() {
+        $.fn.autoResize = function () {
+            let r = e => {
+                e.style.height = '';
+                e.style.height = e.scrollHeight + 'px'
+            };
+            return this.each((i, e) => {
+                e.style.overflow = 'hidden';
+                r(e);
+                $(e).bind('input', e => {
+                    r(e.target);
+                })
+            })
+        };
 
         if ($('#ShowFollowup').val() == "True") {
             $("#FollowDIV").removeClass("AppHidden");
@@ -178,13 +343,6 @@
 
         if ($('#TransportationFee').val() == "1") {
             $("#DIV_TRSOURCE").removeClass("AppHidden");
-        }
-
-        if (parseInt($('#JudgementLevel').val()) > 0) {
-            $("#DIV_UPDATE").removeClass("AppHidden");
-        }
-        else {
-            $("#DIV_UPDATE").removeClass("AppHidden").addClass("AppHidden");
         }
 
         $('textarea').autoResize();
@@ -266,11 +424,19 @@
                 }
                 else {
                     //console.log(result);
+                    var LoadPVData = true;
+                    if ($('#IsDelete').val() == "Y")
+                        LoadPVData = false;
+
                     ResetHiddenItems();
-                    $("#ModificationContainer").empty();
-                    $("#ModificationContainer").html(result);
+                    //$("#ModificationContainer").empty();
+                    //$("#ModificationContainer").html(result);
+
                     LoadPrintRequirementForm("SaveResult");
                     ReloadTable();
+
+                    //if (!LoadPVData)
+                      //  $("#ModificationContainer").empty();
                 }
             },
             error: function () {
@@ -372,11 +538,12 @@
         });
     };
     function ResetHiddenItems() {
-        $("#hidNextHearingDate").val("");
-        $("#hidCourtDecisionChange").val("");
-        $("#hidCurrentHearingDate").val("");
-        $("#hidRequirement").val("");
-        $("#hidFirstEmailDate").val("");
+        console.log('function ResetHiddenItems() ');
+        $("#hidNextHearingDate").val('');
+        $("#hidCourtDecisionChange").val('');
+        $("#hidCurrentHearingDate").val('');
+        $("#hidRequirement").val('');
+        $("#hidFirstEmailDate").val('');
 
         bkClientReply = "";
         bkRequirements = "";
@@ -744,16 +911,20 @@
     function LoadTable(FileStatusId) {
 
         switch (FileStatusId) {
-            case "0":
+            case OfficeFileStatus.PleaseSelect:
                 return false;
                 break;
-            case "1":
+            case OfficeFileStatus.RunningCase:
+            case OfficeFileStatus.Dispute:
+            case OfficeFileStatus.MeetJudge:
+            case OfficeFileStatus.AuctionSession:
                 _PartialViewName = "_AllSessions";
                 break;
-            case "3":
+            case OfficeFileStatus.ToKnowSessionDate:
+            case OfficeFileStatus.DifferentPanel:
                 _PartialViewName = "_SessionOnHold";
                 break;
-            case "2":
+            case OfficeFileStatus.JudgIssued:
                 _PartialViewName = "_SessionJudgement";
                 break;
             case "4":
@@ -868,7 +1039,7 @@
                     }
                 }
 
-                if ($("#FileStatus").val() == "0") {
+                if ($("#FileStatus").val() == OfficeFileStatus.PleaseSelect) {
                     ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT FILE STATUS" : ValidationMessage + "<br />" + "PLEASE SELECT FILE STATUS";
                     NotValid = true;
                 }
@@ -960,7 +1131,7 @@
                     }
                 }
 
-                if ($("#FileStatus").val() == "0") {
+                if ($("#FileStatus").val() == OfficeFileStatus.PleaseSelect) {
                     ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT FILE STATUS" : ValidationMessage + "<br />" + "PLEASE SELECT FILE STATUS";
                     NotValid = true;
                 }
@@ -1290,7 +1461,7 @@
                             $("#SPAN_RECORD_EXISTS_MESSAGE").html("ADDED BEFORE الملف مُضاف");
                             $(".clsGoToSession").removeClass("AppHidden");
                         }
-                        
+
                     }
                     else {
                         $("#OFB_ClientName").text(Result.ClientName);
@@ -1394,7 +1565,7 @@
                     $('#HtmlTable').DataTable().search(searchFileNoToGo).draw();
                 });
 
-                
+
                 sleep(1000).then(() => {
                     _PartialViewName = "";
                     var PartialContainer = $("#ModificationContainer");
@@ -1418,13 +1589,10 @@
 
                     GetTab(PartialContainer, GetSessionRollURL, _parameters);
                 });
-
-                
-                
-                
             }
         });
     }
+    
 
     function ProcessPreSubmit() {
         var IsShowCientReply = false; //DIV_WAITING_CLIENT_REPLY
@@ -1433,12 +1601,6 @@
         var IsShowNextHearing = false; //DIV_CHANGE_NEXT_HEARING_DATE
         var IsShowRequirement = false;
         var IsShowMemo = false;
-
-        console.log('Updated On');
-        console.log($('#UpdatedOn').val());
-
-        console.log('hidUpdated On');
-        console.log($('#hidUpdatedOn').val());
 
         $('#DIV_WAITING_CLIENT_REPLY').removeClass("AppHidden").addClass("AppHidden");
         $('#DIV_WAITING_COURT_FOLLOW').removeClass("AppHidden").addClass("AppHidden");
@@ -1518,11 +1680,6 @@
 
         var ReqAlreadyExists = bkReqWorkRequired + bkReqSessionNotes + bkReqLastDate + bkReqFollowerId;
 
-        console.log(ReqAlreadyExists);
-        console.log(ReqAlreadyExists.length);
-        console.log($("#FollowDIV").hasClass("AppHidden"));
-        console.log($('#selReqFollowYN').val());
-
         if (!$("#FollowDIV").hasClass("AppHidden")) {
             if (ReqAlreadyExists.length > 1) {
                 if ($('#selReqFollowYN').val() == "") {
@@ -1560,10 +1717,6 @@
         }
 
         var MemoAlreadyExists = bkSuspendedWorkRequired + bkSuspendedSessionNotes + bkSuspendedLastDate + bkSuspendedFollowerId;
-
-
-        console.log(MemoAlreadyExists);
-        console.log(MemoAlreadyExists.length);
 
         if (!$("#ForMemoDIV").hasClass("AppHidden")) {
             if (MemoAlreadyExists.length > 1) {
@@ -1663,7 +1816,6 @@
             }
         }
 
-
         $('#modal-preSubmit').modal('hide');
         submitForm();
     }
@@ -1702,48 +1854,19 @@
 
             console.log("IsFavorable :: " + IsFavorable);
             console.log("JudgementReceivedDate :: " + JudgementReceivedDate);
-            if (IsFavorable == "Y") {
+
+            if (JudgementReceivedDate == "")
+                $('#IsDelete').val("N");
+            else 
                 $('#IsDelete').val("Y");
-                ProcessPreSubmit();
-            }
-            else {
-                if (IsFavorable == "N" && JudgementReceivedDate != "") {
-                    //Swal.fire({
-                    //    title: 'Are you sure?',
-                    //    text: "DO YOU WANT TO DELETE THIS JUDGMENT ? هل تريد حذف البيانات",
-                    //    type: 'warning',
-                    //    showCancelButton: true,
-                    //    confirmButtonColor: '#3085d6',
-                    //    cancelButtonColor: '#d33',
-                    //    confirmButtonText: 'Yes, delete it!'
-                    //}).then((result) => {
-                    //    if (result.value) {
-                    //        $('#IsDelete').val("Y");
-                    //        ProcessPreSubmit();
-                    //    }
-                    //    else {
-                    //        $('#IsDelete').val("N");
-                    //        ProcessPreSubmit();
-                    //    }
-                    //});
-
-                    $('#IsDelete').val("Y");
-                    ProcessPreSubmit();
-                }
-                else {
-                    $('#IsDelete').val("N");
-                    ProcessPreSubmit();
-                }
-            }
         }
-        else {
+        else
             $('#IsDelete').val("N");
-            ProcessPreSubmit();
-        }
+
+        ProcessPreSubmit();
     }
-
 </script>
-
+<div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -1822,39 +1945,40 @@
                             <button type="button" id="btn_SessionClientApproval" style="font-size: 1rem !important;" class="btn btn-block SessionClientApproval @ViewBag.SessionClientApprovalActive btn-lg navButton">موافقة الموكل: الاستئناف/الطعن<br />CLIENT APPROVAL</button>
                         </div>
                         <div class="col">
-                            <button type="button" id="btn_SessionJudgement" style="font-size: 1rem !important;" class="btn btn-block SessionJudgement @ViewBag.SessionJudgementActive btn-lg navButton">استلام أحكام غير مطابقة<br />JUDGMENT</button>
-                        </div>
-                        <div class="col">
                             <button type="button" id="btn_SessionPauseEnfReq" style="font-size: 1rem !important;" class="btn btn-block SessionPauseEnfReq @ViewBag.SessionPauseEnfReqActive btn-lg navButton">وقف التنفيذ في العليا<br />PAUSE ENFC REQUEST</button>
                         </div>
                         <div class="col">
                             <button type="button" id="btn_SessionAppointment" style="font-size: 1rem !important;" class="btn btn-block SessionAppointment @ViewBag.SessionAppointmentActive btn-lg navButton">المواعيد<br />APPOINTMENT</button>
                         </div>
+                        <div class="col">
+                            @*<button type="button" id="btn_SessionJudgement" style="font-size: 1rem !important;" class="btn btn-block SessionJudgement @ViewBag.SessionJudgementActive btn-lg navButton">استلام أحكام غير مطابقة<br />JUDGMENT</button>*@
+                        </div>
+
                     </div>
                 </div>
                 <div class="col-sm-12 @ViewBag.ViewFollowUpTabs">
                     <div style="padding-bottom:10px;" class="row">
                         <div class="col">
-                            <button type="button" id="btn_SessionJudgementFollowup" style="font-size: 0.9rem !important;" class="btn btn-block SessionJudgementFollowup @ViewBag.SessionJudgementFollowupActive btn-lg navButton">أحكام مطابقة للطلبات<br />JUDGMENT</button>
+                            <button type="button" id="btn_SessionJudgementFollowup" style="font-size: 1.1rem !important;" class="btn btn-block SessionJudgementFollowup @ViewBag.SessionJudgementFollowupActive btn-lg navButton">استلام الأحكام<br />TO RECEIVE JUDGEMENT</button>
                         </div>
                         <div class="col">
-                            <button type="button" id="btn_SessionJudgementCorrected" style="font-size: 0.9rem !important;" class="btn btn-block SessionJudgementCorrected @ViewBag.SessionJudgementCorrectedActive btn-lg navButton">تصحيح الحكم<br />JUDGMENT CORRECTED</button>
+                            <button type="button" id="btn_SessionJudgementCorrected" style="font-size: 1.1rem !important;" class="btn btn-block SessionJudgementCorrected @ViewBag.SessionJudgementCorrectedActive btn-lg navButton">تصحيح الحكم<br />JUDGMENT CORRECTED</button>
                         </div>
                         <div class="col">
-                            <button type="button" id="btn_SessionBlueStamp" style="font-size: 0.9rem !important;" class="btn btn-block SessionBlueStamp @ViewBag.SessionBlueStampActive btn-lg navButton">الختم الأزرق<br />BLUE STAMP</button>
+                            <button type="button" id="btn_SessionBlueStamp" style="font-size: 1.1rem !important;" class="btn btn-block SessionBlueStamp @ViewBag.SessionBlueStampActive btn-lg navButton">الختم الأزرق<br />BLUE STAMP</button>
                         </div>
                         <div class="col">
-                            <button type="button" id="btn_SessionProvidedTime" style="font-size: 0.9rem !important;" class="btn btn-block SessionProvidedTime @ViewBag.SessionProvidedTimeActive btn-lg navButton">سريان الإستئناف<br />PROVIDED TIME</button>
+                            <button type="button" id="btn_SessionPeriodOfAppeal" style="font-size: 1.1rem !important;" class="btn btn-block SessionPeriodOfAppeal @ViewBag.SessionPeriodOfAppealActive btn-lg navButton">سريان ميعاد الاستئناف<br />PERIOD OF APPEAL</button>
                         </div>
                         <div class="col">
-                            <button type="button" id="btn_SessionRedStamp" style="font-size: 0.9rem !important;" class="btn btn-block SessionRedStamp @ViewBag.SessionRedStampActive btn-lg navButton">طلب الصيغة التنفيذية<br />RED STAMP</button>
+                            <button type="button" id="btn_SessionRedStamp" style="font-size: 1.1rem !important;" class="btn btn-block SessionRedStamp @ViewBag.SessionRedStampActive btn-lg navButton">طلب الصيغة التنفيذية<br />RED STAMP</button>
                         </div>
 
                         <div class="col">
-                            <button type="button" id="btn_SessionMissingDocuments" style="font-size: 0.9rem !important;" class="btn btn-block SessionMissingDocuments @ViewBag.SessionMissingDocumentsActive btn-lg navButton">نواقص مستندات<br />MISSING DOCUMENTS</button>
+                            <button type="button" id="btn_SessionMissingDocuments" style="font-size: 1.1rem !important;" class="btn btn-block SessionMissingDocuments @ViewBag.SessionMissingDocumentsActive btn-lg navButton">نواقص مستندات<br />MISSING DOC.</button>
                         </div>
-                        <div class="col-1">
-                            <button type="button" id="btn_SessionRefund34" style="font-size: 0.9rem !important;" class="btn btn-block SessionRefund34 @ViewBag.SessionRefund34Active btn-lg navButton">استرداد<br />REFUND 3/4</button>
+                        <div class="col">
+                            <button type="button" id="btn_SessionRefund34" style="font-size: 1.1rem !important;" class="btn btn-block SessionRefund34 @ViewBag.SessionRefund34Active btn-lg navButton">استرداد 3/4 الرسم<br />REFUND 3/4</button>
                         </div>
 
                     </div>
@@ -1942,7 +2066,7 @@
             <!-- /.modal-dialog -->
         </div>
         <div class="modal fade" id="modal-preSubmit">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content bg-gradient-light">
                     <div class="modal-header">
                         <h4 class="modal-title"></h4>
@@ -2002,11 +2126,11 @@
                         <div id="DIV_CHANGE_UPDATE_DATE" class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label dir="auto" for="selUpdateDateYN">أنت لم تقم بتغيير تاريخ التحديث (تاريخ الجلسة)؟</label>
+                                    <label dir="auto" for="selUpdateDateYN">Change (Update Date) to be today's date? هل تريد تغيير ( تاريخ التحديث ) ليكون تاريخ اليوم؟</label>
                                     <select class="form-control select2bs4" id="selUpdateDateYN">
                                         <option value="">PLEASE SELECT</option>
-                                        <option value="N">حفظ بدون تغيير CONTUNUE</option>
-                                        <option value="Y">تغييرالتاريخ والحفظ CHANGE</option>
+                                        <option value="Y">YES</option>
+                                        <option value="N">NO</option>
                                     </select>
                                 </div>
                             </div>
@@ -2062,10 +2186,19 @@
     <script type="text/javascript">
         var IsValidOfficeFileNo = true;
         $(document).ready(function () {
-            //console.log("Index Sessions Roll Page");
-            //console.log("Partial View Tobe Load :: " + $("#txtViewToLoad").val());
-            //console.log("View Container :: " + $("#txtViewContainer").val());
-
+            $.fn.autoResize = function () {
+                let r = e => {
+                    e.style.height = '';
+                    e.style.height = e.scrollHeight + 'px'
+                };
+                return this.each((i, e) => {
+                    e.style.overflow = 'hidden';
+                    r(e);
+                    $(e).bind('input', e => {
+                        r(e.target);
+                    })
+                })
+            };
             var _PartialViewName = $("#txtViewToLoad").val();
             var _CaseId = -1;
             var _SessionRollId = -1;
@@ -2173,15 +2306,19 @@
             });
 
             $('#selUpdateDateYN').on("change", function () {
-                if ($('#selUpdateDateYN').val() == "Y") {
-                    $('#modal-preSubmit').modal('hide');
+                if ($('#selUpdateDateYN').val() == "")
+                    return false;
+
+                if ($('#selUpdateDateYN').val() == "N") {
+                    $("#hidCourtDecisionChange").val("N");
                 }
-                else if ($('#selUpdateDateYN').val() == "N") {
+                else if ($('#selUpdateDateYN').val() == "Y") {
                     $("#CurrentHearingDate").datepicker("setDate", new Date).datepicker({
                         format: 'dd/mm/yyyy',
                         autoclose: true
                     });
                 }
+                ShowPreSubmit();
             });
 
             $('#selNextHearingDateYN').on("change", function () {
@@ -2190,6 +2327,14 @@
                 }
             });
 
+            $("body").on('propertychange change keyup paste input', "#CourtDecision", function (e) {
+                $("#hidCourtDecisionChange").val("N");
+                if (this.value.length) {
+                    $("#hidCourtDecisionChange").val("Y");
+                }
+
+                $('textarea').autoResize();
+            });
         });
     </script>
 }

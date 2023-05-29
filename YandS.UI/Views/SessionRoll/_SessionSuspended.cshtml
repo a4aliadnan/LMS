@@ -6,6 +6,9 @@
         if (typeof table != 'undefined')
             table.destroy();
 
+        if ($('#txtUserRole').val() == "VoucherApproval")
+            $('input[name=rdoLocation][value=A]').attr('checked', true);
+
         table = $('#HtmlTable').DataTable({
             "processing": true,
             "serverSide": true,
@@ -35,7 +38,7 @@
                 "datatype": "json",
                 data: function (d) {
                     d.DataTableName = "SUSPENDED";
-                    d.LocationId = $('#txtUserRole').val() == "VoucherApproval" ? $('input[name="rdoLocation"]:checked').val() : $('#txtLocationId').val();
+                    d.LocationId = "A";//$('#txtUserRole').val() == "VoucherApproval" ? $('input[name="rdoLocation"]:checked').val() : $('#txtLocationId').val();
                 }
             },
             "columns": [

@@ -42,60 +42,37 @@
     });
 </script>
 <div id="DIV_UPDATE">
+    @Html.HiddenFor(model => model.TransportationFee)
+    @Html.HiddenFor(model => model.UpdatePV_Type)
     <div class="col-sm-12">
-        <div style="padding-bottom:0px !important;padding-top:10px;" class="UpdateBoxBar">
+        <div style="padding-bottom:0px !important;padding-top:10px;background-color: #336c85 !important; color: white !important; border-color:yellow !important; border:3px solid;">
             <div class="row">
-                <div class="col-sm-12 text-center"><h3>UPDATE التحديث</h3></div>
+                <div class="col-sm-12 text-center"><span style="font-size:x-large; padding-left:10px; float:left">@ViewBag.UpdateBoxUser</span><h3>UPDATE التحديث</h3></div>
             </div>
         </div>
         <div class="card-body">
-            <div class="row AppHidden sessionDetail">
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label style="color:brown" for="Session_FileStatusName">FILE STATUS حالة الملف</label>
-                        @Html.EditorFor(model => model.Session_FileStatusName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @Value = "RUNNING CASE متداول" } })
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="Session_CaseType">CASE TYPE القاعة</label>
-                        @Html.DropDownList("Session_CaseType", null, htmlAttributes: new { @class = "form-control select2bs4" })
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="Session_LawyerId">DESIGNATED LAWYER المحامي المكلف</label>
-                        @Html.DropDownList("Session_LawyerId", null, htmlAttributes: new { @class = "form-control select2bs4" })
-                    </div>
-                </div>
-            </div>
-
             <div class="row">
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label for="CurrentHearingDate">UPDATE DATE تاريخ التحديث</label>
-                        @Html.EditorFor(model => model.CurrentHearingDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                        @Html.EditorFor(model => model.CurrentHearingDate, new { htmlAttributes = new { @class = "form-control datepicker updateBoxUpdated" } })
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-group">
                         <label for="CourtDecision">COURT DECISION قرار المحكمة</label>
                         <div class="form-group">
-                            @Html.TextAreaFor(model => model.CourtDecision, 1, 200, new { @class = "form-control", @dir = "auto" })
+                            @Html.TextAreaFor(model => model.CourtDecision, 1, 200, new { @class = "form-control updateBoxUpdated", @dir = "auto" })
                         </div>
                     </div>
                 </div>
-                <div id="DIV_NEXT_HEARING_DATE" class="col-sm-3 AppHidden">
+                <div class="col-sm-2 AppHidden cls_SessionVisible">
                     <div class="form-group">
-                        <label for="NextHearingDate">NEXT HEARING DATE موعد الجلسة القادمة</label>
-                        @Html.EditorFor(model => model.NextHearingDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                        <label for="NextHearingDate"><span id="span_NextHearingDate">NEXT HEARING DATE موعد الجلسة القادمة</span></label>
+                        @Html.EditorFor(model => model.NextHearingDate, new { htmlAttributes = new { @class = "form-control datepicker updateBoxUpdated" } })
                     </div>
                 </div>
-
-            </div>
-
-            <div class="row AppHidden sessionDetail">
-                <div class="col-sm-12">
+                <div class="col">
                     <div class="form-group">
                         <label for="SessionRemarks">LAWYER SCHEDULE توجيهات إلى المحامي</label>
                         <div class="form-group">
@@ -108,28 +85,27 @@
                 <div class="col-sm-2">
                     <div class="form-group">
                         @Html.LabelFor(model => model.ClientReply)
-                        @Html.DropDownList("ClientReply", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                        @Html.DropDownList("ClientReply", null, htmlAttributes: new { @class = "form-control select2bs4 updateBoxUpdated" })
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col">
                     <div class="form-group" id="txtRequirement">
                         <label for="Requirements">REQUIREMENT المطلوب من الموكل</label>
                         <div class="form-group">
-                            @Html.TextAreaFor(model => model.Requirements, 1, 200, new { @class = "form-control", @dir = "auto" })
+                            @Html.TextAreaFor(model => model.Requirements, 1, 200, new { @class = "form-control updateBoxUpdated", @dir = "auto" })
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-2">
                     <div class="form-group" id="txtFirstEmailDate">
                         @Html.LabelFor(model => model.FirstEmailDate)
-                        @Html.EditorFor(model => model.FirstEmailDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                        @Html.EditorFor(model => model.FirstEmailDate, new { htmlAttributes = new { @class = "form-control datepicker updateBoxUpdated" } })
                     </div>
                 </div>
-
-                <div class="col-sm-2">
-                    <div id="DIV_TRSOURCE" class="form-group">
+                <div id="DIV_TRSOURCE" class="col-sm-2">
+                    <div class="form-group">
                         @Html.LabelFor(model => model.TransportationSource)
-                        @Html.DropDownList("TransportationSource", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                        @Html.DropDownList("TransportationSource", null, htmlAttributes: new { @class = "form-control select2bs4 updateBoxUpdated" })
                     </div>
                 </div>
             </div>

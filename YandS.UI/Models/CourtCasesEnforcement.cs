@@ -31,7 +31,7 @@
 
 
         [Display(Name = "CURRENT ENFORCEMENT LEVEL مرحلة التنفيذ الحالية")]
-        [StringLength(3)]
+        [StringLength(10)]
         public string EnforcementlevelId { get; set; } //Dropdown EnforcementLevel 265
 
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
@@ -252,6 +252,8 @@
         public DateTime? DEF_VisitDate { get; set; }
         [StringLength(2)]
         public string CourtDepartment { get; set; } //Dropdown 
+        [StringLength(2)]
+        public string CurrentDisputeLevelandType { get; set; } //Dropdown 
 
         public CourtCasesEnforcement()
         {

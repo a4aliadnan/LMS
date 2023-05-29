@@ -639,7 +639,7 @@
         <!-- /.modal-dialog -->
     </div>
     <div class="modal fade" id="modal-preSubmit">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content bg-gradient-light">
                 <div class="modal-header">
                     <h4 class="modal-title"></h4>
@@ -675,11 +675,11 @@
                     <div id="DIV_CHANGE_UPDATE_DATE" class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <label dir="auto" for="selUpdateDateYN">أنت لم تقم بتغيير تاريخ التحديث (تاريخ الجلسة)؟</label>
+                                <label dir="auto" for="selUpdateDateYN">Change (Update Date) to be today's date? هل تريد تغيير ( تاريخ التحديث ) ليكون تاريخ اليوم؟</label>
                                 <select class="form-control select2bs4" id="selUpdateDateYN">
                                     <option value="">PLEASE SELECT</option>
-                                    <option value="N">حفظ بدون تغيير CONTUNUE</option>
-                                    <option value="Y">تغييرالتاريخ والحفظ CHANGE</option>
+                                    <option value="Y">YES</option>
+                                    <option value="N">NO</option>
                                 </select>
                             </div>
                         </div>
@@ -735,15 +735,19 @@
             P_SessionRollId = parseInt($("#hid_SessionRollId").val());
 
             $('#selUpdateDateYN').on("change", function () {
-                if ($('#selUpdateDateYN').val() == "Y") {
-                    $('#modal-preSubmit').modal('hide');
+                if ($('#selUpdateDateYN').val() == "")
+                    return false;
+
+                if ($('#selUpdateDateYN').val() == "N") {
+                    $("#hidCourtDecisionChange").val("N");
                 }
-                else if ($('#selUpdateDateYN').val() == "N") {
+                else if ($('#selUpdateDateYN').val() == "Y") {
                     $("#CurrentHearingDate").datepicker("setDate", new Date).datepicker({
                         format: 'dd/mm/yyyy',
                         autoclose: true
                     });
                 }
+                ShowPreSubmit();
             });
 
             $('#selNextHearingDateYN').on("change", function () {
@@ -777,6 +781,15 @@
                 _parameters = { CaseId: P_CaseId, Courtid: P_Courtid, SessionRollId: P_SessionRollId };
                 GetTab(CourtDetailContainer, P_PVURL, _parameters);
             }
+
+            $("body").on('propertychange change keyup paste input', "#CourtDecision", function (e) {
+                $("#hidCourtDecisionChange").val("N");
+                if (this.value.length) {
+                    $("#hidCourtDecisionChange").val("Y");
+                }
+
+                $('textarea').autoResize();
+            });
         });
     </script>
 }

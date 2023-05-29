@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -15,6 +17,40 @@ namespace YandS.UI.Controllers
     public class CommonTaskController : Controller
     {
         private RBACDbContext db = new RBACDbContext();
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
+
+        public CommonTaskController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+        public CommonTaskController()
+        {
+        }
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
 
         [HttpPost]
         public ActionResult CreateMasterTableDetail(string Mst_Desc, int MstParentId, string Remarks = null)
@@ -66,7 +102,7 @@ namespace YandS.UI.Controllers
 
             var ItemToBeAddList = db.MasterSetup.Where(m => m.MstParentId == MstParentId && !values.Contains(m.Mst_Value)).ToList();
             //int Mst_Value = ItemToBeAddList.Count + 1;
-            int Mst_Value = ItemToBeAddList.Select(s => Convert.ToInt32(s.Mst_Value.Replace("P",""))).Max() + 1;
+            int Mst_Value = ItemToBeAddList.Select(s => Convert.ToInt32(s.Mst_Value.Replace("P", ""))).Max() + 1;
 
             MasterSetups ItemToBeAdd = new MasterSetups();
 
@@ -147,7 +183,7 @@ namespace YandS.UI.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetPVDocName(int Id,string type)
+        public ActionResult GetPVDocName(int Id, string type)
         {
             string ReturnResult = string.Empty;
 
@@ -298,8 +334,9 @@ namespace YandS.UI.Controllers
             string[] values = new[] { "-2", "-1", "0" };
             List<MasterSetups> lst = db.MasterSetup.Where(m => m.MstParentId == 241 && m.Remarks == ClientClassificationId && !values.Contains(m.Mst_Value)).ToList();
 
-          //selecting the desired columns
-            var subCategoryToReturn = lst.Select(S => new {
+            //selecting the desired columns
+            var subCategoryToReturn = lst.Select(S => new
+            {
                 Mst_Value = S.Mst_Value,
                 Mst_Desc = S.Mst_Desc
             });
@@ -384,7 +421,7 @@ namespace YandS.UI.Controllers
                             if (Convert.ToInt32(Id) == 6) //(ENFORCEMENT)
                             {
                                 var CaseDetail = db.CourtCasesEnforcement.Where(w => w.CaseId == CaseId).FirstOrDefault();
-                                if(CaseDetail != null)
+                                if (CaseDetail != null)
                                 {
                                     LocName = db.MasterSetup.Where(w => w.MstParentId == (int)MASTER_S.Location && w.Mst_Value == CaseDetail.CourtLocationid).FirstOrDefault().Mst_Desc;
                                     CourtRefNo = string.Format(@"{0}^{1}", CaseDetail.EnforcementNo, LocName);
@@ -510,7 +547,8 @@ namespace YandS.UI.Controllers
             List<MasterSetups> lst = Helper.GetFeeTypeCascadeDetail(Id);
 
             //selecting the desired columns
-            var subCategoryToReturn = lst.Select(S => new {
+            var subCategoryToReturn = lst.Select(S => new
+            {
                 Mst_Value = S.Mst_Value,
                 Mst_Desc = S.Mst_Desc
             });
@@ -525,7 +563,8 @@ namespace YandS.UI.Controllers
             List<MasterSetups> lst = Helper.GetFileStatusList(Id, false);
 
             //selecting the desired columns
-            var subCategoryToReturn = lst.OrderBy(o => o.DisplaySeq).Select(S => new {
+            var subCategoryToReturn = lst.OrderBy(o => o.DisplaySeq).Select(S => new
+            {
                 Mst_Value = S.Mst_Value,
                 Mst_Desc = S.Mst_Desc
             });
@@ -536,7 +575,7 @@ namespace YandS.UI.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetRegisterCourtDetail(string OfficeFileNo,string ActionLevel)
+        public ActionResult GetRegisterCourtDetail(string OfficeFileNo, string ActionLevel)
         {
             CaseRegistrationVM RetResult = new CaseRegistrationVM();
 
@@ -570,7 +609,7 @@ namespace YandS.UI.Controllers
 
             var courtCase = db.CourtCase.Where(w => w.OfficeFileNo == OfficeFileNo).FirstOrDefault();
 
-            if(courtCase != null)
+            if (courtCase != null)
             {
                 payVoucher.CaseId = courtCase.CaseId;
                 payVoucher.OfficeFileNo = courtCase.OfficeFileNo;
@@ -583,7 +622,7 @@ namespace YandS.UI.Controllers
 
                 var caseRegisteredExists = db.CaseRegistration.Where(w => w.CaseId == courtCase.CaseId).Count();
 
-                if(caseRegisteredExists > 0)
+                if (caseRegisteredExists > 0)
                 {
                     if (caseRegisteredExists > 1)
                     {
@@ -615,20 +654,21 @@ namespace YandS.UI.Controllers
 
         }
         [HttpPost]
-        public ActionResult GetExistingOfficeInTBR(string OfficeFileNo,string DataForTable)
+        public ActionResult GetExistingOfficeInTBR(string OfficeFileNo, string DataForTable)
         {
-            try { 
-            string spName = @"[dbo].[REG_IN_PROG-GetExistingCase]";
-            List<string> parName = new List<string> { "@P_OfficeFileNo", "@P_DataForTable" };
-            List<object> parValues = new List<object> { OfficeFileNo, DataForTable };
+            try
+            {
+                string spName = @"[dbo].[REG_IN_PROG-GetExistingCase]";
+                List<string> parName = new List<string>() { "@P_OfficeFileNo", "@P_DataForTable" };
+                List<object> parValues = new List<object>() { OfficeFileNo, DataForTable };
 
-            var ds = Helper.getDataSet(parName.ToArray(), parValues.ToArray(), TableNames: new string[] { "data", "summary" }, procedureName: spName);
-            DataTable dt = ds.Tables["data"];
-            DataTable Summarydt = ds.Tables["summary"];
+                DataSet ds = Helper.getDataSet(parName.ToArray(), parValues.ToArray(), TableNames: new string[] { "data", "summary" }, procedureName: spName);
+                DataTable dt = ds.Tables["data"];
+                DataTable Summarydt = ds.Tables["summary"];
 
-            var caseRegisteredExists = Summarydt.Rows.Count > 0 ? int.Parse(Summarydt.Rows[0]["caseRegisteredExists"].ToString()) : 0;
+                var caseRegisteredExists = Summarydt.Rows.Count > 0 ? int.Parse(Summarydt.Rows[0]["caseRegisteredExists"].ToString()) : 0;
 
-            var jsondata = dt.ToDictionary();
+                var jsondata = dt.ToDictionary();
 
                 return new JsonResult()
                 {
@@ -668,7 +708,7 @@ namespace YandS.UI.Controllers
         [HttpPost]
         public ActionResult GetEnforcementDetail(int CaseId, string EnforcemetDispute)
         {
-            PayVoucher payVoucher = Helper.GetEnforcementDetail(CaseId,EnforcemetDispute);
+            PayVoucher payVoucher = Helper.GetEnforcementDetail(CaseId, EnforcemetDispute);
             return this.Json(payVoucher, JsonRequestBehavior.AllowGet);
         }
 
@@ -738,8 +778,8 @@ namespace YandS.UI.Controllers
             var request = HttpContext.Request;
             List<DefendentTransferDTO> data = new List<DefendentTransferDTO>();
 
-            int Userid  = HttpContext.User.Identity.GetUserId();
-            int CaseId  = int.Parse(request.Params["CaseId"].ToString());
+            int Userid = HttpContext.User.Identity.GetUserId();
+            int CaseId = int.Parse(request.Params["CaseId"].ToString());
             string CaseLevel = request.Params["CaseLevel"].ToString();
 
             data = Helper.GetDefendentTransfer(CaseId, CaseLevel);
@@ -750,7 +790,7 @@ namespace YandS.UI.Controllers
             var sortcoloumnIndex = Convert.ToInt32(Request["order[0][column]"]);
             var sortDirection = Request["order[0][dir]"] ?? "asc";
             var recordsTotal = 0;
-                        
+
             return Json(new { data = data, recordsTotal = recordsTotal, recordsFiltered = recordsTotal }, JsonRequestBehavior.AllowGet);
 
         }
@@ -762,12 +802,12 @@ namespace YandS.UI.Controllers
             string DataFor = string.Empty;
             int SessionRollId = 0;
 
-            try {DataFor = request.Params["DataFor"].ToString();} catch (Exception e) {}
-            try { SessionRollId = int.Parse(request.Params["SessionRollId"].ToString());} catch (Exception e) {}
+            try { DataFor = request.Params["DataFor"].ToString(); } catch (Exception e) { }
+            try { SessionRollId = int.Parse(request.Params["SessionRollId"].ToString()); } catch (Exception e) { }
 
             var ResultList = Helper.GetDetailTable(DataFor, SessionRollId);
 
-            if(DataFor == "CASEHIST")
+            if (DataFor == "CASEHIST")
             {
                 return Json(ResultList.DataTableToList<CourtDecisionHistoryDTO>());
             }
@@ -800,14 +840,14 @@ namespace YandS.UI.Controllers
                     Data = new { ProcessMessage, ProcessFlag }
                 };
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new JsonResult()
                 {
                     Data = new { ProcessMessage = e.Message, ProcessFlag = "N" }
                 };
             }
-            
+
         }
 
         [HttpPost]
@@ -836,6 +876,121 @@ namespace YandS.UI.Controllers
             {
                 Data = "Beat Generated"
             };
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ProcessReset(int CaseId, string ResetName)
+        {
+            try
+            {
+                string strResult = Helper.ProcessResetYesNo(CaseId, ResetName);
+
+                if (string.IsNullOrEmpty(strResult))
+                    return Json(new { redirectTo = "SUCCESS" });
+                else
+                    return Json(new { errorMessage = strResult });
+            }
+            catch (Exception e)
+            {
+                return Json(new { errorMessage = e.Message });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult submitTranslation(DecisionTranslationVM modal)
+        {
+            try
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+
+                if (ModelState.IsValid)
+                {
+                    CourtCases courtCases = db.CourtCase.Find(modal.CaseId);
+                    DecisionTranslation decisionTranslation = db.DecisionTranslation.Find(modal.TranslationId);
+
+                    db.Entry(courtCases).Entity.CourtDecision = modal.CourtDecision;
+                    db.Entry(courtCases).Entity.UpdateBoxDate = DateTime.UtcNow.AddHours(4);
+                    db.Entry(courtCases).Entity.UpdateBoxBy = User.Identity.GetUserId();
+                    db.Entry(courtCases).State = EntityState.Modified;
+
+                    db.Entry(decisionTranslation).Entity.CourtDecision = modal.CourtDecision;
+                    db.Entry(decisionTranslation).Entity.CourtDecisionTranslated = modal.CourtDecisionTranslated;
+                    db.Entry(decisionTranslation).Entity.TranslationDone = true;
+                    db.Entry(decisionTranslation).State = EntityState.Modified;
+
+                    db.SaveChanges();
+
+
+                    return Json(new { Category = "OK", Message = "Data Save" });
+                }
+                else
+                    return Json(new { Category = "Error", Message = string.Join("<br/>", ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage).ToArray()) });
+
+            }
+            catch (Exception e)
+            {
+                return Json(new { Category = "Error", Message = e.Message });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ValidateUserPassword(string Password)
+        {
+            try
+            {
+                string UserName = User.Identity.Name;
+                var model = new LoginViewModel();
+                model.UserName = UserName;
+                model.Password = Password;
+
+                List<string> _errors = new List<string>();
+                string ValidUserMessage = "";
+
+                int USER_ID = 0;
+                using (var context = new RBACDbContext())
+                {
+                    var users = context.Users.Where(w => w.UserName == model.UserName && !w.Inactive).FirstOrDefault();
+                    if (users == null)
+                    {
+                        ValidUserMessage = "YOUR ACCOUNT IS BLOCKED, CONTACT YOUR ADMIN";
+                        _errors.Add(ValidUserMessage);
+                    }
+                    else
+                        USER_ID = users.Id;
+                }
+
+                if (USER_ID > 0)
+                {
+
+                    RBACStatus _retVal = this.Login(model, this.UserManager, this.SignInManager, out _errors);
+
+                    switch (_retVal)
+                    {
+                        case RBACStatus.Success:
+                            {
+                                return Json(new { Category = "OK", Message = "Valid User" }, JsonRequestBehavior.AllowGet);
+                            }
+                        default:
+                            return Json(new { Category = "Error", Message = "Invalid Password" }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                    return Json(new { Category = "Error", Message = ValidUserMessage }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Category = "Error", ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GetSessionNotes(int P_SessionRollId)
+        {
+            var SessionNotes = Helper.GetSessionRemarks(P_SessionRollId);
+            return this.Json(SessionNotes, JsonRequestBehavior.AllowGet);
         }
     }
 }

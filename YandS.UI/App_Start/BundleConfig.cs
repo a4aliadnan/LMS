@@ -10,10 +10,6 @@ namespace YandS.UI
         {
             bundles.FileSetOrderList.Clear();
 
-            //bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-            //"~/Scripts/jquery.validate*"
-            //));
-
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
             "~/Scripts/jquery.validate.min.js",
             "~/Scripts/jquery.validate.unobtrusive.min.js",
@@ -42,17 +38,20 @@ namespace YandS.UI
                 "~/Content/Bootstrap-Validator/dist/css/bootstrapValidator.css",
                 "~/Content/dist/css/adminlte.min.css",
                 "~/scripts/plugin/fancybox/jquery.fancybox-1.3.4.min.css",
-                //"~/Content/jquery-ui/themes/ui-lightness/theme.css",
-                //"~/Content/jquery-ui/themes/ui-lightness/jquery-ui.min.css",
-                "~/Content/MySite_Ver_16.css"));
+                "~/Content/MySite_Ver_16.css",
+                "~/Content/MySite_Ver_17.css"));
 
             bundles.Add(new StyleBundle("~/ChartTheme").Include(
                 "~/Content/plugins/jqvmap/jqvmap.min.css"));
 
+            bundles.Add(new ScriptBundle("~/bundles/JqueryScript").Include("~/Content/plugins/jquery/jquery.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/BootstrapScript").Include("~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"));
+            bundles.Add(new ScriptBundle("~/CommonFunctions").Include(
+                "~/Content/CommonFunction.js"
+                ));
+
             bundles.Add(new ScriptBundle("~/AllPageScripts").Include(
-                        "~/Content/plugins/jquery/jquery.min.js",
                         "~/Content/dist/js/popper.min.js",
-                        "~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js",
                         "~/Content/plugins/moment/moment.min.js",
                         "~/Content/plugins/moment/moment-business-days.js",
                         "~/Content/plugins/daterangepicker/daterangepicker.js",
@@ -89,10 +88,7 @@ namespace YandS.UI
                         "~/scripts/CommonForAll/jquery-jtemplates.js",
                         "~/Content/CommonScript.js",
                         "~/Content/scrolls.js"
-                        //"~/Content/jquery-ui/jquery-ui.min.js",
                         ));
-
-            bundles.Add(new ScriptBundle("~/CommonFunctions").Include("~/Content/CommonFunction.js"));
 
             bundles.Add(new ScriptBundle("~/ChartScripts").Include(
                         "~/Content/plugins/chart.js/Chart.min.js",

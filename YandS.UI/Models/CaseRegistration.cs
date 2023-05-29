@@ -21,7 +21,7 @@
         public string EnforcementDispute { get; set; }
         [StringLength(3)]
         public string CourtRegistration { get; set; }
-        [StringLength(3)]
+        [StringLength(10)]
         public string FileStatus { get; set; }
         [StringLength(255)]
         public string FileStatusRemarks { get; set; }
@@ -45,7 +45,7 @@
         public bool CourtDetailRegistered { get; set; }
         public string AdminFile { get; set; }
         [StringLength(3)]
-        public string DepartmentType { get; set; }
+        public string DepartmentType { get; set; } //INVESTMENT YES/NO
         public int? Voucher_No { get; set; }
 
         public string FormPrintDefendant { get; set; }
@@ -90,7 +90,7 @@
         {
             CaseRegistrationId = 0;
             ActionLevel = "1";
-            FileStatus = "1";
+            FileStatus = "OFS-1";
             EnforcementDispute = "0";
             CourtRegistration = "0";
             DepartmentType = "0";

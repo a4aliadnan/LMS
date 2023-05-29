@@ -57,9 +57,6 @@
                 LoadCaseRegistrationPV("0");
         });
 
-        console.log($('#AgainstCode').val());
-
-        $('textarea').autoResize();
         if ($('#AgainstCode').val() == "3") {
             $('.clsAgainstClient').removeClass("AppHidden").addClass("AppHidden");
         }
@@ -68,6 +65,13 @@
             $('.clsAgainstClient').removeClass("AppHidden").addClass("AppHidden");
         }
 
+        ShowInvesmentBanner();
+
+        $('#DepartmentType').on("change", function () {
+            ShowInvesmentBanner();
+        });
+
+        $('textarea').autoResize();
     });
 </script>
 @model YandS.UI.Models.SessionsRollVM
@@ -89,12 +93,18 @@
         </div>
         <div class="col-sm-4">
             <div class="form-group">
-                <label for="AppealJudgementsDate">APPEAL JUDGMENT DATE تاريخ الحكم</label>
-                @Html.EditorFor(model => model.AppealJudgementsDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                <label for="DepartmentType">INVESTMENT تبسيط الإجراءات</label>
+                @Html.DropDownList("DepartmentType", null, htmlAttributes: new { @class = "form-control select2bs4" })
             </div>
         </div>
     </div>
     <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="AppealJudgementsDate">APPEAL JUDGMENT DATE تاريخ الحكم</label>
+                @Html.EditorFor(model => model.AppealJudgementsDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+            </div>
+        </div>
         <div class="col-sm-6">
             <div class="form-group">
                 <label for="AppealJudgements">APPEAL SENTENCE منطوق الحكم الاستئناف</label>
@@ -117,7 +127,7 @@
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
-                <label for="AppealJudgements">APPEAL CLAIM SUMMARY طلباتنا في الاستئناف</label>
+                <label for="ClaimSummary">APPEAL CLAIM SUMMARY طلباتنا في الاستئناف</label>
                 @Html.TextAreaFor(model => model.ClaimSummary, 1, 200, new { @class = "form-control", @dir = "auto" })
             </div>
         </div>
@@ -138,13 +148,13 @@
     <div class="row clsAgainstClient">
         <div class="col-sm-3">
             <div class="form-group">
-                <label for="AppealFinalJDAmount">FINAL JD AMOUNT</label>
+                <label for="FinalJDAmount">FINAL JD AMOUNT</label>
                 @Html.EditorFor(model => model.FinalJDAmount, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
             </div>
         </div>
         <div class="col-sm-3">
             <div class="form-group">
-                <label for="AppealFinalJudgedInterests">FINAL JUDGED INTEREST</label>
+                <label for="FinalJudgedInterests">FINAL JUDGED INTEREST</label>
                 @Html.EditorFor(model => model.FinalJudgedInterests, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
             </div>
         </div>

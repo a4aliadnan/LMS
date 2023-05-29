@@ -28,40 +28,4 @@ $(document).ready(function () {
                 return false;
         });
     };
-    /**
-     var IsDigitmask = new RegExp(/^\d*\.?(?:\d{1,4})?$/);
-        var IsDigitUptoTen = new RegExp('^([1-9]|10)$');
-        var IsAlphaNumeric = new RegExp('^[A-Za-z0-9 ]*$');
-        var AlphaNumericSpecial = new RegExp(/^[-@@.\/#&+()\[\]\w\s]*$/)
-        $(".IsAlphaNumeric").regexMask(IsAlphaNumeric);
-        $(".IsDigitUptoTen").regexMask(IsDigitUptoTen);
-        $(".dlsDigits").regexMask(IsDigitmask);
-        $(".IsAlphaNumericSpecial").regexMask(AlphaNumericSpecial);
-     
-    function round2Fixed(value) {
-        value = +value;
-
-        if (isNaN(value))
-            return NaN;
-
-        // Shift
-        value = value.toString().split('e');
-        value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + 3) : 3)));
-
-        // Shift back
-        value = value.toString().split('e');
-        return (+(value[0] + 'e' + (value[1] ? (+value[1] - 3) : -3))).toFixed(1);
-    }
-
-    function PadDigits(n, totalDigits) {
-        n = n.toString();
-        var pd = '';
-        if (totalDigits > n.length) {
-            for (i = 0; i < (totalDigits - n.length); i++) {
-                pd += '0';
-            }
-        }
-        return pd + n.toString();
-    }
-*/
 });

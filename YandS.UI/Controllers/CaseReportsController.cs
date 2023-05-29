@@ -13,6 +13,7 @@ namespace YandS.UI.Controllers
     public class CaseReportsController : Controller
     {
         private RBACDbContext db = new RBACDbContext();
+        private string OfficeFileFilterENF = Helper.getOfficeFileFilterENF();
 
         public ActionResult CourtCasesDetail()
         {
@@ -26,6 +27,7 @@ namespace YandS.UI.Controllers
         public ActionResult CourtCasesDetail(RepCaseParameterForm p_modal)
         {
             string[] StatusCodes = new[] { "1", "2" };
+            string PartialViewName = "";
             if (ModelState.IsValid)
             {
                 
@@ -101,6 +103,50 @@ namespace YandS.UI.Controllers
                             ExcelResult = objDAL.GenerateExcelStream("NBO_REPORT", "Court Case Detail Report", RetResult, ref ResultStream);
 
                         }
+                        if (p_modal.ClickedButtonName == "btnBDRep")
+                        {
+                            TemplateName = "BD_REPORT.xlsx";
+
+                            TemplateName = Path.Combine(Helper.GetTemplateRoot, TemplateName);
+
+                            using (FileStream file = new FileStream(TemplateName, FileMode.Open, FileAccess.Read))
+                                file.CopyTo(ResultStream);
+
+                            ExcelResult = objDAL.GenerateExcelStream("BD_REPORT", "Court Case Detail Report", RetResult, ref ResultStream);
+
+                        }
+                        else
+                        {
+                            if (p_modal.PartialViewName == "_beforeCourt")
+                            {
+                                if (p_modal.ClickedButtonName == "btnENRep")
+                                {
+                                    TemplateName = "ShortDataEN.xlsx";
+                                    TemplateName = Path.Combine(Helper.GetTemplateRoot, TemplateName);
+
+                                    using (FileStream file = new FileStream(TemplateName, FileMode.Open, FileAccess.Read))
+                                        file.CopyTo(ResultStream);
+
+                                    ExcelResult = objDAL.GenerateExcelStream("ShortDataEN", "Court Case Detail Report", RetResult, ref ResultStream);
+
+                                }
+                                else if(p_modal.ClickedButtonName == "btnARRep")
+                                {
+                                    TemplateName = "ShortDataAR.xlsx";
+                                    TemplateName = Path.Combine(Helper.GetTemplateRoot, TemplateName);
+
+                                    using (FileStream file = new FileStream(TemplateName, FileMode.Open, FileAccess.Read))
+                                        file.CopyTo(ResultStream);
+
+                                    ExcelResult = objDAL.GenerateExcelStream("ShortDataAR", "Court Case Detail Report", RetResult, ref ResultStream);
+
+                                }
+                            }
+                            else
+                                ExcelResult = objDAL.GenerateExcelStream("", "Court Case Detail Report", RetResult, ref ResultStream);
+
+                        }
+
                         //else if (p_modal.ClickedButtonName == "btnUFRep")
                         //{
                         //    TemplateName = "UF_REPORT.xlsx";
@@ -113,8 +159,6 @@ namespace YandS.UI.Controllers
                         //    ExcelResult = objDAL.GenerateExcelStream("UF_REPORT", "Court Case Detail Report", RetResult, ref ResultStream);
 
                         //}
-                        else
-                            ExcelResult = objDAL.GenerateExcelStream("", "Court Case Detail Report", RetResult, ref ResultStream);
 
                         byte[] fileContents = null;
                         using (ResultStream)
@@ -142,13 +186,95 @@ namespace YandS.UI.Controllers
                         Category = "Error",
                         Message = ex.Message
                     };
-                    ViewBag.Location = this.ListLocation();
-                    ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
-                    ViewBag.AgainstCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseAgainst), "Mst_Value", "Mst_Desc");
-                    ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
-                    ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
-                    ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc");
-                    ViewBag.ParentCourtId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ParentCourt), "Mst_Value", "Mst_Desc");
+
+                    PartialViewName = p_modal.PartialViewName;
+                    StatusCodes = new[] { "1", "2" };
+
+                    if (PartialViewName == "_beforeCourt")
+                    {
+                        ViewBag.Location = this.ListLocation();
+                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                        ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
+                        //ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
+                        ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc");
+                        ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", "1");
+                    }
+                    else if (PartialViewName == "_litigation")
+                    {
+                        StatusCodes = new[] { "1" };
+                        ViewBag.Location = this.ListLocation();
+                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                        ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", "1");
+                        ViewBag.ParentCourtId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ParentCourt), "Mst_Value", "Mst_Desc");
+
+
+                    }
+                    else if (PartialViewName == "_enforcement")
+                    {
+                        ViewBag.Location = this.ListLocation();
+                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                        ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("6"), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc");
+
+                        ViewBag.ApealByWho = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc");
+                        ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(), "Mst_Value", "Mst_Desc");
+                        ViewBag.AgainstInsurance = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc");
+
+                        ViewBag.ODBBankBranch = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ODBBankBranch), "Mst_Value", "Mst_Desc");
+                        ViewBag.ClientCaseType = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ClientCaseType).OrderBy(o => o.DisplaySeq), "Mst_Value", "Mst_Desc", "0"); // Blank
+                        ViewBag.OmaniExp = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OmaniExp), "Mst_Value", "Mst_Desc");
+
+                        //ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
+                        ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc");
+                        ViewBag.ReOpenEnforcement = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc");
+                        ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
+                    }
+                    else if (PartialViewName == "_consultants")
+                    {
+                        ViewBag.Location = this.ListLocation();
+                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                        ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc");
+                        ViewBag.ParentCourtId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ParentCourt), "Mst_Value", "Mst_Desc");
+
+
+                    }
+                    else if (PartialViewName == "_arabicReport")
+                    {
+                        ViewBag.Location = this.ListLocation();
+                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                        ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc");
+                        ViewBag.ParentCourtId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ParentCourt), "Mst_Value", "Mst_Desc");
+
+
+                    }
+                    else if (PartialViewName == "_closed")
+                    {
+                        StatusCodes = new[] { "2" };
+                        ViewBag.Location = this.ListLocation();
+                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                        ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
+                        ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", "2");
+                        ViewBag.ParentCourtId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ParentCourt), "Mst_Value", "Mst_Desc");
+                        ViewBag.ReasonCode = new SelectList(Helper.GetCaseClosingReasons(), "Mst_Value", "Mst_Desc");
+
+
+                    }
 
                     ViewBag.ViewToLoad = p_modal.PartialViewName;
                     return View();
@@ -156,13 +282,95 @@ namespace YandS.UI.Controllers
 
             }
 
-            ViewBag.Location = this.ListLocation();
-            ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
-            ViewBag.AgainstCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseAgainst), "Mst_Value", "Mst_Desc");
-            ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
-            ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
-            ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc");
-            ViewBag.ParentCourtId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ParentCourt), "Mst_Value", "Mst_Desc");
+            PartialViewName = p_modal.PartialViewName;
+            StatusCodes = new[] { "1", "2" };
+
+            if (PartialViewName == "_beforeCourt")
+            {
+                ViewBag.Location = this.ListLocation();
+                ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
+                //ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
+                ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc");
+                ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", "1");
+            }
+            else if (PartialViewName == "_litigation")
+            {
+                StatusCodes = new[] { "1" };
+                ViewBag.Location = this.ListLocation();
+                ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", "1");
+                ViewBag.ParentCourtId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ParentCourt), "Mst_Value", "Mst_Desc");
+
+
+            }
+            else if (PartialViewName == "_enforcement")
+            {
+                ViewBag.Location = this.ListLocation();
+                ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("6"), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc");
+
+                ViewBag.ApealByWho = new SelectList(Helper.GetByWho(), "Mst_Value", "Mst_Desc");
+                ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(), "Mst_Value", "Mst_Desc");
+                ViewBag.AgainstInsurance = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc");
+
+                ViewBag.ODBBankBranch = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ODBBankBranch), "Mst_Value", "Mst_Desc");
+                ViewBag.ClientCaseType = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ClientCaseType).OrderBy(o => o.DisplaySeq), "Mst_Value", "Mst_Desc", "0"); // Blank
+                ViewBag.OmaniExp = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OmaniExp), "Mst_Value", "Mst_Desc");
+
+                //ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
+                ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc");
+                ViewBag.ReOpenEnforcement = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc");
+                ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
+            }
+            else if (PartialViewName == "_consultants")
+            {
+                ViewBag.Location = this.ListLocation();
+                ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc");
+                ViewBag.ParentCourtId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ParentCourt), "Mst_Value", "Mst_Desc");
+
+
+            }
+            else if (PartialViewName == "_arabicReport")
+            {
+                ViewBag.Location = this.ListLocation();
+                ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc");
+                ViewBag.ParentCourtId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ParentCourt), "Mst_Value", "Mst_Desc");
+
+
+            }
+            else if (PartialViewName == "_closed")
+            {
+                StatusCodes = new[] { "2" };
+                ViewBag.Location = this.ListLocation();
+                ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", "2");
+                ViewBag.ParentCourtId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ParentCourt), "Mst_Value", "Mst_Desc");
+                ViewBag.ReasonCode = new SelectList(Helper.GetCaseClosingReasons(), "Mst_Value", "Mst_Desc");
+
+
+            }
+
             ViewBag.ViewToLoad = p_modal.PartialViewName;
             return View();
         }
@@ -191,12 +399,12 @@ namespace YandS.UI.Controllers
                 ViewBag.Location = this.ListLocation();
                 ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
                 ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
-                ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
                 ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
-                ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc");
-                ViewBag.ParentCourtId = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ParentCourt), "Mst_Value", "Mst_Desc");
-
-                
+                //ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
+                ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc");
+                ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
+                ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", "1");
             }
             else if (PartialViewName == "_litigation")
             {
@@ -228,7 +436,8 @@ namespace YandS.UI.Controllers
                 ViewBag.ClientCaseType = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.ClientCaseType).OrderBy(o => o.DisplaySeq), "Mst_Value", "Mst_Desc", "0"); // Blank
                 ViewBag.OmaniExp = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OmaniExp), "Mst_Value", "Mst_Desc");
 
-                ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
+                //ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
+                ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc");
                 ViewBag.ReOpenEnforcement = new SelectList(Helper.GetYesNoForSelect(), "Mst_Value", "Mst_Desc");
                 ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
             }

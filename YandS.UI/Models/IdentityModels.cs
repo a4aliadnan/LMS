@@ -123,6 +123,8 @@ namespace YandS.UI.Models
         public ICollection<CaseRegistration> CaseRegistrationModifiedby { get; set; }
         public ICollection<SessionsRoll> SessionRollCreatedby { get; set; }
         public ICollection<SessionsRoll> SessionRollModifiedby { get; set; }
+        public ICollection<DecisionTranslation> TranslationCreatedby { get; set; }
+        public ICollection<DecisionTranslation> TranslationModifiedby { get; set; }
 
         #endregion
     }
@@ -193,6 +195,7 @@ namespace YandS.UI.Models
         public DbSet<SessionsRoll> SessionsRoll { get; set; }
         public DbSet<DefendentTransfer> DefendentTransfer { get; set; }
         public DbSet<ClientAccess> ClientAccess { get; set; }
+        public DbSet<DecisionTranslation> DecisionTranslation { get; set; }
         public RBACDbContext() : base("DefaultConnection")
         {
             Database.SetInitializer<RBACDbContext>(new RBACDatabaseInitializer());
@@ -262,6 +265,8 @@ namespace YandS.UI.Models
 
             // Moved all SessionsRoll related configuration to SessionsRollConfiguration class
             modelBuilder.Configurations.Add(new SessionsRollConfiguration());
+
+            modelBuilder.Configurations.Add(new DecisionTranslationConfiguration());
 
         }
 

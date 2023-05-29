@@ -35,6 +35,7 @@
         public string CourtRefNo { get; set; }
         public string COURT { get; set; }
         public string FileStatus { get; set; }
+        public string FileStatusName { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? ActionDate { get; set; }
         public string Notes { get; set; }
@@ -102,6 +103,11 @@
         public DateTime? DEF_VisitDate { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? SuspensionEndDate { get; set; }
+        public string GovernorateId { get; set; }
+        public string GovernorateName { get; set; }
+        public string Subject { get; set; }
+        public string CorporateWorkDetail { get; set; }
+        public decimal CorporateFee { get; set; }
     }
 
     public class CourtCaseDTView

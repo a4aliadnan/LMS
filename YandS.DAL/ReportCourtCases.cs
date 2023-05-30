@@ -211,6 +211,7 @@ namespace YandS.DAL
                         }
                         ws.Cells[ws.Dimension.Address].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
 
+
                         pck.SaveAs(ms);
                     }
 
@@ -500,7 +501,7 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                     else if (P_TemplateName == "ShortDataEN")
                     {
 
-                        int rowstart = 2;
+                        int rowstart = 3;
                         int rowend = rowstart + 1;
                         int colend = ds.Tables[0].Columns.Count;
                         MemoryStream ResultStream = new MemoryStream();
@@ -524,23 +525,36 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                             modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
                             System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#f2f2f2");
-                            modelTable.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            modelTable.Style.Fill.BackgroundColor.SetColor(colFromHex);
 
                             // Fill worksheet with data to export
                             modelCells.LoadFromDataTable(dt, false);
 
 
+                            for (var row = rowstart; row < dt.Rows.Count + rowstart; row++)
+                            {
+                                int pos = row % 2;
+                                var FillRange = string.Format(@"A{0}:M{0}", row);
+                                ws.Cells[FillRange].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                switch (pos)
+                                {
+                                    case 0:
+                                        ws.Cells[FillRange].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.White);
+                                        break;
+                                    case 1:
+                                        ws.Cells[FillRange].Style.Fill.BackgroundColor.SetColor(colFromHex);
+                                        break;
+
+                                }
+                            }
                             pck.SaveAs(ResultStream);
                             ms = ResultStream;
-                            //pck.Save();
                         }
 
                     }
                     else if (P_TemplateName == "ShortDataAR")
                     {
 
-                        int rowstart = 2;
+                        int rowstart = 3;
                         int rowend = rowstart + 1;
                         int colend = ds.Tables[0].Columns.Count;
                         MemoryStream ResultStream = new MemoryStream();
@@ -565,16 +579,28 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                             modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
                             System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#f2f2f2");
-                            modelTable.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            modelTable.Style.Fill.BackgroundColor.SetColor(colFromHex);
 
                             // Fill worksheet with data to export
                             modelCells.LoadFromDataTable(dt, false);
+                            for (var row = rowstart; row < dt.Rows.Count + rowstart; row++)
+                            {
+                                int pos = row % 2;
+                                var FillRange = string.Format(@"A{0}:P{0}", row);
+                                ws.Cells[FillRange].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                switch (pos)
+                                {
+                                    case 0:
+                                        ws.Cells[FillRange].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.White);
+                                        break;
+                                    case 1:
+                                        ws.Cells[FillRange].Style.Fill.BackgroundColor.SetColor(colFromHex);
+                                        break;
 
+                                }
+                            }
 
                             pck.SaveAs(ResultStream);
                             ms = ResultStream;
-                            //pck.Save();
                         }
 
                     }

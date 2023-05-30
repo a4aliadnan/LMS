@@ -111,7 +111,7 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Twilio.Api">
-      <HintPath>..\..\Resources\Twilio.Api.dll</HintPath>
+      <HintPath>..\..\..\Resources\Twilio.Api.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -4047,13 +4047,6 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="Content\plugins\fullcalendar-bootstrap\main.d.ts" />
-    <TypeScriptCompile Include="Content\plugins\fullcalendar-daygrid\main.d.ts" />
-    <TypeScriptCompile Include="Content\plugins\fullcalendar-interaction\main.d.ts" />
-    <TypeScriptCompile Include="Content\plugins\fullcalendar-timegrid\main.d.ts" />
-    <TypeScriptCompile Include="Content\plugins\fullcalendar\main.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

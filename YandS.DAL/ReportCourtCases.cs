@@ -211,6 +211,7 @@ namespace YandS.DAL
                         }
                         ws.Cells[ws.Dimension.Address].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
 
+
                         pck.SaveAs(ms);
                     }
 
@@ -497,6 +498,143 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                         }
 
                     }
+                    else if (P_TemplateName == "ShortDataEN")
+                    {
+
+                        int rowstart = 3;
+                        int rowend = rowstart + 1;
+                        int colend = ds.Tables[0].Columns.Count;
+                        MemoryStream ResultStream = new MemoryStream();
+
+                        using (ExcelPackage pck = new ExcelPackage(ResultStream, ms))
+                        {
+                            ExcelWorksheet ws = pck.Workbook.Worksheets.First();
+                            var dt = ds.Tables[0];
+
+                            var modelCells = ws.Cells["A3"];
+                            var modelRows = dt.Rows.Count + 2;
+                            string modelRangeSheet = "A1:M" + modelRows.ToString();
+                            string modelRange = "A3:M" + modelRows.ToString();
+                            var modelTableSheet = ws.Cells[modelRangeSheet];
+                            var modelTable = ws.Cells[modelRange];
+
+                            // Assign borders
+                            modelTable.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
+                            System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#f2f2f2");
+
+                            // Fill worksheet with data to export
+                            modelCells.LoadFromDataTable(dt, false);
+
+
+                            for (var row = rowstart; row < dt.Rows.Count + rowstart; row++)
+                            {
+                                int pos = row % 2;
+                                var FillRange = string.Format(@"A{0}:M{0}", row);
+                                ws.Cells[FillRange].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                switch (pos)
+                                {
+                                    case 0:
+                                        ws.Cells[FillRange].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.White);
+                                        break;
+                                    case 1:
+                                        ws.Cells[FillRange].Style.Fill.BackgroundColor.SetColor(colFromHex);
+                                        break;
+
+                                }
+                            }
+                            pck.SaveAs(ResultStream);
+                            ms = ResultStream;
+                        }
+
+                    }
+                    else if (P_TemplateName == "ShortDataAR")
+                    {
+
+                        int rowstart = 3;
+                        int rowend = rowstart + 1;
+                        int colend = ds.Tables[0].Columns.Count;
+                        MemoryStream ResultStream = new MemoryStream();
+
+                        using (ExcelPackage pck = new ExcelPackage(ResultStream, ms))
+                        {
+                            ExcelWorksheet ws = pck.Workbook.Worksheets.First();
+
+                            var dt = ds.Tables[0];
+
+                            var modelCells = ws.Cells["A3"];
+                            var modelRows = dt.Rows.Count + 2;
+                            string modelRangeSheet = "A1:P" + modelRows.ToString();
+                            string modelRange = "A3:P" + modelRows.ToString();
+                            var modelTableSheet = ws.Cells[modelRangeSheet];
+                            var modelTable = ws.Cells[modelRange];
+
+                            // Assign borders
+                            modelTable.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
+                            System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#f2f2f2");
+
+                            // Fill worksheet with data to export
+                            modelCells.LoadFromDataTable(dt, false);
+                            for (var row = rowstart; row < dt.Rows.Count + rowstart; row++)
+                            {
+                                int pos = row % 2;
+                                var FillRange = string.Format(@"A{0}:P{0}", row);
+                                ws.Cells[FillRange].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                switch (pos)
+                                {
+                                    case 0:
+                                        ws.Cells[FillRange].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.White);
+                                        break;
+                                    case 1:
+                                        ws.Cells[FillRange].Style.Fill.BackgroundColor.SetColor(colFromHex);
+                                        break;
+
+                                }
+                            }
+
+                            pck.SaveAs(ResultStream);
+                            ms = ResultStream;
+                        }
+
+                    }
+                    else if (P_TemplateName == "BD_REPORT")
+                    {
+
+                        int rowstart = 2;
+                        int rowend = rowstart + 1;
+                        int colend = ds.Tables[0].Columns.Count;
+                        MemoryStream ResultStream = new MemoryStream();
+
+                        using (ExcelPackage pck = new ExcelPackage(ResultStream, ms))
+                        {
+                            ExcelWorksheet ws = pck.Workbook.Worksheets.First();
+
+                            ws.Cells["A2"].LoadFromDataTable(ds.Tables[0], false);
+
+                            var modelRows = ds.Tables[0].Rows.Count + 2;
+                            string modelRange = "A2:AB" + modelRows.ToString();
+                            var modelTable = ws.Cells[modelRange];
+
+                            // Assign borders
+                            modelTable.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
+
+                            pck.SaveAs(ResultStream);
+                            ms = ResultStream;
+                        }
+
+                    }
+
                 }
             }
             catch (Exception e)
@@ -548,7 +686,7 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                                                     };
             return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "GetCourtCaseListForIndex", parameterList).Tables[0].DataTableToList<CourtCaseListForIndex>();
         }
-        public CourtCaseDTView getCourtCaseListWithPaging(int start, string searchvalue, int Length, string SortColumn, string sortDirection, string UserLocation, string DataFor, string CaseLevel, DateTime DateFrom, DateTime DateTo, string CallerName)
+        public CourtCaseDTView getCourtCaseListWithPaging(int start, string searchvalue, int Length, string SortColumn, string sortDirection, string UserLocation, string DataFor, string CaseLevel, DateTime DateFrom, DateTime DateTo, string CallerName, string EnfCourtLocation, string EnfGovernorate)
         {
             CourtCaseDTView _result = new CourtCaseDTView();
             SqlParameter[] parameterList = new SqlParameter[]
@@ -563,9 +701,10 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                                                          new SqlParameter("@CaseLevelFilter", CaseLevel),
                                                          new SqlParameter("@DateFrom", DateFrom),
                                                          new SqlParameter("@DateTo", DateTo),
-                                                         new SqlParameter("@CallerName", CallerName)
+                                                         new SqlParameter("@CallerName", CallerName),
+                                                         new SqlParameter("@EnfCourtLocation", EnfCourtLocation),
+                                                         new SqlParameter("@EnfGovernorate", EnfGovernorate)
                                                     };
-            // return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "GetCourtCaseListWithPaging", parameterList).Tables[0].DataTableToList<CourtCaseListForIndex>();
 
             DataSet DS = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "GetCourtCaseListWithPaging", parameterList);
             _result.data = DS.Tables[0].DataTableToList<CourtCaseListForIndex>();

@@ -7,6 +7,24 @@
     ViewBag.OFB_SessionRollDefendentName = Model.SessionRollDefendentName;
 
 }
+<style>
+    .PVCreate {
+        background-color: #e8e8e8 !important;
+        color: black !important;
+    }
+
+        .PVCreate:hover {
+            background-color: #ffd243 !important;
+            color: black !important;
+            font-weight: bold;
+        }
+
+    .PVCreateActive {
+        background-color: #ffd243 !important;
+        color: black !important;
+        font-weight: bold;
+    }
+</style>
 <script type="text/javascript">
     $(document).ready(function () {
         console.log("Modify Enforcement Partail View Document Page");
@@ -55,25 +73,13 @@
                 CallAjax = false;
                 $(".cls_EnfMainAll").removeClass("AppHidden").addClass("AppHidden");
                 $(".cls_" + $(this).attr("id").split('_')[1]).removeClass("AppHidden");
-
-                //if (this.id == "btn_ENFInfoStage" || this.id == "btn_MoneyTransfer") {
-
-                //    _PartialViewName = btnClickedClass;
-                //    PartialContainer = $("#ENF_Modify_Detail");
-
-                //    _parameters = { ClassificationId: _PartialViewName, Mode: $("#HFCaseId").val(), DefendentTransfer: $("#hidDefendentTransferId").val() };
-
-                //}
-                //else {
-                //    CallAjax = false;
-                //    $(".cls_EnfMainAll").removeClass("AppHidden").addClass("AppHidden");
-                //    $(".cls_" + $(this).attr("id").split('_')[1]).removeClass("AppHidden");
-                //}
+                $("#SavePV_Data").val($(this).attr("id").split('_')[1]);
             }
 
             if (CallAjax)
                 GetTab(PartialContainer, GetClientClassificationURL, _parameters);
 
+            $('textarea').autoResize();
         });
 
         $("#modal-PVForm").on("hidden.bs.modal", function () {
@@ -121,7 +127,7 @@
             <button type="button" id="btn_MoneyTransfer" style="font-size: 1rem !important;" class="btn btn-block MoneyTransfer @ViewBag.MoneyTransferActive btn-lg EnfDetailButton">COURT TRANSFER<br />تحويل أموال من المحكمة</button>
         </div>
         <div class="col">
-            <button type="button" id="btnPVCreate" style="font-size: 1rem !important;background-color: #ebf0f9 !important;" class="btn btn-block btn-lg EnfDetailButton">EXPENSES<br />طلب مصاريف</button>
+            <button type="button" id="btn_PVCreate" style="font-size: 1rem !important;" class="btn btn-block PVCreate @ViewBag.PVCreateActive btn-lg EnfDetailButton">EXPENSES<br />طلب مصاريف</button>
         </div>
         <div class="col">
             <button type="button" id="btn_ENFAddressDetail" style="font-size: 1rem !important;" class="btn btn-block ENFAddressDetail @ViewBag.ENFAddressDetailActive btn-lg EnfDetailButton">ADDRESS<br />العناوين</button>

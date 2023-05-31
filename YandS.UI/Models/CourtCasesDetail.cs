@@ -30,7 +30,7 @@
         public DateTime? RegistrationDate { get; set; }
 
         [Display(Name = "Court Department")]
-        [StringLength(2)]
+        [StringLength(10)]
         public string CourtDepartment { get; set; } //Dropdown 
 
         [Display(Name = "Case Level")]
@@ -69,6 +69,8 @@
         public string NextCaseLevel { get; set; } //Dropdown 
         [StringLength(100)]
         public string NextCaseLevelCode { get; set; }
+        [StringLength(3)]
+        public string DepartmentType { get; set; } //INVESTMENT YES/NO
         public ICollection<CourtCasesFollowup> FollowupId { get; set; }
 
         public CourtCasesDetail()
@@ -90,7 +92,7 @@
         #endregion
     }
 
-    #region Primary/Apeal/Supreme/Enforcement Court View Modal
+    #region View Modal
 
     public class CourtCasesDetailVM
     {
@@ -168,7 +170,9 @@
         public string RealEstateYesNo { get; set; }
         public string RealEstateDetail { get; set; }
         public string ClaimSummary { get; set; }
-
+        [Display(Name = "INVESTMENT تبسيط الإجراءات")]
+        public string DepartmentType { get; set; } //INVESTMENT YES/NO
+        
         #region SESSION ROLL VM
 
         public int SessionRollId { get; set; }
@@ -226,210 +230,6 @@
             this.FollowerId = "0";
         }
     }
-    public class PrimaryCourtViewModal
-    {
-        public int Primary_DetailId { get; set; }
-        public int Primary_CaseId { get; set; }
-
-        [Display(Name = "Court")]
-        public string Primary_Courtid { get; set; } //Dropdown Court
-
-        [Display(Name = "Court RefNo")]
-        public string Primary_CourtRefNo { get; set; }
-
-        [Display(Name = "Court Location")]
-        public string Primary_CourtLocationid { get; set; } //Dropdown Location
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        //[CheckDateRange]
-        [Display(Name = "Registration Date")]
-        public DateTime? Primary_RegistrationDate { get; set; }
-
-        [Display(Name = "Court Department")]
-        public string Primary_CourtDepartment { get; set; } //Dropdown 
-
-        [Display(Name = "Case Level")]
-        public string Primary_CaseLevelCode { get; set; } //Dropdown 
-
-        [Display(Name = "Court Status")]
-        public string Primary_CourtStatus { get; set; }
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        //[CheckDateRange]
-        [Display(Name = "Judgement Date")]
-        public DateTime? Primary_JudgementDate { get; set; }
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        //[CheckDateRange]
-        [Display(Name = "Judgement Receiving Date")]
-        public DateTime? Primary_JudgementReceivingDate { get; set; }
-
-        [Display(Name = "Judgement Details")]
-        public string Primary_JudgementDetails { get; set; }
-
-        public string Primary_CourtName { get; set; }
-        public string Primary_CourtLocationName { get; set; }
-        public string Primary_CourtDepartmentName { get; set; }
-        public string Primary_CaseLevelName { get; set; }
-
-    }
-    public class ApealCourtViewModal
-    {
-        public int Apeal_DetailId { get; set; }
-        public int Apeal_CaseId { get; set; }
-
-        [Display(Name = "Court")]
-        public string Apeal_Courtid { get; set; } //Dropdown Court
-
-        [Required(ErrorMessage = "Apeal Court RefNo is required")]
-        [Display(Name = "Court RefNo")]
-        public string Apeal_CourtRefNo { get; set; }
-
-        [Display(Name = "Court Location")]
-        public string Apeal_CourtLocationid { get; set; } //Dropdown Location
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        [CheckDateRange]
-        [Display(Name = "Registration Date")]
-        public DateTime? Apeal_RegistrationDate { get; set; }
-
-        [Display(Name = "Court Department")]
-        public string Apeal_CourtDepartment { get; set; } //Dropdown 
-
-        [Display(Name = "Case Level")]
-        public string Apeal_CaseLevelCode { get; set; } //Dropdown 
-
-        [Display(Name = "Court Status")]
-        public string Apeal_CourtStatus { get; set; }
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        [CheckDateRange]
-        [Display(Name = "Judgement Date")]
-        public DateTime? Apeal_JudgementDate { get; set; }
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        [CheckDateRange]
-        [Display(Name = "Judgement Receiving Date")]
-        public DateTime? Apeal_JudgementReceivingDate { get; set; }
-
-        [Display(Name = "Judgement Details")]
-        public string Apeal_JudgementDetails { get; set; }
-
-        public string Apeal_CourtName { get; set; }
-        public string Apeal_CourtLocationName { get; set; }
-        public string Apeal_CourtDepartmentName { get; set; }
-        public string Apeal_CaseLevelName { get; set; }
-
-    }
-    public class SupremeCourtViewModal
-    {
-        public int Supreme_DetailId { get; set; }
-        public int Supreme_CaseId { get; set; }
-
-        [Display(Name = "Court")]
-        public string Supreme_Courtid { get; set; } //Dropdown Court
-
-        [Required(ErrorMessage = "Supreme Court RefNo is required")]
-        [Display(Name = "Court RefNo")]
-        public string Supreme_CourtRefNo { get; set; }
-
-        [Display(Name = "Court Location")]
-        public string Supreme_CourtLocationid { get; set; } //Dropdown Location
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        [CheckDateRange]
-        [Display(Name = "Registration Date")]
-        public DateTime? Supreme_RegistrationDate { get; set; }
-
-        [Display(Name = "Court Department")]
-        public string Supreme_CourtDepartment { get; set; } //Dropdown 
-
-        [Display(Name = "Case Level")]
-        public string Supreme_CaseLevelCode { get; set; } //Dropdown 
-
-        [Display(Name = "Court Status")]
-        public string Supreme_CourtStatus { get; set; }
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        [CheckDateRange]
-        [Display(Name = "Judgement Date")]
-        public DateTime? Supreme_JudgementDate { get; set; }
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        [CheckDateRange]
-        [Display(Name = "Judgement Receiving Date")]
-        public DateTime? Supreme_JudgementReceivingDate { get; set; }
-
-        [Display(Name = "Judgement Details")]
-        public string Supreme_JudgementDetails { get; set; }
-
-        public string Supreme_CourtName { get; set; }
-        public string Supreme_CourtLocationName { get; set; }
-        public string Supreme_CourtDepartmentName { get; set; }
-        public string Supreme_CaseLevelName { get; set; }
-
-    }
-    public class EnforcementCourtViewModal
-    {
-        public int Enforcement_DetailId { get; set; }
-        public int Enforcement_CaseId { get; set; }
-
-        [Display(Name = "Court")]
-        public string Enforcement_Courtid { get; set; } //Dropdown Court
-
-        [Required(ErrorMessage = "Enforcement Court RefNo is required")]
-        [Display(Name = "Court RefNo")]
-        public string Enforcement_CourtRefNo { get; set; }
-
-        [Display(Name = "Court Location")]
-        public string Enforcement_CourtLocationid { get; set; } //Dropdown Location
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        [CheckDateRange]
-        [Display(Name = "Registration Date")]
-        public DateTime? Enforcement_RegistrationDate { get; set; }
-
-        [Display(Name = "Court Department")]
-        public string Enforcement_CourtDepartment { get; set; } //Dropdown 
-
-        [Display(Name = "Case Level")]
-        public string Enforcement_CaseLevelCode { get; set; } //Dropdown 
-
-        [Display(Name = "Court Status")]
-        public string Enforcement_CourtStatus { get; set; }
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        [CheckDateRange]
-        [Display(Name = "Judgement Date")]
-        public DateTime? Enforcement_JudgementDate { get; set; }
-
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Judgement Receiving Date")]
-        //[System.Web.Mvc.Remote("ValidateDateEqualOrGreater", "CourtCases", HttpMethod = "Post", ErrorMessage = "Date greater than current date is not allowed.")]
-        [CheckDateRange]
-        public DateTime? Enforcement_JudgementReceivingDate { get; set; }
-
-        [Display(Name = "Judgement Details")]
-        public string Enforcement_JudgementDetails { get; set; }
-
-        public string Enforcement_CourtName { get; set; }
-        public string Enforcement_CourtLocationName { get; set; }
-        public string Enforcement_CourtDepartmentName { get; set; }
-        public string Enforcement_CaseLevelName { get; set; }
-
-    }
-
 
     #endregion
 }

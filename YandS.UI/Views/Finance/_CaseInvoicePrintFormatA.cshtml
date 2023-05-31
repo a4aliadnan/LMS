@@ -1,623 +1,963 @@
 ﻿@model YandS.UI.Models.CaseInvoice
 <style type="text/css">
-
-    table.MsoTableGridMain {
-        border: solid windowtext 1.0pt;
-        font-size: 11.0pt;
-        font-family: "Calibri","sans-serif";
-    }
-
-    div.MsoNormalMain {
-        margin-top: 0in;
-        margin-right: 0in;
-        margin-bottom: 8.0pt;
-        margin-left: 0in;
-        line-height: 107%;
-        font-size: 11.0pt;
-        font-family: "Calibri","sans-serif";
-    }
-
-    p.MsoNormalMain {
-        margin-top: 0in;
-        margin-right: 0in;
-        margin-bottom: 8.0pt;
-        margin-left: 0in;
-        line-height: 107%;
-        font-size: 11.0pt;
-        font-family: "Calibri","sans-serif";
-    }
-
-    table.MsoTableGrid {
-        font-size: 11.0pt;
-        font-family: "Calibri","sans-serif";
-    }
-
-    p.MsoNormal {
-        margin-top: 0in;
-        margin-right: 0in;
-        margin-bottom: 0.0pt;
-        margin-left: 0in;
-        line-height: 107%;
-        font-size: 11.0pt;
-        font-family: "Calibri","sans-serif";
-    }
-
     .auto-style1 {
-        width: 125.75pt;
-        height: 0.4in;
+        height: 21.95pt;
+        width: 20pt;
+        color: black;
+        font-size: 12.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Times New Roman", serif;
+        text-align: general;
+        vertical-align: bottom;
+        white-space: nowrap;
+        border-style: none;
+        border-color: inherit;
+        border-width: medium;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
     }
 
     .auto-style2 {
-        width: .6in;
-        height: 0.4in;
+        width: 20pt;
+        color: black;
+        font-size: 12.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Times New Roman", serif;
+        text-align: general;
+        vertical-align: bottom;
+        white-space: nowrap;
+        border-style: none;
+        border-color: inherit;
+        border-width: medium;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
     }
 
     .auto-style3 {
-        width: 145.8pt;
-        height: 0.4in;
+        height: 21.95pt;
+        color: black;
+        font-size: 12.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Times New Roman", serif;
+        text-align: general;
+        vertical-align: bottom;
+        white-space: nowrap;
+        border-style: none;
+        border-color: inherit;
+        border-width: medium;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
     }
 
     .auto-style4 {
-        width: 163.95pt;
-        height: 0.4in;
+        color: black;
+        font-size: 2.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Times New Roman", serif;
+        text-align: general;
+        vertical-align: bottom;
+        white-space: nowrap;
+        border-style: none;
+        border-color: inherit;
+        border-width: medium;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+    }
+
+    .auto-style5 {
+        color: black;
+        font-size: 20.0pt;
+        font-weight: 700;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+        border-style: none;
+        border-color: inherit;
+        border-width: medium;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
     }
 
     .auto-style6 {
-        width: 45pt;
-        height: 37px;
+        color: black;
+        font-size: 14.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+        border-style: none;
+        border-color: inherit;
+        border-width: medium;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
     }
 
     .auto-style7 {
-        width: 42.95pt;
-        height: 37px;
+        color: black;
+        font-size: 16.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Times New Roman", serif;
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+        border: .5pt solid windowtext;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+        background: #D9D9D9;
     }
 
     .auto-style8 {
-        width: 59.4pt;
-        height: 37px;
+        color: black;
+        font-size: 16.0pt;
+        font-weight: 700;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+        border: .5pt solid windowtext;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
     }
 
     .auto-style9 {
-        width: 102.2pt;
-        height: 37px;
+        color: black;
+        font-size: 16.0pt;
+        font-weight: 700;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+        border-style: none;
+        border-color: inherit;
+        border-width: medium;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
     }
 
     .auto-style10 {
-        width: 265.15pt;
-        height: 37px;
+        color: black;
+        font-size: 16.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: left;
+        vertical-align: middle;
+        white-space: nowrap;
+        border: .5pt solid windowtext;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+        background: #D9D9D9;
+    }
+
+    .auto-style11 {
+        color: black;
+        font-size: 16.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: left;
+        vertical-align: middle;
+        white-space: nowrap;
+        border: .5pt solid windowtext;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+    }
+
+    .auto-style12 {
+        color: black;
+        font-size: 14.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: center;
+        vertical-align: bottom;
+        white-space: nowrap;
+        border: .5pt solid windowtext;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+        background: #D9D9D9;
+    }
+
+    .auto-style13 {
+        color: black;
+        font-size: 12.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: left;
+        vertical-align: bottom;
+        white-space: nowrap;
+        border: .5pt solid windowtext;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+    }
+
+    .auto-style14 {
+        color: black;
+        font-size: 12.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: center;
+        vertical-align: bottom;
+        white-space: nowrap;
+        border: .5pt solid windowtext;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+    }
+
+    .auto-style15 {
+        color: black;
+        font-size: 12.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Times New Roman", serif;
+        text-align: center;
+        vertical-align: bottom;
+        white-space: nowrap;
+        border: .5pt solid windowtext;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+    }
+
+    .auto-style16 {
+        height: 18.0pt;
+        color: black;
+        font-size: 12.0pt;
+        font-weight: 400;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Times New Roman", serif;
+        text-align: general;
+        vertical-align: bottom;
+        white-space: nowrap;
+        border-style: none;
+        border-color: inherit;
+        border-width: medium;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+    }
+
+    .auto-style17 {
+        width: 320pt;
+        color: black;
+        font-size: 16.0pt;
+        font-weight: 700;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: left;
+        vertical-align: middle;
+        white-space: normal;
+        border: .5pt solid windowtext;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+    }
+
+    .auto-style18 {
+        color: black;
+        font-size: 16.0pt;
+        font-weight: 700;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+        border: .5pt solid windowtext;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+    }
+
+    .auto-style19 {
+        width: 20pt;
+        color: black;
+        font-size: 13.0pt;
+        font-weight: 700;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: left;
+        vertical-align: middle;
+        white-space: normal;
+        border-style: none;
+        border-color: inherit;
+        border-width: medium;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+    }
+
+    .auto-style20 {
+        color: black;
+        font-size: 13.0pt;
+        font-weight: 700;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+        border-style: none;
+        border-color: inherit;
+        border-width: medium;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
+    }
+
+    .auto-style21 {
+        color: black;
+        font-size: 18.0pt;
+        font-weight: 700;
+        font-style: normal;
+        text-decoration: none;
+        font-family: "Sakkal Majalla";
+        text-align: center;
+        vertical-align: top;
+        white-space: nowrap;
+        border: .5pt solid windowtext;
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-top: 1px;
     }
 </style>
+@{
+    decimal TotalFeeAmount = 0;
+    decimal TotalVATAmount = 0;
+    decimal TotalAmount = 0;
+
+    string AccountContractNo = Model.AccountContractNo ?? string.Empty;
+    string ClientFileNo = !string.IsNullOrEmpty(Model.ClientFileNo) ? " - " + Model.ClientFileNo : string.Empty;
+    string ODBLoanType = !(Model.ClientCaseTypeName).Contains("PLEASE SELECT") ? " - " + Model.ClientCaseTypeName : string.Empty;
+    string ODBBranchName = !(Model.ODBBranchName).Contains("PLEASE SELECT") ? " - " + Model.ODBBranchName : string.Empty;
+    string strCLIENTS_NO = string.Format(@"{0}{1}{2}{3}", AccountContractNo, ClientFileNo, ODBLoanType, ODBBranchName).TrimStart('-');
+    ViewBag.CLIENTS_NO = strCLIENTS_NO;
+
+    string CaseAgainst = Model.CaseAgainst ?? string.Empty;
+    string CaseNo = !string.IsNullOrEmpty(Model.CourtRefNo) ? " - " + Model.CourtRefNo : string.Empty;
+    string CaseLevel = !string.IsNullOrEmpty(ViewBag.CourtType) ? " - " + ViewBag.CourtType : string.Empty;
+
+    ViewBag.CASE_DETAILS = string.Format(@"{0}{1}{2}", CaseAgainst, CaseLevel, CaseNo).TrimStart('-');
+}
 <div style="padding-left:15px;">
-    <table border="0" cellpadding="0" cellspacing="0" class="MsoTableGridMain" style="border-collapse: collapse; mso-table-layout-alt: fixed; border: none; mso-yfti-tbllook: 1184; mso-padding-alt: 0in 0in 0in 0in; mso-border-insideh: none; mso-border-insidev: none">
-        <tr style="mso-yfti-irow: 0; mso-yfti-firstrow: yes; height: 1.2in; mso-height-rule: exactly">
-            <td style="width: 50.75pt; padding: 0in 0in 0in 0in; height: 1.2in; mso-height-rule: exactly" valign="top" width="48">
-                <p class="MsoNormalMain" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal"></p>
-            </td>
-            <td style="width: 7.0in; padding: 0in 0in 0in 0in; height: 1.2in; mso-height-rule: exactly" valign="top" width="672">
-                <p class="MsoNormalMain" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
-                </p>
-
-            </td>
-            <td style="width: 25.7pt; padding: 0in 0in 0in 0in; height: 1.2in; mso-height-rule: exactly" valign="top" width="54">
-                <p class="MsoNormalMain" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal"></p>
-            </td>
+    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse" width="100%">
+        <colgroup><col span="27" style="mso-width-source:userset;mso-width-alt:950;width:20pt" width="26" /></colgroup>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style1" height="29" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
+            <td class="auto-style2" width="26"></td>
         </tr>
-        <tr style="mso-yfti-irow: 1; mso-yfti-lastrow: yes; height: 9.5in; mso-height-rule: exactly">
-            <td style="width: 35.75pt; padding: 0in 0in 0in 0in; height: 9.5in; mso-height-rule: exactly" valign="top" width="48">
-                <p class="MsoNormalMain" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
-                </p>
-            </td>
-            <td style="width: 7.0in; padding: 0in 0in 0in 0in; height: 9.5in; mso-height-rule: exactly" valign="top" width="672">
-                <div class="MsoNormalMain" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
-                    <div>
-                        <table border="0" cellpadding="0" cellspacing="0" class="MsoTableGrid" style="mso-table-layout-alt:fixed;border:none;mso-yfti-tbllook:1184;mso-padding-alt:0in 5.4pt 0in 5.4pt;mso-border-insideh: none;mso-border-insidev:none" width="686">
-                            @Html.Partial("_CaseInvoiceClientAddress", Model)
-                            <tr style="mso-yfti-irow:1">
-                                <td colspan="5" style="width:514.7pt;padding:0in 5.4pt 0in 5.4pt;border:none !important " valign="top" width="686">
-                                    <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:  normal">
-                                        <o:p>&nbsp;</o:p>
-                                    </p>
-                                </td>
-                            </tr>
-                            <tr style="mso-yfti-irow:2;height:.4in;mso-height-rule:exactly">
-                                <td style="width: 125.75pt; border: solid windowtext 1.0pt; mso-border-alt: solid windowtext .5pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .4in; mso-height-rule: exactly" width="168">
-                                    <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt; text-align:center;line-height:normal">
-                                        <b>
-                                            <span style="font-size:12.0pt; mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">DATE</span>
-                                        </b>
-                                    </p>
-                                </td>
-                                <td style="width:.6in;border:none;border-right:solid windowtext 1.0pt;mso-border-left-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt; mso-border-right-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;height:.4in;mso-height-rule:exactly" width="58">
-                                    <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt; text-align:center;line-height:normal">
-                                        <o:p>&nbsp;</o:p>
-                                    </p>
-                                </td>
-                                <td style="width: 145.8pt; border: solid windowtext 1.0pt; border-left: none; mso-border-left-alt: solid windowtext .5pt; mso-border-alt: solid windowtext .5pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .4in; mso-height-rule: exactly" width="194">
-                                    <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt; text-align:center;line-height:normal">
-                                        <b>
-                                            <span style="font-size:12.0pt; mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">INVOICE NO.</span>
-                                        </b>
-                                    </p>
-                                </td>
-                                <td style="width:.6in;border:none;border-right:solid windowtext 1.0pt;  mso-border-left-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;  mso-border-right-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;  height:.4in;mso-height-rule:exactly" width="58">
-                                    <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;  text-align:center;line-height:normal">
-                                        <o:p>&nbsp;</o:p>
-                                    </p>
-                                </td>
-                                <td style="width: 163.95pt; border: solid windowtext 1.0pt; border-left: none; mso-border-left-alt: solid windowtext .5pt; mso-border-alt: solid windowtext .5pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .4in; mso-height-rule: exactly" width="219">
-                                    <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;  text-align:center;line-height:normal">
-                                        <b>
-                                            <span style="font-size:12.0pt; mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">FILE NO.</span>
-                                        </b>
-                                    </p>
-                                </td>
-                            </tr>
-                            <tr style="mso-yfti-irow:3;">
-                                <td style="border-left: 1.0pt solid windowtext; border-right: 1.0pt solid windowtext; border-bottom: 1.0pt solid windowtext; mso-border-top-alt:solid windowtext .5pt; mso-border-alt:solid windowtext .5pt;
-  padding:0in 5.4pt 0in 5.4pt; border-top-style: none; border-top-color: inherit; border-top-width: medium;" width="168" class="auto-style1">
-                                    <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:center;line-height:normal">
-                                        <span style="font-size:12.0pt;
-  mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">@Html.DisplayFor(model => model.InvoiceDate)</span>
-                            </p>
-                            </td>
-                            <td style="border-right:solid windowtext 1.0pt;
-  mso-border-left-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
-  mso-border-right-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;
-  border-left-style: none; border-left-color: inherit; border-left-width: medium; border-top-style: none; border-top-color: inherit; border-top-width: medium; border-bottom-style: none; border-bottom-color: inherit; border-bottom-width: medium;" width="58" class="auto-style2">
-                                <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:center;line-height:normal">
-                                    <o:p>&nbsp;</o:p>
-                                </p>
-                            </td>
-                            @if (Model.ClientName.ToUpper().Trim() == "BANK MUSCAT" || Model.ClientName.ToUpper().Trim() == "MEETHAQ ISLAMIC BANKING")
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        @Html.Partial("_CaseInvoiceClientAddress", Model)
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style7" colspan="8">DATE</td>
+            <td class="auto-style7" colspan="8">INVOICE NO.</td>
+            <td class="auto-style7" colspan="7">YANDS NO.</td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style8" colspan="8">@Html.DisplayFor(model => model.InvoiceDate)</td>
+            @if (Model.ClientName.ToUpper().Trim() == "BANK MUSCAT" || Model.ClientName.ToUpper().Trim() == "MEETHAQ ISLAMIC BANKING")
+            {
+                <td class="auto-style8" colspan="8">YANDS&nbsp;-&nbsp;@Html.DisplayFor(model => model.InvoiceNumber)</td>
+
+            }
+            else
+            {
+                <td class="auto-style8" colspan="8">@Html.DisplayFor(model => model.InvoiceNumber)</td>
+
+            }
+            <td class="auto-style8" colspan="7">@Html.DisplayFor(model => model.OfficeFileNo)</td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style9"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style7" colspan="23">CASE DETAILS</td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            @if (Model.CaseAgainstCode == "3")
+            {
+                <td class="auto-style10" colspan="6">PLAINTIFF</td>
+            }
+            else
+            {
+                <td class="auto-style10" colspan="6">DEFENDANT</td>
+            }
+            <td class="auto-style11" colspan="17">@Html.DisplayFor(model => model.Defendant)</td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        @if (!string.IsNullOrEmpty(strCLIENTS_NO))
+        {
+            <tr height="29" style="mso-height-source:userset;height:21.95pt">
+                <td class="auto-style3" height="29"></td>
+                <td class="auto-style4"></td>
+                <td class="auto-style10" colspan="6">CLIENTS NO.</td>
+                <td class="auto-style11" colspan="17">@ViewBag.CLIENTS_NO</td>
+                <td class="auto-style4"></td>
+                <td class="auto-style4"></td>
+            </tr>
+        }
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style10" colspan="6">CASE DETAILS</td>
+            <td class="auto-style11" colspan="17">@ViewBag.CASE_DETAILS</td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        @if (Model.ClaimAmount > 0)
+        {
+            <tr height="29" style="mso-height-source:userset;height:21.95pt">
+                <td class="auto-style3" height="29"></td>
+                <td class="auto-style4"></td>
+                <td class="auto-style10" colspan="6">CLAIM AMOUNT</td>
+                <td class="auto-style11" colspan="17">@ViewBag.ClaimAmount&nbsp;OMR</td>
+                <td class="auto-style4"></td>
+                <td class="auto-style4"></td>
+            </tr>
+        }
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style7" colspan="23">INVOICE DETAILS</td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        @if (Model.FeeCaclId != null)
+        {
+            int count = 0;
+
+            foreach (var FeeCaclId in Model.FeeCaclId)
+            {
+                if (FeeCaclId.ShowInInvoice) { count++; }
+            }
+
+            if (count > 0)
+            {
+                <tr height="29" style="mso-height-source:userset;height:21.95pt">
+                    <td class="auto-style3" height="29"></td>
+                    <td class="auto-style4"></td>
+                    <td class="auto-style10" colspan="6">CALCULATION</td>
+                    <td class="auto-style11" colspan="17">
+                        <table style="margin-left: auto; margin-right: auto; width: 100%;" border="0" cellspacing="0" cellpadding="0">
+                            @foreach (var FeeCaclId in Model.FeeCaclId)
                             {
-                                <td style="border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
-  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt; border-left-style: none; border-left-color: inherit; border-left-width: medium; border-top-style: none; border-top-color: inherit; border-top-width: medium;" width="194" class="auto-style3">
-                                    <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:center;line-height:normal">
-                                        <span style="font-size:12.0pt;
-  mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">YANDS&nbsp;-&nbsp;@Html.DisplayFor(model => model.InvoiceNumber)</span>
-                            </p>
-                            </td>
-                        }
-                        else
-                        {
-                            <td style="border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
-  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt; border-left-style: none; border-left-color: inherit; border-left-width: medium; border-top-style: none; border-top-color: inherit; border-top-width: medium;" width="194" class="auto-style3">
-                                <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:center;line-height:normal">
-                                    <span style="font-size:12.0pt;
-  mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">@Html.DisplayFor(model => model.InvoiceNumber)</span>
-                            </p>
-                            </td>
-
-                        }
-
-                            <td style="border-right:solid windowtext 1.0pt;
-  mso-border-left-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
-  mso-border-right-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt;
-  border-left-style: none; border-left-color: inherit; border-left-width: medium; border-top-style: none; border-top-color: inherit; border-top-width: medium; border-bottom-style: none; border-bottom-color: inherit; border-bottom-width: medium;" width="58" class="auto-style2">
-                                <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:center;line-height:normal">
-                                    <o:p>&nbsp;</o:p>
-                                </p>
-                            </td>
-                            <td style="border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
-  mso-border-alt:solid windowtext .5pt;padding:0in 5.4pt 0in 5.4pt; border-left-style: none; border-left-color: inherit; border-left-width: medium; border-top-style: none; border-top-color: inherit; border-top-width: medium;" width="219" class="auto-style4">
-                                <p align="center" class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;
-  text-align:center;line-height:normal">
-                                    <span style="font-size:12.0pt;
-  mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">@Html.DisplayFor(model => model.OfficeFileNo)</span>
-                            </p>
-                            </td>
-                            </tr>
-                        <tr style="mso-yfti-irow:4;mso-yfti-lastrow:yes">
-                            <td colspan="5" style="width:514.7pt;padding:0in 5.4pt 0in 5.4pt" valign="top" width="686">
-                                <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:  normal">
-                                    <o:p>&nbsp;</o:p>
-                                </p>
-                            </td>
-                        </tr>
+                                @Html.Partial("_CaseInvoiceFeeCalcPrint", FeeCaclId)
+                            }
                         </table>
-</div>
-<div>
-    <table border="0" cellpadding="0" cellspacing="0" class="MsoTableGrid" width="686">
-        <tr style="mso-yfti-irow:5;height:.35in">
-            <td style="width: 125.1pt; border-top: solid windowtext 1.5pt; border-left: solid windowtext 1.5pt; border-bottom: solid windowtext 1.0pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext 1.5pt; mso-border-top-alt: 1.5pt; mso-border-left-alt: 1.5pt; mso-border-bottom-alt: .25pt; mso-border-right-alt: .25pt; mso-border-color-alt: windowtext; mso-border-style-alt: solid; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="167">
-                @if (Model.CaseAgainstCode == "3")
-                {
-                    <p class="MsoNormal">
-                        <span style="font-size: 12.0pt; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">PLAINTIFF</span><span style="font-size:12.0pt"><o:p></o:p></span>
-                    </p>
+                    </td>
+                    <td class="auto-style4"></td>
+                    <td class="auto-style4"></td>
+                </tr>
+            }
+        }
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style12" colspan="12">DISCRIPTION</td>
+            <td class="auto-style12" colspan="4">AMOUNT</td>
+            <td class="auto-style12" colspan="3">VAT 5%</td>
+            <td class="auto-style12" colspan="4">TOTAL</td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        @if (Model.FeeId != null)
+        {
 
+            foreach (var FeeId in Model.FeeId)
+            {
+                TotalFeeAmount += FeeId.FeeAmount;
+
+                if (FeeId.VATPct > 0)
+                {
+                    TotalVATAmount += (decimal)(FeeId.FeeAmount * (FeeId.VATPct / 100));
                 }
                 else
                 {
-                    <p class="MsoNormal">
-                        <span style="font-size: 12.0pt; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">DEFENDANT</span><span style="font-size:12.0pt"><o:p></o:p></span>
-                    </p>
-
+                    TotalVATAmount += 0;
                 }
-            </td>
-            <td style="width:228.65pt; border-top: solid windowtext 1.5pt;border-left:
-  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-  mso-border-top-alt:solid windowtext 1.5pt;mso-border-left-alt:solid windowtext .25pt;
-  mso-border-alt:solid windowtext .25pt;mso-border-top-alt:solid windowtext 1.5pt;
-  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="305">
-                <p class="MsoNormal">
-                    <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;
-  mso-bidi-theme-font:minor-latin;color:black">@Html.DisplayFor(model => model.Defendant)</span><span style="font-size:12.0pt"><o:p></o:p></span>
-</p>
-</td>
-<td style="width:160.95pt; border-top: solid windowtext 1.5pt;border-left:
-  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.5pt;
-  mso-border-top-alt:solid windowtext 1.5pt;mso-border-left-alt:solid windowtext .25pt;
-  mso-border-top-alt:1.5pt;mso-border-left-alt:.25pt;mso-border-bottom-alt:
-  .25pt;mso-border-right-alt:1.5pt;mso-border-color-alt:windowtext;mso-border-style-alt:
-  solid;padding:0in 5.4pt 0in 5.4pt;height:.35in" width="215">
-    <p class="MsoNormal">
-        <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">
-            @if (!Model.CaseAgainst.Contains("PLEASE SELECT"))
-            {@Html.DisplayFor(model => model.CaseAgainst)}
-        </span>
-    </p>
-</td>
-</tr>
-@if (!string.IsNullOrEmpty(Model.AccountContractNo) || !string.IsNullOrEmpty(Model.ClientFileNo))
-{
-    <tr style="mso-yfti-irow:6;height:.35in">
-        <td style="width: 125.1pt; border-top: none; border-left: solid windowtext 1.5pt; border-bottom: solid windowtext 1.0pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext .25pt; mso-border-alt: solid windowtext .25pt; mso-border-left-alt: solid windowtext 1.5pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="167">
-            <p class="MsoNormal">
-                <span style="font-size: 12.0pt; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">@ViewBag.ACCOUNTDETAILS</span>
-            </p>
-        </td>
-        <td style="width:228.65pt;border-top:none;border-left:  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;  mso-border-alt:solid windowtext .25pt;padding:0in 5.4pt 0in 5.4pt;height:  .35in" width="305">
-            <p class="MsoNormal">
-                <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;  mso-bidi-theme-font:minor-latin;color:black">@Html.DisplayFor(model => model.AccountContractNo)</span>
-            </p>
-        </td>
-        <td style="width:160.95pt;border-top:none;border-left:  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.5pt;  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;  mso-border-alt:solid windowtext .25pt;mso-border-right-alt:solid windowtext 1.5pt;  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="215">
-            <p class="MsoNormal">
-                <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;  mso-bidi-theme-font:minor-latin;color:black">@Html.DisplayFor(model => model.ClientFileNo)</span><span style="font-size:12.0pt"><o:p></o:p></span>
-            </p>
-        </td>
-    </tr>
 
-}
-<tr style="mso-yfti-irow:7;height:.35in">
-    <td style="width: 125.1pt; border-top: none; border-left: solid windowtext 1.5pt; border-bottom: solid windowtext 1.0pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext .25pt; mso-border-alt: solid windowtext .25pt; mso-border-left-alt: solid windowtext 1.5pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="167">
-        <p class="MsoNormal">
-            <span style="font-size: 12.0pt; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">COURT DETAILS</span><span style="font-size:12.0pt"><o:p></o:p></span>
-        </p>
-    </td>
-    <td style="width:228.65pt;border-top:none;border-left:
-  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;
-  mso-border-alt:solid windowtext .25pt;padding:0in 5.4pt 0in 5.4pt;height:
-  .35in" width="305">
-        <p class="MsoNormal">
-            <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;
-  mso-bidi-theme-font:minor-latin;color:black">@ViewBag.CourtType<o:p></o:p></span>
-</p>
-</td>
-<td style="width:160.95pt;border-top:none;border-left:
-  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.5pt;
-  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;
-  mso-border-alt:solid windowtext .25pt;mso-border-right-alt:solid windowtext 1.5pt;
-  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="215">
-    <p class="MsoNormal">
-        <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;
-  mso-bidi-theme-font:minor-latin;color:black">@Html.DisplayFor(model => model.CourtRefNo)<o:p></o:p></span>
-</p>
-</td>
-</tr>
-@if (string.IsNullOrEmpty(Model.EnforcementStageNo) && Model.ClaimAmount == 0)
-{
-    <tr style="mso-yfti-irow:8;height:.35in">
-        <td style="width: 125.1pt; border-top: none; border-left: solid windowtext 1.5pt; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext .25pt; mso-border-alt: solid windowtext .25pt; mso-border-left-alt: solid windowtext 1.5pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="167">
-            <p class="MsoNormal">
-                <span style="font-size: 12.0pt; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">CASE DETAILS</span><span style="font-size:12.0pt"><o:p></o:p></span>
-            </p>
-        </td>
-        <td style="width:228.65pt;border-top:none;border-left:  none;border-bottom:solid windowtext 1.5pt;border-right:solid windowtext 1.0pt;  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;  mso-border-alt:solid windowtext .25pt;padding:0in 5.4pt 0in 5.4pt;height:  .35in" width="305">
-            <p class="MsoNormal">
-                <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;  mso-bidi-theme-font:minor-latin;color:black">
-                    <span>
-                        @if (!Model.CaseTypeName.Contains("PLEASE SELECT"))
-                        {@ViewBag.CaseTypeName}
-                    </span>@if (Model.CaseSubjectName != "PLEASE SELECT")
-                    {@ViewBag.CaseSubjectName}<o:p></o:p>
-                </span>
-            </p>
-        </td>
-        <td style="width:160.95pt;border-top:none;border-left:  none;border-bottom:solid windowtext 1.5pt;border-right:solid windowtext 1.5pt;  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;  mso-border-alt:solid windowtext .25pt;mso-border-right-alt:solid windowtext 1.5pt;  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="215">
-            <p class="MsoNormal">
-                <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;  mso-bidi-theme-font:minor-latin;color:black">
-                    <span>
-                        @if (!Model.ClientCaseTypeName.Contains("PLEASE SELECT"))
-                        {@ViewBag.ClientCaseTypeName}
-
-                        @if (!Model.ODBBranchName.Contains("PLEASE SELECT"))
-                        {@ViewBag.ODBBranchName}<o:p></o:p>
-                    </span><o:p></o:p>
-                </span>
-            </p>
-        </td>
-    </tr>
-
-}
-else
-{
-    <tr style="mso-yfti-irow:8;height:.35in">
-        <td style="width: 125.1pt; border-top: none; border-left: solid windowtext 1.5pt; border-bottom: solid windowtext 1.0pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext .25pt; mso-border-alt: solid windowtext .25pt; mso-border-left-alt: solid windowtext 1.5pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="167">
-            <p class="MsoNormal">
-                <span style="font-size: 12.0pt; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">CASE DETAILS</span><span style="font-size:12.0pt"><o:p></o:p></span>
-            </p>
-        </td>
-        <td style="width:228.65pt;border-top:none;border-left:
-  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;
-  mso-border-alt:solid windowtext .25pt;padding:0in 5.4pt 0in 5.4pt;height:
-  .35in" width="305">
-            <p class="MsoNormal">
-                <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;
-  mso-bidi-theme-font:minor-latin;color:black">
-                    <span>
-                        @if (!Model.CaseTypeName.Contains("PLEASE SELECT"))
-                        {@ViewBag.CaseTypeName}
-                    </span>@if (Model.CaseSubjectName != "PLEASE SELECT")
-                    {@ViewBag.CaseSubjectName}<o:p></o:p>
-                </span>
-            </p>
-        </td>
-        <td style="width:160.95pt;border-top:none;border-left:
-  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.5pt;
-  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;
-  mso-border-alt:solid windowtext .25pt;mso-border-right-alt:solid windowtext 1.5pt;
-  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="215">
-            <p class="MsoNormal">
-                <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;
-  mso-bidi-theme-font:minor-latin;color:black">
-                    <span>
-                        @if (!Model.ClientCaseTypeName.Contains("PLEASE SELECT"))
-                        {@ViewBag.ClientCaseTypeName}
-
-                        @if (!Model.ODBBranchName.Contains("PLEASE SELECT"))
-                        {@ViewBag.ODBBranchName}<o:p></o:p>
-                    </span><o:p></o:p>
-                </span>
-            </p>
-        </td>
-    </tr>
-
-}
-
-@if (!string.IsNullOrEmpty(Model.EnforcementStageNo))
-{
-    if (Model.ClaimAmount > 0)
-    {
-        <tr style="mso-yfti-irow:9;height:.35in">
-            <td style="width: 125.1pt; border-top: none; border-left: solid windowtext 1.5pt; border-bottom: solid windowtext 1.0pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext .25pt; mso-border-alt: solid windowtext .25pt; mso-border-left-alt: solid windowtext 1.5pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="167">
-                <p class="MsoNormal">
-                    <span style="font-size: 12.0pt; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">ENFORCEMENT STAGE</span><span style="font-size:12.0pt"><o:p></o:p></span>
-                </p>
-            </td>
-            <td style="width:228.65pt;border-top:none;border-left:  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;  mso-border-alt:solid windowtext .25pt;padding:0in 5.4pt 0in 5.4pt;height:  .35in" width="305">
-                <p class="MsoNormal">
-                    <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;  mso-bidi-theme-font:minor-latin;color:black">@Html.DisplayFor(model => model.EnforcementStageName)<o:p></o:p></span>
-                </p>
-            </td>
-            <td style="width:160.95pt;border-top:none;border-left:  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.5pt;  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;  mso-border-alt:solid windowtext .25pt;mso-border-right-alt:solid windowtext 1.5pt;  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="215">
-                <p class="MsoNormal">
-                    <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;  mso-bidi-theme-font:minor-latin;color:black">@Html.DisplayFor(model => model.EnforcementStageNo)<o:p></o:p></span>
-                </p>
-            </td>
-        </tr>
-
-    }
-    else
-    {
-        <tr style="mso-yfti-irow:9;height:.35in">
-            <td style="width: 125.1pt; border-top: none; border-left: solid windowtext 1.5pt; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext .25pt; mso-border-alt: solid windowtext .25pt; mso-border-left-alt: solid windowtext 1.5pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="167">
-                <p class="MsoNormal">
-                    <span style="font-size: 12.0pt; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">ENFORCEMENT STAGE</span><span style="font-size:12.0pt"><o:p></o:p></span>
-                </p>
-            </td>
-            <td style="width:228.65pt;border-top:none;border-left:  none;border-bottom:solid windowtext 1.5pt;border-right:solid windowtext 1.0pt;  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;  mso-border-alt:solid windowtext .25pt;padding:0in 5.4pt 0in 5.4pt;height:  .35in" width="305">
-                <p class="MsoNormal">
-                    <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;  mso-bidi-theme-font:minor-latin;color:black">@Html.DisplayFor(model => model.EnforcementStageName)<o:p></o:p></span>
-                </p>
-            </td>
-            <td style="width:160.95pt;border-top:none;border-left:  none;border-bottom:solid windowtext 1.5pt;border-right:solid windowtext 1.5pt;  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;  mso-border-alt:solid windowtext .25pt;mso-border-right-alt:solid windowtext 1.5pt;  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="215">
-                <p class="MsoNormal">
-                    <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;  mso-bidi-theme-font:minor-latin;color:black">@Html.DisplayFor(model => model.EnforcementStageNo)<o:p></o:p></span>
-                </p>
-            </td>
-        </tr>
-    }
-}
-@if (Model.ClaimAmount > 0)
-{
-    <tr style="mso-yfti-irow:10;height:.35in">
-        <td style="width: 125.1pt; border-top: none; border-left: solid windowtext 1.5pt; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext .25pt; mso-border-top-alt: .25pt; mso-border-left-alt: 1.5pt; mso-border-bottom-alt: 1.5pt; mso-border-right-alt: .25pt; mso-border-color-alt: windowtext; mso-border-style-alt: solid; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="167">
-            <p class="MsoNormal">
-                <span style="font-size: 12.0pt; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">CLAIM AMOUNT</span><span style="font-size:12.0pt"><o:p></o:p></span>
-            </p>
-        </td>
-        <td colspan="2" style="width:389.6pt;border-top:none;border-left:
-  none;border-bottom:solid windowtext 1.5pt;border-right:solid windowtext 1.5pt;
-  mso-border-top-alt:solid windowtext .25pt;mso-border-left-alt:solid windowtext .25pt;
-  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="519">
-            <p class="MsoNormal">
-                <span style="font-size:12.0pt;mso-bidi-font-family:Calibri;
-  mso-bidi-theme-font:minor-latin;color:black">@ViewBag.ClaimAmount&nbsp;OMR<o:p></o:p></span>
-</p>
-</td>
-</tr>
-}
-@if (Model.FeeCaclId != null)
-{
-    int count = 0;
-
-    foreach (var FeeCaclId in Model.FeeCaclId)
-    {
-        if (FeeCaclId.ShowInInvoice) { count++; }
-    }
-
-    if (count > 0)
-    {
-        <tr style="mso-yfti-irow:11;height:.35in">
-            <td colspan="3" style="width: 514.7pt; border: solid windowtext 1.5pt; border-top: none; mso-border-top-alt: solid windowtext 1.5pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="686">
-                <p align="center" class="MsoNormal">
-                    <span style="font-size:14.0pt">CALCULATION<o:p></o:p></span>
-                </p>
-            </td>
-        </tr>
-
-    }
-
-    if (count > 0)
-    {
-        foreach (var FeeCaclId in Model.FeeCaclId)
-        {
-            @Html.Partial("_CaseInvoiceFeeCalcPrint", FeeCaclId)
-
-        }
-    }
-}
-</table>
-</div>
-<div>
-    <table border="0" cellpadding="0" cellspacing="0" class="MsoTableGrid" width="686">
-        <tr style="mso-yfti-irow:13;height:.35in">
-            <td style="width: 265.15pt; border-top: none; border-left: solid windowtext 1.5pt; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext 1.5pt; mso-border-alt: solid windowtext 1.5pt; mso-border-right-alt: solid windowtext .25pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="318">
-                <p align="center" class="MsoNormal">
-                    <b>
-                        <span style="font-size:12.0pt;  mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">DESCRIPTION<o:p></o:p></span>
-                    </b>
-                </p>
-            </td>
-            <td style="width: 45pt; border-top: none; border-left: none; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext 1.5pt; mso-border-left-alt: solid windowtext .25pt; mso-border-top-alt: 1.5pt; mso-border-left-alt: .25pt; mso-border-bottom-alt: 1.5pt; mso-border-right-alt: .25pt; mso-border-color-alt: windowtext; mso-border-style-alt: solid; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="96">
-                <p align="center" class="MsoNormal">
-                    <b>
-                        <span style="font-size:12.0pt;  mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">AMOUNT<o:p></o:p></span>
-                    </b>
-                </p>
-            </td>
-            <td style="width: 42.95pt; border-top: none; border-left: none; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext 1.5pt; mso-border-left-alt: solid windowtext .25pt; mso-border-top-alt: 1.5pt; mso-border-left-alt: .25pt; mso-border-bottom-alt: 1.5pt; mso-border-right-alt: .25pt; mso-border-color-alt: windowtext; mso-border-style-alt: solid; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="57">
-                <p align="center" class="MsoNormal">
-                    <b>
-                        <span style="font-size:12.0pt;  mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">VAT<o:p></o:p></span>
-                    </b>
-                </p>
-            </td>
-            <td style="width: 59.4pt; border-top: none; border-left: none; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext 1.5pt; mso-border-left-alt: solid windowtext .25pt; mso-border-top-alt: 1.5pt; mso-border-left-alt: .25pt; mso-border-bottom-alt: 1.5pt; mso-border-right-alt: .25pt; mso-border-color-alt: windowtext; mso-border-style-alt: solid; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="79">
-                <p align="center" class="MsoNormal">
-                    <b>
-                        <span style="font-size:12.0pt;  mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">VAT AMT<o:p></o:p></span>
-                    </b>
-                </p>
-            </td>
-            <td style="width: 102.2pt; border-top: none; border-left: none; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.5pt; mso-border-top-alt: solid windowtext 1.5pt; mso-border-left-alt: solid windowtext .25pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="136">
-                <p align="center" class="MsoNormal">
-                    <b>
-                        <span style="font-size:12.0pt;  mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">TOTAL<o:p></o:p></span>
-                    </b>
-                </p>
-            </td>
-        </tr>
-
-        @if (Model.FeeId != null)
-        {
-            foreach (var FeeId in Model.FeeId)
-            {
+                TotalAmount = TotalFeeAmount + TotalVATAmount;
                 @Html.Partial("_CaseInvoiceFeePrint", FeeId)
             }
         }
-        <tr style="mso-yfti-irow:15;height:.35in">
-            <td colspan="5" style="width: 514.7pt; border: solid windowtext 1.5pt; border-top: none; mso-border-top-alt: solid windowtext 1.5pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="686">
-                <p align="center" class="MsoNormal">
-                    <span style="font-size:14.0pt">GRAND TOTAL</span>
-                </p>
-            </td>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style15" colspan="12">TOTAL</td>
+            <td class="auto-style15" colspan="4">@TotalFeeAmount.ToString("0.###")</td>
+            <td class="auto-style15" colspan="3">@TotalVATAmount.ToString("0.###")</td>
+            <td class="auto-style15" colspan="4">@TotalAmount.ToString("0.###")</td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
         </tr>
-        <tr style="mso-yfti-irow:16;height:.35in">
-            <td colspan="3" style="width:353.1pt;border-top:none;border-left:
-  solid windowtext 1.5pt;border-bottom:solid windowtext 1.5pt;border-right:
-  solid windowtext 1.0pt;mso-border-top-alt:solid windowtext 1.5pt;mso-border-alt:
-  solid windowtext 1.5pt;mso-border-right-alt:solid windowtext .25pt;
-  padding:0in 5.4pt 0in 5.4pt;height:.4in" width="471">
-                <p class="MsoNormal">
-                    <span style="font-size:14.0pt;mso-ascii-font-family:Calibri;  mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;color:black">@ViewBag.InvAmtinWords</span>
-                </p>
-            </td>
-            <td colspan="2" style="width:161.6pt;border-top:none;border-left:
-  none;border-bottom:solid windowtext 1.5pt;border-right:solid windowtext 1.5pt;
-  mso-border-top-alt:solid windowtext 1.5pt;mso-border-left-alt:solid windowtext .25pt;
-  padding:0in 5.4pt 0in 5.4pt;height:.35in" width="215">
-                <p align="center" class="MsoNormal">
-                    <b>
-                        <span style="font-size:16.0pt;
-  mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:
-  Calibri;color:black">@ViewBag.InvoiceAmount<o:p>&nbsp;OMR</span>
-    </b><span style="font-size:12.0pt;
-  mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black"><o:p></o:p></span>
-    </p>
-    </td>
-    </tr>
-    <tr style="mso-yfti-irow:17;height:.35in">
-        <td colspan="5" style="width:514.7pt;border:none;border-bottom:solid windowtext 1.5pt; mso-border-top-alt:solid windowtext 1.5pt;padding:0in 5.4pt 0in 5.4pt;  height:.35in" width="686">
-            <p align="center" class="MsoNormal">
-                <o:p>&nbsp;</o:p>
-            </p>
-        </td>
-    </tr>
-    @if (Model.ClientName.ToUpper().Trim() == "OMASCO")
-    {
-        <tr style="mso-yfti-irow:18;mso-yfti-lastrow:yes;height:.35in">
-            <td colspan="3" style="width: 353.1pt; border-top: none; border-left: solid windowtext 1.5pt; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext 1.5pt; mso-border-alt: solid windowtext 1.5pt; mso-border-right-alt: solid windowtext .25pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="471">
-                <p align="center" class="MsoNormal">
-                    <b><span style="mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">TRANSFER TO&nbsp;@Html.DisplayFor(model => model.CreditAccountName)</span></b>
-                </p>
-            </td>
-            <td colspan="2" style="width: 161.6pt; border-top: none; border-left: none; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.5pt; mso-border-top-alt: solid windowtext 1.5pt; mso-border-left-alt: solid windowtext .25pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="215">
-                <p align="center" class="MsoNormal">
-                    <b><span style="mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">TAX CARD NO. : 12397040</span></b>
-                </p>
-            </td>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style7" colspan="23">INVOICE AMOUNT</td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
         </tr>
-    }
-    else
-    {
-        <tr style="mso-yfti-irow:18;mso-yfti-lastrow:yes;height:.35in">
-            <td colspan="3" style="width: 353.1pt; border-top: none; border-left: solid windowtext 1.5pt; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.0pt; mso-border-top-alt: solid windowtext 1.5pt; mso-border-alt: solid windowtext 1.5pt; mso-border-right-alt: solid windowtext .25pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="471">
-                <p align="center" class="MsoNormal">
-                    <b><span style="mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">TRANSFER TO&nbsp;@Html.DisplayFor(model => model.CreditAccountName)</span></b>
-                </p>
-            </td>
-            <td colspan="2" style="width: 161.6pt; border-top: none; border-left: none; border-bottom: solid windowtext 1.5pt; border-right: solid windowtext 1.5pt; mso-border-top-alt: solid windowtext 1.5pt; mso-border-left-alt: solid windowtext .25pt; background: #D9D9D9; mso-background-themecolor: background1; mso-background-themeshade: 217; padding: 0in 5.4pt 0in 5.4pt; height: .35in" width="215">
-                <p align="center" class="MsoNormal">
-                    <b><span style="mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; color: black; background: #D9D9D9">VATIN : OM1100096787</span></b>
-                </p>
-            </td>
+        <tr height="24" style="mso-height-source:userset;height:18.0pt">
+            <td class="auto-style16" height="24"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style17" colspan="16" rowspan="2" width="416">@ViewBag.InvAmtinWords</td>
+            <td class="auto-style18" colspan="7" rowspan="2">@ViewBag.InvoiceAmount&nbsp;OMR</td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
         </tr>
-    }
+        <tr height="24" style="mso-height-source:userset;height:18.0pt">
+            <td class="auto-style16" height="24"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        <tr height="24" style="mso-height-source:userset;height:18.0pt">
+            <td class="auto-style16" height="24"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style19" width="26"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style20"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        @if (Model.ClientName.ToUpper().Trim() == "OMASCO")
+        {
+            <tr height="24" style="mso-height-source:userset;height:18.0pt">
+                <td class="auto-style16" height="24"></td>
+                <td class="auto-style4"></td>
+                <td class="auto-style7" colspan="16" rowspan="2">TRANSFER THE INVOICE AMOUNT TO</td>
+                <td class="auto-style7" colspan="7" rowspan="2">TAX CARD NO.</td>
+                <td class="auto-style4"></td>
+                <td class="auto-style4"></td>
+            </tr>
+            <tr height="24" style="mso-height-source:userset;height:18.0pt">
+                <td class="auto-style16" height="24"></td>
+                <td class="auto-style4"></td>
+                <td class="auto-style4"></td>
+                <td class="auto-style4"></td>
+            </tr>
+            <tr height="29" style="mso-height-source:userset;height:21.95pt">
+                <td class="auto-style3" height="29"></td>
+                <td class="auto-style4"></td>
+                <td class="auto-style21" colspan="16">@Html.DisplayFor(model => model.CreditAccountName)</td>
+                <td class="auto-style21" colspan="7">12397040</td>
+                <td class="auto-style4"></td>
+                <td class="auto-style4"></td>
+            </tr>
+        }
+        else
+        {
+            <tr height="24" style="mso-height-source:userset;height:18.0pt">
+                <td class="auto-style16" height="24"></td>
+                <td class="auto-style4"></td>
+                <td class="auto-style7" colspan="16" rowspan="2">TRANSFER THE INVOICE AMOUNT TO</td>
+                <td class="auto-style7" colspan="7" rowspan="2">VATIN</td>
+                <td class="auto-style4"></td>
+                <td class="auto-style4"></td>
+            </tr>
+            <tr height="24" style="mso-height-source:userset;height:18.0pt">
+                <td class="auto-style16" height="24"></td>
+                <td class="auto-style4"></td>
+                <td class="auto-style4"></td>
+                <td class="auto-style4"></td>
+            </tr>
 
+            <tr height="29" style="mso-height-source:userset;height:21.95pt">
+                <td class="auto-style3" height="29"></td>
+                <td class="auto-style4"></td>
+                <td class="auto-style21" colspan="16">@Html.DisplayFor(model => model.CreditAccountName)</td>
+                <td class="auto-style21" colspan="7">OM1100096787</td>
+                <td class="auto-style4"></td>
+                <td class="auto-style4"></td>
+            </tr>
+        }
+
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
+        <tr height="29" style="mso-height-source:userset;height:21.95pt">
+            <td class="auto-style3" height="29"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+            <td class="auto-style4"></td>
+        </tr>
     </table>
-</div>
-</div>
-</td>
-<td style="width: 40.7pt; padding: 0in 0in 0in 0in; height: 9.5in; mso-height-rule: exactly" valign="top" width="54">
-    <p class="MsoNormalMain" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
-
-    </p>
-</td>
-</tr>
-</table>
 </div>
 <script type="text/javascript">
     window.addEventListener("load", window.print());

@@ -8,17 +8,6 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Sidebar user (optional) -->
-        @*<div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                <div class="image">
-                    <img src="../../Content/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-                </div>
-                <div class="info">
-                    <a href="#" class="d-block">@this.User.Identity.GetUserName()</a>
-                </div>
-            </div>*@
-
-        <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item has-treeview @Html.RouteIf("Admin", "menu-open")">
@@ -77,13 +66,11 @@
                         <i class="nav-icon fas fa-file-archive text-info"></i><p>CASE  MANAGEMENT</p>
                     </a>
                 </li>
-
-                @*<li class="nav-item">
-                        <a href="@Url.Action("IndexMain", "CaseRegistration", new { id = DBNull.Value })" class="nav-link @Html.RouteIf("CaseRegistration", "active")">
-                            <i class="nav-icon fas fa-object-group text-warning"></i><p>REGISTRATION IN PROGRESS</p>
-                        </a>
-                    </li>*@
-
+                <li id="btn_Corporate" class="nav-item">
+                    <a href="@Url.Action("Index", "CourtCases", new { id = -4 })" class="nav-link clsCourtCases clsCorporate">
+                        <i class="nav-icon fas fa-building text-warning"></i><p>CORPORATE</p>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="@Url.Action("Index", "SessionRoll", new { id = DBNull.Value })" class="nav-link clsSessionRoll @Html.RouteIf("SessionRoll", "active")">
                         <i class="nav-icon fas fa-database text-info"></i><p>RUNNING CASE</p>
@@ -104,7 +91,11 @@
                         <i class="nav-icon fas fa-sitemap text-success"></i><p>AFTER JUDGMENT PROCEEDINGS</p>
                     </a>
                 </li>
-
+                <li id="btn_Translate" class="nav-item">
+                    <a href="@Url.Action("Index", "CourtCases", new { id = -5 })" class="nav-link clsCourtCases clsTranselation">
+                        <i class="nav-icon fas fa-language text-indigo"></i><p>TRANSELATION</p>
+                    </a>
+                </li>
                 <li class="nav-item has-treeview @Html.RouteIf("Finance", "menu-open")">
                     <a href="#" class="nav-link"><i class="nav-icon fas fa-desktop text-info"></i><p> FINANCE<i class="right fas fa-angle-left"></i></p></a>
                     <ul class="nav nav-treeview">
@@ -133,13 +124,6 @@
                                 <p>INVOICE NOTIFICATION</p>
                             </a>
                         </li>
-                        @*<li class="nav-item">
-                                <a href="@Url.Action("PayVoucherCreateIntra", "Finance")" class="nav-link @Html.RouteIf("PayVoucherCreateIntra", "active")">
-                                    <p>INTRA-TRANSACTIONS</p>
-                                </a>
-                            </li>*@
-
-
                     </ul>
                 </li>
                 <li class="nav-item has-treeview @Html.RouteIf("MasterSetups", "menu-open")">
@@ -186,42 +170,16 @@
                                         <p>INTRA-TRANSACTION REPORT</p>
                                     </a>
                                 </li>
-                                @*<li class="nav-item">
-                                        <a href="@Url.Action("ClientAnnualAuditReport", "Report")" class="nav-link @Html.RouteIf("ClientAnnualAuditReport", "active")">
-                                            <p>CLIENT ANNUAL AUDIT REPORT</p>
-                                        </a>
-                                    </li>*@
                                 <li class="nav-item">
                                     <a href="@Url.Action("REFPVReport", "Report")" class="nav-link @Html.RouteIf("REFPVReport", "active")">
                                         <p>REFUNDABLE PV REPORT</p>
                                     </a>
                                 </li>
-                                @*<li class="nav-item">
-                                        <a href="@Url.Action("LawreFeeReport", "Report")" class="nav-link @Html.RouteIf("LawreFeeReport", "active")">
-                                            <p>LAWRE FEE REPORT</p>
-                                        </a>
-                                    </li>*@
                                 <li class="nav-item">
                                     <a href="@Url.Action("NONREFPVReport", "Report")" class="nav-link @Html.RouteIf("NONREFPVReport", "active")">
                                         <p>NON-REFUNDABLE PV REPORT</p>
                                     </a>
                                 </li>
-                                @*<li class="nav-item">
-                                        <a href="@Url.Action("EmployeeInformation", "Report")" class="nav-link @Html.RouteIf("EmployeeInformation", "active")">
-                                            <p>EMPLOYEE INFORMATION</p>
-                                        </a>
-                                    </li>*@
-                                @*<li class="nav-item">
-                                        <a href="@Url.Action("FinancialDetails", "Report")" class="nav-link @Html.RouteIf("FinancialDetails", "active")">
-                                            <p>FINANCIAL DETAILS</p>
-                                        </a>
-                                    </li>*@
-                                @*<li class="nav-item">
-                                        <a href="@Url.Action("PVReportPivot", "Report")" class="nav-link @Html.RouteIf("PVReportPivot", "active")">
-                                            <p>FINANCIAL REPORT</p>
-                                        </a>
-                                    </li>*@
-
                             }
                             else
                             {
@@ -232,10 +190,8 @@
                                 </li>
 
                             }
-
                         </ul>
                     </li>
-
                 }
             </ul>
         </nav>

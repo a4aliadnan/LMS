@@ -1,6 +1,23 @@
 ﻿@{
     ViewBag.Title = "Y & S Associates - Enforcement";
 }
+<style>
+    .EnfGovernorate {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .EnfGovernorate:hover {
+            background-color: #002060 !important;
+            color: white !important;
+        }
+
+    .EnfGovernorateActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+</style>
 <script>
         
     var _parameters = {};
@@ -71,7 +88,7 @@
 
     <div style="padding-bottom:0px;padding-top:10px;" class="row">
         <div class="col">
-            <button type="button" id="enfbtn_enfGeneral" style="font-size: 1rem !important;" class="btn btn-block enfGeneral @ViewBag.enfGeneralActive btn-lg enfNavButton">ملفات التنفيذ<br />ENFORCEMENT FILES</button>
+            <button type="button" id="enfbtn_EnfGeneral" style="font-size: 1rem !important;" class="btn btn-block enfGeneral @ViewBag.enfGeneralActive btn-lg enfNavButton">ملفات التنفيذ<br />ENFORCEMENT FILES</button>
         </div>
         <div class="col">
             <button type="button" id="enfbtn_OnlineReg" style="font-size: 1rem !important;" class="btn btn-block OnlineReg @ViewBag.OnlineRegActive btn-lg enfNavButton">التسجيل الإلكتروني<br />ONLINE REG.</button>
@@ -111,9 +128,9 @@
     </div>
 
     <div style="padding-bottom:0px;padding-top:10px;" class="row">
-        <div class="col">
+        @*<div class="col">
             <button type="button" id="enfbtn_SealOfJudgement" style="font-size: 1rem !important;" class="btn btn-block SealOfJudgement @ViewBag.SealOfJudgementActive btn-lg enfNavButton">ختم الأحكام<br />SEAL OF JUDGMENT</button>
-        </div>
+        </div>*@
         <div class="col">
             <button type="button" id="enfbtn_FileReview" style="font-size: 1rem !important;" class="btn btn-block FileReview @ViewBag.FileReviewActive btn-lg enfNavButton">دراسة الملف<br />FILE REVIEW</button>
         </div>
@@ -122,6 +139,9 @@
         </div>
         <div class="col">
             <button type="button" id="enfbtn_ContactResult" style="font-size: 1rem !important;" class="btn btn-block ContactResult @ViewBag.ContactResultActive btn-lg enfNavButton">نتائج الاتصالات<br />CONTACT'S RESULT</button>
+        </div>
+        <div class="col">
+            @*<button type="button" id="enfbtn_EnfGovernorate" style="font-size: 1rem !important;" class="btn btn-block EnfGovernorate @ViewBag.EnfGovernorateActive btn-lg enfNavButton">المحافظة<br />GOVERNORATE</button>*@
         </div>
         <div class="col">
         </div>

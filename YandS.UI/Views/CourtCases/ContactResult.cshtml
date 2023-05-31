@@ -130,24 +130,8 @@
                 }
             ],
             "drawCallback": function (settings) {
-                //alert('DataTables has redrawn the table');
-
                 $("#ENF_ModificationContainer").empty();
             },
-            //"createdRow": function (row, data, dataIndex) {
-            //    var rowColor = "";
-
-            //    if (data.DaysCounter >= 20) {
-            //        rowColor = "tblFirstCondition";
-            //    }
-            //    else {
-            //        if (data.DaysCounter >= 10 && data.DaysCounter < 20) {
-            //            rowColor = "tblSecondCondition";
-            //        }
-            //    }
-
-            //    $(row).addClass(rowColor);
-            //},
             initComplete: function () {
                 console.log("DataTable Initiated !!");
                 /*$('.btn').bstooltip();
@@ -266,33 +250,30 @@
 <div style="padding-bottom:0px;padding-top:10px;" class="row ContactResultActive">
     <div class="col-sm-12 text-center"><h3><span id="TTL"></span></h3></div>
 </div>
-<div class="card-body">
-    <div class="row">
-        <div class="col-sm-2">
-            <div class="form-group">
-                <label for="ContactDateFrom">FROM</label>
-                @Html.EditorFor(model => model.ContactDateFrom, new { htmlAttributes = new { @class = "form-control datepicker" } })
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
-                <label for="ContactPrintDateTo">TO</label>
-                @Html.EditorFor(model => model.ContactDateTo, new { htmlAttributes = new { @class = "form-control datepicker" } })
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="form-group">
-                <label for="CountLocationId">CALLER NAME اسم المتصل</label>
-                @Html.DropDownList("DEF_CallerName", null, htmlAttributes: new { @class = "form-control select2bs4" })
-            </div>
-        </div>
-        <div class="col-sm-3" style="padding-top:30px;">
-            <button id="btnPrintResult" type="button" class="btn btn-success"><i class="fas fa-file"></i> SHOW</button>
+<div style="padding-bottom:0px;padding-top:10px;" class="row">
+    <div class="col-sm-2">
+        <div class="form-group">
+            <label for="ContactDateFrom">FROM</label>
+            @Html.EditorFor(model => model.ContactDateFrom, new { htmlAttributes = new { @class = "form-control datepicker" } })
         </div>
     </div>
+    <div class="col-sm-2">
+        <div class="form-group">
+            <label for="ContactPrintDateTo">TO</label>
+            @Html.EditorFor(model => model.ContactDateTo, new { htmlAttributes = new { @class = "form-control datepicker" } })
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="form-group">
+            <label for="CountLocationId">CALLER NAME اسم المتصل</label>
+            @Html.DropDownList("DEF_CallerName", null, htmlAttributes: new { @class = "form-control select2bs4" })
+        </div>
+    </div>
+    <div class="col-sm-3" style="padding-top:30px;">
+        <button id="btnPrintResult" type="button" class="btn btn-success"><i class="fas fa-file"></i> SHOW</button>
+    </div>
+
 </div>
-<div class="card-body">
-    <div class="row">
         <div style="padding-bottom:0px;padding-top:10px;" class="col-sm-12">
 
             <table id="HtmlTable" class="table table-bordered table-striped dataTable dt-responsive nowrap" style="width:100%">
@@ -314,5 +295,3 @@
                 <tbody></tbody>
             </table>
         </div>
-    </div>
-</div>

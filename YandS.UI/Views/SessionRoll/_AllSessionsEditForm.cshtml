@@ -40,41 +40,37 @@
                 })
             })
         };
-        console.log("function LoadFileStatusPV(" + FileStatusId + ")");
-        console.log($('#FileStatus').val());
         _parameters = "";
         _PartialViewName = "";
         PartialContainer = $("#FileStatusDetail");
         var RetainActivebtnName = ActiveButton;
 
         $('.clsJudIssued').removeClass("AppHidden");
+        $('#DIV_CommonTask').removeClass("AppHidden");
 
         switch (FileStatusId) {
-            case "0":
+            case OfficeFileStatus.PleaseSelect:
                 $("#FileStatusDetail").empty();
                 ActiveButton = RetainActivebtnName;
                 return false;
                 break;
-            case "1":
+            case OfficeFileStatus.RunningCase:
+            case OfficeFileStatus.Dispute:
+            case OfficeFileStatus.MeetJudge:
+            case OfficeFileStatus.AuctionSession:
                 _PartialViewName = "_SessionRunningDIV";
                 ActiveButton = "btn_AllSessions";
-                //$("#" + ActiveButton).trigger("click");
                 break;
-            case "3":
+            case OfficeFileStatus.ToKnowSessionDate:
+            case OfficeFileStatus.DifferentPanel:
                 _PartialViewName = "_SessionOnHoldDIV";
                 ActiveButton = "btn_SessionOnHold";
-                //$("#" + ActiveButton).trigger("click");
                 break;
-            case "2":
+            case OfficeFileStatus.JudgIssued:
                 _PartialViewName = "_SessionJudgementDIV";
                 ActiveButton = "btn_SessionJudgement";
                 $('.clsJudIssued').removeClass("AppHidden").addClass("AppHidden");
-                //$("#" + ActiveButton).trigger("click");
-                break;
-            case "4":
-                _PartialViewName = "_SessionTemporaryDIV";
-                ActiveButton = "btn_AllSessions";
-                //$("#" + ActiveButton).trigger("click");
+                $('#DIV_CommonTask').removeClass("AppHidden").addClass("AppHidden");
                 break;
         }
 
@@ -87,41 +83,8 @@
         _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
 
         GetTab(PartialContainer, GetSessionRollURL, _parameters);
-
-
     }
 
-    function LoadPrintRequirementForm(PartialViewName) {
-        var _PartialViewName = PartialViewName;
-        P_CaseId = parseInt($("#CaseId").val());
-        P_SessionRollId = parseInt($("#SessionRollId").val());
-        var _Mode = "C";
-
-        var PartialContainer = $("#div_PrintRequirementForm");
-        PartialContainer.empty();
-
-        _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
-
-
-        $.ajax({
-            url: GetSessionRollURL,
-            type: "POST",
-            data: _parameters,
-            success: function (data, textStatus, jqXHR) {
-                PartialContainer.html(data);
-                //window.clipboardData.setData('text', '');
-                Swal.fire({
-                    type: 'success',
-                    title: '',
-                    width: 700,
-                    html: $("#ContentDIV").html()
-                }).then(function () {
-                    CopyToClipboard('swal2-content');
-                    console.log("Table Copied");
-                });
-            }
-        });
-    }
 
     function onPreSubmit(item) {
         console.log($("#HFCaseId").val());
@@ -197,7 +160,7 @@
         }
         
 
-        if ($("#SessionFileStatus").val() == "0") {
+        if ($("#SessionFileStatus").val() == OfficeFileStatus.PleaseSelect) {
             ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT FILE STATUS" : ValidationMessage + "<br />" + "PLEASE SELECT FILE STATUS";
             NotValid = true;
         }
@@ -208,7 +171,7 @@
     }
 
     function ValidateSessionResult() {
-        if (parseInt($("#SessionFileStatus").val()) == 3) {
+        if ($("#SessionFileStatus").val() == OfficeFileStatus.ToKnowSessionDate) {
             if ($("#SessionOnHoldUntill").val() == "") {
                 ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER SR HOLD UNTILL DATE" : ValidationMessage + "<br />" + "PLEASE ENTER SR HOLD UNTILL DATE";
                 NotValid = true;
@@ -221,7 +184,7 @@
 
 
         }
-        else if (parseInt($("#SessionFileStatus").val()) == 1) {
+        else if ($("#SessionFileStatus").val() == OfficeFileStatus.RunningCase) {
             if ($("#NextHearingDate").val() == "") {
                 ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER NEXT HEARING DATE" : ValidationMessage + "<br />" + "PLEASE ENTER NEXT HEARING DATE";
                 NotValid = true;
@@ -234,7 +197,7 @@
                 }
             }
         }
-        else if (parseInt($("#SessionFileStatus").val()) == 2) {
+        else if ($("#SessionFileStatus").val() == OfficeFileStatus.JudgIssued) {
             if ($("#JudgementLevel").val() == "0") {
                 ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT JUDGMENT" : ValidationMessage + "<br />" + "PLEASE SELECT JUDGMENT";
                 NotValid = true;
@@ -358,6 +321,64 @@
         return NotValid;
 
     }
+    function ValidateMoneyTransfer() {
+        if ($("#MoneyTrRequestDate").val() == "") {
+            ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER REQUEST DATE" : ValidationMessage + "<br />" + "PLEASE ENTER REQUEST DATE";
+            NotValid = true;
+        }
+        else {
+
+            var today = new Date();
+
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = dd + '/' + mm + '/' + yyyy;
+
+            console.log(today);
+            console.log($("#MoneyTrRequestDate").val());
+
+            if (process($("#MoneyTrRequestDate").val()) > process(today)) {
+                ValidationMessage = ValidationMessage == "" ? "REQUEST DATE CANNOT BE GREATER THEN CURRENT DATE" : ValidationMessage + "<br />" + "REQUEST DATE CANNOT BE GREATER THEN CURRENT DATE";
+                NotValid = true;
+            }
+        }
+
+        if ($("#TransferDate").val() == "") {
+            //ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER TRANSFER DATE" : ValidationMessage + "<br />" + "PLEASE ENTER TRANSFER DATE";
+            //NotValid = true;
+        }
+        else {
+
+            var today = new Date();
+
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = dd + '/' + mm + '/' + yyyy;
+
+            console.log(today);
+            console.log($("#TransferDate").val());
+
+            if (process($("#TransferDate").val()) > process(today)) {
+                ValidationMessage = ValidationMessage == "" ? "TRANSFER DATE CANNOT BE GREATER THEN CURRENT DATE" : ValidationMessage + "<br />" + "TRANSFER DATE CANNOT BE GREATER THEN CURRENT DATE";
+                NotValid = true;
+            }
+
+            if ($('#TransferAmount').val() == "") {
+                ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER VALID TRANSFER AMOUNT" : ValidationMessage + "<br />" + "PLEASE ENTER VALID TRANSFER AMOUNT";
+                NotValid = true;
+            }
+            else if (parseFloat($('#TransferAmount').val()) <= 0) {
+                ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER VALID TRANSFER AMOUNT" : ValidationMessage + "<br />" + "PLEASE ENTER VALID TRANSFER AMOUNT";
+                NotValid = true;
+            }
+        }
+
+        return NotValid;
+    }
 
 
     function ShowSessionNoteBanner() {
@@ -373,6 +394,8 @@
     }
 
     $(document).ready(function () {
+        console.log("All Session Edit Form");
+
         $('.datepicker').datepicker({
             format: "dd/mm/yyyy",
             todayBtn: "linked",
@@ -401,7 +424,8 @@
             $(".AddNewMaster").prop("disabled", true);
         }
 
-        LoadFileStatusPV($('#SessionFileStatus').val());
+        if ($('#SessionFileStatus').val() != undefined)
+            LoadFileStatusPV($('#SessionFileStatus').val());
 
         $('#SessionFileStatus').on("change", function () {
             LoadFileStatusPV($('#SessionFileStatus').val());
@@ -492,7 +516,7 @@
                 }
             }
 
-            if (!$("#CourtFollowDIV").hasClass("AppHidden")) {
+            if ($('#CourtFollow').val() == "1") {
                 NotValid = ValidateCourtFollow();
 
                 if (NotValid) {
@@ -539,6 +563,19 @@
                         type: "error",
                         title: 'ERROR...',
                         html: "*** DEFENDANT CONTACT AND ADDRESS عنوان الخصم ووكيله القانوني ***<br />" + ValidationMessage
+                    });
+                    return false;
+                }
+            }
+
+            if (!$("#CourtTransferDIV").hasClass("AppHidden")) {
+                NotValid = ValidateMoneyTransfer();
+
+                if (NotValid) {
+                    Swal.fire({
+                        type: "error",
+                        title: 'ERROR...',
+                        html: "*** TO FOLLOW  MONEY TRANSFER متابعة تحويل أموال من المحكمة ***<br />" + ValidationMessage
                     });
                     return false;
                 }
@@ -604,6 +641,9 @@
         
         $('#DIV_FORM_HIDDEN_ITEMS').removeClass("AppHidden").addClass("AppHidden");
 
+        console.log("ShowSessionNotes");
+        console.log($('#SessionRollId').val());
+        ShowSessionNotes($('#SessionRollId').val())
     });
 </script>
 @using (Html.BeginForm("Index", "SessionRoll", FormMethod.Post, new { id = "frm_SessionRollEditForm", enctype = "multipart/form-data", onsubmit = "return onPreSubmit(this);" }))
@@ -641,9 +681,6 @@
         <input type="hidden" id="hidUpdatedOn" value="@ViewBag.UpdatedOn" />
 
     </div>
-
-    <div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>
-
     <div class="card">
         <div class="card-body">
             @Html.Partial("_OfficeFileInfoBanner")

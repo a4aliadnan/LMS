@@ -14,14 +14,4 @@
 
     ViewBag.FeeAmountPct = Model.FeeAmountPct.ToString("0.###");
 }
-
-<tr style="mso-yfti-irow:12;height:.35in">
-    <td colspan="3" style="width:514.7pt;border:solid windowtext 1.5pt;
-  border-top:none;mso-border-top-alt:solid windowtext 1.5pt;padding:0in 5.4pt 0in 5.4pt;
-  height:.35in" width="686">
-        <p align="center" class="MsoNormal">
-            <span style="font-size:12.0pt;
-  mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;color:black">@ViewBag.ClaimAmountPct&nbsp;%&nbsp;of&nbsp;@ClaimAmount&nbsp;=&nbsp;@ViewBag.ClaimAmountCalculated&nbsp;and&nbsp;@ViewBag.FeeAmountPct&nbsp;%&nbsp;of&nbsp;@ViewBag.ClaimAmountCalculated&nbsp;=&nbsp;@ViewBag.FeeAmountCalculated</span>
-</p>
-</td>
-</tr>
+<tr><td style="text-align:center !important">@ViewBag.ClaimAmountPct&nbsp;%&nbsp;of&nbsp;@ClaimAmount&nbsp;=&nbsp;@ViewBag.ClaimAmountCalculated&nbsp;and&nbsp;@ViewBag.FeeAmountPct&nbsp;%&nbsp;of&nbsp;@ViewBag.ClaimAmountCalculated&nbsp;=&nbsp;@ViewBag.FeeAmountCalculated</td></tr>

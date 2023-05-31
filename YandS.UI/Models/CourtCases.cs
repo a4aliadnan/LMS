@@ -168,6 +168,7 @@
         public string Subject { get; set; }
         [Display(Name = "NOTES")]
         public string ClosingNotes { get; set; }
+        public DateTime? ClosingNotesDate { get; set; }
         public string SessionRemarks { get; set; }
         [Column(TypeName = "datetime2")]
         public DateTime? CurrentHearingDate { get; set; }
@@ -227,6 +228,16 @@
         public string CourtFollowRequirement { get; set; }
         [StringLength(1)]
         public string StopEnfRequest { get; set; }
+        [StringLength(10)]
+        public string OfficeFileStatus { get; set; }
+        [Column(TypeName = "datetime2")]
+        public DateTime? UpdateBoxDate { get; set; }
+        public int? UpdateBoxBy { get; set; }
+        public decimal? CorporateFee { get; set; }
+        [Column(TypeName = "nvarchar(max)")]
+        public string CorporateWorkDetail { get; set; }
+        [StringLength(1)]
+        public string Translation { get; set; }
 
         public ICollection<CourtCasesDetail> DetailId { get; set; }
         public ICollection<CourtCasesEnforcement> EnforcementId { get; set; }
@@ -235,6 +246,7 @@
         public ICollection<PayVoucher> Voucher_No { get; set; }
         public ICollection<CaseRegistration> CaseRegistrationId { get; set; }
         public ICollection<SessionsRoll> SessionRollId { get; set; }
+        public ICollection<DecisionTranslation> TranslationId { get; set; }
 
         public CourtCases()
         {
@@ -471,6 +483,7 @@
         public string FormPrintWorkRequired { get; set; }
         [Display(Name = "FILE STATUS حالة الملف")]
         public string FileStatus { get; set; }
+        public string OfficeFileStatus { get; set; }
 
         #endregion
 
@@ -601,6 +614,8 @@
         public string SupremePlaintNo { get; set; }
         [Display(Name = "SUPREME PLAINT COURT")]
         public string SupremePlaintCourt { get; set; }
+        [Display(Name = "DISPUTE LEVEL مرحلة منازعة التنفيذ")]
+        public string CurrentDisputeLevelandType { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? MoneyTrRequestDate { get; set; }
@@ -630,7 +645,6 @@
         public DateTime? DEF_VisitDate { get; set; }
 
 
-
         #endregion
 
         #region CLOSING
@@ -656,8 +670,32 @@
         public DateTime? ContactDateTo { get; set; }
         public string CourtFollowRequirement { get; set; }
         public string UpdatedOn { get; set; }
-        
+        public string UpdatedBy { get; set; }
+        public string UpdateBoxDate { get; set; }
+        public int? UpdateBoxBy { get; set; }
+        public string UpdateBoxByName { get; set; }
+        public string CurrentCaseLevel { get; set; }
+        public string CaseType { get; set; }
+        public string CountLocationName { get; set; }
+        public bool ShowFollowup { get; set; }
+        public bool ShowSuspend { get; set; }
+        public string Update_Follow { get; set; }
+        public string Update_Suspend { get; set; }
+        public string FollowerId { get; set; }
+        public string SuspendedFollowerId { get; set; }
 
+        public DateTime? LastDate { get; set; }
+        public string WorkRequired { get; set; }
+        public string SessionNotes { get; set; }
+        public DateTime? SuspendedLastDate { get; set; }
+        public string SuspendedWorkRequired { get; set; }
+        public string SuspendedSessionNotes { get; set; }
+        public string SessionNote_Remark { get; set; }
+        public string Session_LawyerId { get; set; }
+        public string CourtFollow_LawyerId { get; set; }
+        public string UpdatePV_Type { get; set; }
+        public string SavePV_Data { get; set; }
+        public int SessionRollId { get; set; }
         #region MONEY TRANSFER
         public int DefendentTransferId { get; set; }
         public string DataFor { get; set; }
@@ -668,12 +706,20 @@
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? MoneyTrCompleteDate { get; set; }
         #endregion
-
+        [DisplayFormat(DataFormatString = "{0:###0.000#}", ApplyFormatInEditMode = true)]
+        [Display(Name = "CORPORATE FEE")]
+        public decimal? CorporateFee { get; set; }
+        [Display(Name = "DETAILS")]
+        public string CorporateWorkDetail { get; set; }
+        public string Translation { get; set; }
+        public PayVoucherVM PVDetail { get; set; }
         public ToBeRegisterVM()
         {
             DetailId = 0;
             ApealByWho = "0";
             EnforcementlevelId = "0";
+            CaseType = "0";
+            LawyerId = "0";
             GovernorateId = "0";
             AgainstInsurance = "0";
             ActionDate = DateTime.UtcNow.AddHours(4);
@@ -757,6 +803,33 @@
         public string FollowerId { get; set; }
         public string SuspendedWorkRequired { get; set; }
         public string SuspendedSessionNotes { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? SuspendedLastDate { get; set; }
+        public string SuspendedFollowerId { get; set; }
+        public string SessionNote_Remark { get; set; }
+        #endregion
+
+        #region MONEY TRANSFER
+
+        public int DefendentTransferId { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? MoneyTrRequestDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? TransferDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:###0.000#}", ApplyFormatInEditMode = true)]
+        public decimal? TransferAmount { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? MoneyTrCompleteDate { get; set; }
+        public string DataFor { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? DEF_DateOfContact { get; set; }
+        public string DEF_MobileNo { get; set; }
+        public string DEF_Corresponding { get; set; }
+        public string DEF_CallerName { get; set; }
+        public string DEF_LawyerId { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? DEF_VisitDate { get; set; }
 
         #endregion
         public string SessionRollDefendentName { get; set; }
@@ -774,11 +847,11 @@
         [Display(Name = "CASE STATUS")]
         public string StatusCode { get; set; } //Dropdown Case Status
 
-        [Display(Name = "FINAL CLOSURE DATE")]
+        [Display(Name = "CLOSURE DATE تاريخ الغلق")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? StatusDate { get; set; }
 
-        [Display(Name = "REASON")]
+        [Display(Name = "FILE STATUS")]
         public string ReasonCode { get; set; } //Dropdown Case Status
 
         [Display(Name = "CURRENT CASE LEVEL")]
@@ -798,13 +871,17 @@
 
         [Display(Name = "CLOSURE NOTES")]
         public string ClosingNotes { get; set; }
-
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name = "NOTES DATE تاريخ الملاحظة")]
+        public DateTime? ClosingNotesDate { get; set; }
         public string ReOpenEnforcement { get; set; } //DROP DOWN
 
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "FINANCE FILE CLOSURE DATE")]
         public DateTime? FinanceFileClosureDate { get; set; }
-
+        [DataType(DataType.Password)]
+        [Display(Name = "PASS كلمة المرور")]
+        public string Password { get; set; }
         #region BASIC INFO
         public string ClientClassificationCode { get; set; } // FOR CONDITION PURPOSE not Entry
         public string ClientCode { get; set; } // FOR CONDITION PURPOSE not Entry
@@ -868,6 +945,7 @@
         [Display(Name = "NOTES")]
         public string ClosingNotes { get; set; }
         public string TransportationFee { get; set; }
+        public string Translation { get; set; }
     }
     public class CourtStatusVM
     {

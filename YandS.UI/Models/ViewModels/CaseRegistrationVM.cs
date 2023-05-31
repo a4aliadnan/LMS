@@ -80,27 +80,42 @@ namespace YandS.UI.Models
         #region PAYMENT VOUCHER VARIABLES
 
         public int? Voucher_No { get; set; }
+        [Display(Name = "PAYMENT TYPE")]
+        public string Payment_Type { get; set; }
+        [Display(Name = "PAYMENT MODE")]
         public string Payment_Mode { get; set; } //3 BANK TRANSFER
+        [Display(Name = "VOUCHER TYPE")]
         public string VoucherType { get; set; } //1 REFUNDABLE
+        [Display(Name = "Office File No")]
+        public string OfficeFileNoSessionRollPV { get; set; }
         public string CourtType { get; set; } // CASE LEVEL
+        public string LocationCode { get; set; }
+        public string Status { get; set; }
+        [Display(Name = "PAY TYPE")]
         public string Payment_Head { get; set; } // PAY FOR 
         public string Remarks { get; set; } // REMARKS
-
-        [Display(Name = "PAY TO")]
-        public string Payment_To { get; set; }
-
+        public string PV_No { get; set; }// Format : Muscat-0001-2020 (Genrate after approval)
+        public string VoucherStatus { get; set; }
+        public int Credit_Account { get; set; }
+        public string TransTypeCode { get; set; }
+        public string TransReasonCode { get; set; }
+        public string CaseInvoices { get; set; }
+        public string SpecialNotification { get; set; }
+        public string PDCRefNo { get; set; }
+        public DateTime? FutureChequeDate { get; set; }
+        [Display(Name = "REFERENCE NO. رقم الدعوى")]
+        public string BillNumber { get; set; }
         [DisplayFormat(DataFormatString = "{0:#.###}", ApplyFormatInEditMode = true)]
-        [Display(Name = "AMOUNT")]
+        [Display(Name = "AMOUNT المبلغ")]
         public decimal Amount { get; set; }
+        [Display(Name = "PAY TO يحول المبلغ إلى")]
+        public string Payment_To { get; set; }
         [DisplayFormat(DataFormatString = "{0:#.###}", ApplyFormatInEditMode = true)]
         [Display(Name = "VAT AMOUNT")]
         public decimal? VatAmount { get; set; }
         [DisplayFormat(DataFormatString = "{0:###0.000#}", ApplyFormatInEditMode = true)]
         [Display(Name = "TOTAL AMOUNT")]
         public decimal? TotalAmount { get; set; }
-
-        [Display(Name = "REFERENCE NO.")]
-        public string BillNumber { get; set; }
         [Display(Name = "PAY FROM")]
         public int Debit_Account { get; set; }
         [Display(Name = "CHEQUE NUMBER / TRANSFER")]
@@ -224,6 +239,7 @@ namespace YandS.UI.Models
         public string GovernorateId { get; set; }
         [Display(Name = "COURT FOLLOW مراجعة المحكمة")]
         public string CourtFollow { get; set; }
+        public string CourtFollow_LawyerId { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = " COMMISSIONING DATE تاريخ التكليف")]
         public DateTime? CommissioningDate { get; set; }
@@ -241,6 +257,17 @@ namespace YandS.UI.Models
         public string IsShowWithLawyer { get; set; }
 
         #region SESSION DETAIL
+        public string UpdatePV_Type { get; set; }
+        public string CurrentCaseLevel { get; set; }
+        public string CountLocationName { get; set; }
+        public string Update_Follow { get; set; }
+        public string Update_Suspend { get; set; }
+        public string Update_CourtFollow { get; set; }
+        public string Update_CourtTransfer { get; set; }
+        public string Update_Addreass { get; set; }
+        public string Update_PV { get; set; }
+        [Display(Name = "ANNOUNCEMENT TYPE طريقة الإعلان")]
+        public string AnnouncementTypeId { get; set; }
 
         public string Session_CaseType { get; set; }
         public string Session_LawyerId { get; set; }
@@ -249,6 +276,7 @@ namespace YandS.UI.Models
 
         #endregion
 
+        public string UpdatedBy { get; set; }
 
 
         public CaseRegistrationVM()

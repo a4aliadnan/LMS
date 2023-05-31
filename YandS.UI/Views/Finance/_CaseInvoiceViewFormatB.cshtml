@@ -111,7 +111,7 @@
                 <div class="MsoNormalMain" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
                     <div>
                         <table border="0" cellpadding="0" cellspacing="0" class="MsoTableGrid" style="mso-table-layout-alt:fixed;border:none;mso-yfti-tbllook:1184;mso-padding-alt:0in 5.4pt 0in 5.4pt;mso-border-insideh: none;mso-border-insidev:none" width="686">
-                            @Html.Partial("_CaseInvoiceClientAddress", Model)
+                            @Html.Partial("_CaseInvoiceClientAddressFormatB", Model)
                             <tr style="mso-yfti-irow:1">
                                 <td colspan="5" style="width:514.7pt;padding:0in 5.4pt 0in 5.4pt;border:none !important " valign="top" width="686">
                                     <p class="MsoNormal" style="margin-bottom:0in;margin-bottom:.0001pt;line-height:  normal">
@@ -421,7 +421,7 @@ else
         {
             foreach (var FeeId in Model.FeeId)
             {
-                @Html.Partial("_CaseInvoiceFeePrint", FeeId)
+                @Html.Partial("_CaseInvoiceFeePrintFormatB", FeeId)
             }
         }
         <tr style="mso-yfti-irow:15;height:.35in">

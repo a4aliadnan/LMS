@@ -107,7 +107,7 @@
         public string SessionOnHold { get; set; }
         [Column(TypeName = "datetime2")]
         public DateTime? SessionOnHoldUntill { get; set; }
-        [StringLength(2)]
+        [StringLength(10)]
         public string SessionFileStatus { get; set; }
         public bool FinalJudgement { get; set; }
         public int? CaseRegistrationId { get; set; }

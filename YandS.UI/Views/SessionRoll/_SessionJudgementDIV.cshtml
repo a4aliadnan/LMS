@@ -1,15 +1,23 @@
 ﻿<script type="text/javascript">
-
+    function ShowInvesmentBanner() {
+        if ($('#DepartmentType').val() == "2")
+            $("#DIV_INVESTMENT_BANNER").removeClass("AppHidden");
+        else
+            $("#DIV_INVESTMENT_BANNER").removeClass("AppHidden").addClass("AppHidden");
+    }
     function LoadJudgementLevelPV(JudgementLevelId) {
-        console.log("function LoadJudgementLevelPV(" + JudgementLevelId + ")");
-        console.log($('#JudgementLevel').val());
         _parameters = "";
         _PartialViewName = "";
         PartialContainer = $("#DIV_JudgementLevel");
+        $("#DIV_JudgementLevel").empty();
+        $("#DIV_JudgementNotFav").empty();
+        $('#DIV_CommonTask').removeClass("AppHidden");
+        $("#DIV_UPDATE").removeClass("AppHidden");
 
         switch (JudgementLevelId) {
             case "0":
-                $("#DIV_JudgementLevel").empty();
+                $('#DIV_CommonTask').removeClass("AppHidden").addClass("AppHidden");
+                $("#DIV_UPDATE").removeClass("AppHidden").addClass("AppHidden");
                 return false;
                 break;
             case "1":
@@ -39,7 +47,6 @@
         ShowSessionNoteBanner();
         ShowDIV();
     }
-
     function LoadCaseRegistrationPV(ActionLevel) {
 
         console.log("function LoadCaseRegistrationPV(" + ActionLevel + ")");
@@ -70,24 +77,24 @@
 
         GetTab(PartialContainer, GetSessionRollURL, _parameters);
     }
-
     function processFileStatusChange(FileStatusId) {
         console.log("function processFileStatusChange(" + FileStatusId + ")");
         $("#ActionDate").datepicker("setDate", new Date());
         $("#DIV_ACTION_DATE").removeClass("AppHidden");
+        $("#DIV_UPDATE").removeClass("AppHidden");
         $("#DIV_OnHoldReason").removeClass("AppHidden").addClass("AppHidden");
         switch (FileStatusId) {
             case "0":
                 $("#DIV_ACTION_DATE").removeClass("AppHidden").addClass("AppHidden");
+                $("#DIV_UPDATE").removeClass("AppHidden").addClass("AppHidden");
                 break;
             case "4":
                 $("#DIV_OnHoldReason").removeClass("AppHidden");
                 break;
         }
 
-
+        $('textarea').autoResize();
     }
-
 
     $(document).ready(function () {
         $('.datepicker').datepicker({
@@ -98,14 +105,6 @@
             orientation: "bottom auto"
         });
         $('.select2bs4').select2({ theme: 'bootstrap4' });
-
-        if (parseInt($('#JudgementLevel').val()) > 0)
-            LoadJudgementLevelPV($('#JudgementLevel').val());
-
-        $('#JudgementLevel').on("change", function () {
-            LoadJudgementLevelPV($('#JudgementLevel').val());
-        });
-
         var DIV_TO_HIDE = [
             "#txtRequirement",
             "#txtFirstEmailDate",
@@ -117,6 +116,14 @@
         for (i = 0; i < DIV_TO_HIDE.length; ++i) {
             $(DIV_TO_HIDE[i]).removeClass("AppHidden").addClass("AppHidden");
         }
+        if (parseInt($('#JudgementLevel').val()) > 0)
+            LoadJudgementLevelPV($('#JudgementLevel').val());
+
+        $('#JudgementLevel').on("change", function () {
+            LoadJudgementLevelPV($('#JudgementLevel').val());
+        });
+
+        
         $("#hidNextHearingDate").val($("#NextHearingDate").val());
         $("#hidCurrentHearingDate").val($("#CurrentHearingDate").val());
 
@@ -188,7 +195,7 @@
     <div id="DIV_JudgementLevel"></div>
     <div id="DIV_JudgementNotFav"></div>
 </div>
-<div id="DIV_UPDATE">
+<div id="DIV_UPDATE" class="updatediv"> 
     <div class="col-sm-12">
         <div style="padding-bottom:0px !important;padding-top:10px;" class="UpdateBoxBar">
             <div class="row">

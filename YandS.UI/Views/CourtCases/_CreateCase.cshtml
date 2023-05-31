@@ -314,13 +314,13 @@
         }
 
         if (CaseTypeCode == "6") {
-
-            $("#ClassificationText").text("CONSULTANCY");
+            ClientClassificationCode = "7";
+            $("#ClassificationText").text("CORPORATE");
         }
 
 
         var PartialContainer = $("#PartialViewContainerCC");
-        _parameters = { ClassificationId: $('#ClientClassificationCode').val(), Mode: "C" };
+        _parameters = { ClassificationId: ClientClassificationCode, Mode: "C" };
 
         GetTab(PartialContainer, GetClientClassificationURL, _parameters);
     }
@@ -333,7 +333,7 @@
             $("#PartialViewContainerBoxCC").removeClass("AppHidden").addClass("AppHidden");
             $("#div_CurrentCaseLevel").removeClass("AppHidden").addClass("AppHidden");
             $("#div_ArabicData").removeClass("AppHidden").addClass("AppHidden");
-            $("#ClassificationText").text("CONSULTANCY");
+            $("#ClassificationText").text("CORPORATE");
             _parameters = { ClassificationId: "7", Mode: "C" };
             GetTab(PartialContainer, GetClientClassificationURL, _parameters);
         }
@@ -436,35 +436,11 @@
 
         $('#AgainstCode').on("change", function () {
             ProcessAgainstCodeChange();
-            //console.log(this.id);
-            //console.log($(this).val());
-
-            //if ($(this).val() == "3") {
-            //    $("#divDefClient").removeClass("AppHidden");
-            //    $("#divDefendant").removeClass("AppHidden").addClass("AppHidden");
-            //}
-            //else {
-            //    $("#divDefClient").removeClass("AppHidden").addClass("AppHidden");
-            //    $("#divDefendant").removeClass("AppHidden");
-            //}
         });
 
         $('#ClientCode').on("change", function () {
             ProcessClientCodeChange();
-            //if ($('#ClientClassificationCode').val() == "1") {
-            //    console.log(this.id);
-            //    console.log($(this).val());
-
-            //    if ($(this).val() == "10") {
-            //        $(".ClientODB").removeClass("AppHidden");
-            //    }
-            //    else {
-            //        $(".ClientODB").removeClass("AppHidden").addClass("AppHidden");
-            //        $('#ODBBankBranch').val("0").trigger('change');
-            //        $('#LoanManager').val("0").trigger('change');
-
-            //    }
-            //}
+            
         });
 
         $('#CaseLevelCode').on("change", function () {
@@ -521,33 +497,17 @@
                     $("#ClassificationText").text("INDIVIDUALS");
                 }
                 else if ($(this).val() == "7") {
-                    $("#ClassificationText").text("CONSULTANCY");
+                    $("#ClassificationText").text("CORPORATE");
                 }
             }
         });
 
         $('#CaseTypeCode').on("change", function () {
+            if ($('#ClientClassificationCode').val() == "0")
+                return false;
+
             ProcessCaseTypeChange();
-            //$("#div_CaseLevelPartialView").empty();
-            //$("#PartialViewContainerBoxCC").removeClass("AppHidden").addClass("AppHidden");
-            //$("#div_CurrentCaseLevel").removeClass("AppHidden").addClass("AppHidden");
-            //$("#div_ArabicData").removeClass("AppHidden").addClass("AppHidden");
-            //console.log(this.id);
-            //console.log($(this).val());
-
-            //var PartialContainer = $("#PartialViewContainerCC");
-
-            //if ($(this).val() == "6") {
-            //    _parameters = { ClassificationId: "7", Mode: "C" };
-            //    GetTab(PartialContainer, GetClientClassificationURL, _parameters);
-            //}
-            //else {
-            //    $('#ClientClassificationCode').select2().trigger('change');
-            //}
-
-            //if ($(this).val() == "6") {
-            //    $("#ClassificationText").text("CONSULTANCY");
-            //}
+            
         });
 
         $('.AddNewMaster').on("click", function () {

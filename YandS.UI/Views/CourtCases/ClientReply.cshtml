@@ -145,15 +145,8 @@
                 }
             ],
             "drawCallback": function (settings) {
-                //alert('DataTables has redrawn the table');
-
                 $("#ENF_ModificationContainer").empty();
             },
-            //"createdRow": function (row, data, dataIndex) {
-            //    var rowColor = "";
-                
-            //    //$(row).addClass(rowColor);
-            //},
             initComplete: function () {
                 console.log("DataTable Initiated !!");
                 $('.btn').bstooltip();
@@ -173,15 +166,7 @@
                 if ($("#txtUserRole").val() == "VoucherApproval") {
                     $('#MCTTTL').text("MUSCAT : " + MCTRecords);
                     $('#SLLTTL').text("SALALAH : " + SLLRecords);
-                    //$('#TTL').text(recordsTotal);
                 }
-                //else {
-                //    if ($('#txtLocationId').val() == "M")
-                //        $('#MCTTTL').text("MUSCAT : " + MCTRecords);
-                //    else
-                //        $('#MCTTTL').text("SALALAH : " + SLLRecords);
-                //}
-
 
                 $(".dataTables_filter input")
                     .unbind() // Unbind previous default bindings
@@ -207,7 +192,7 @@
 
             var data = table.row($(this).parents('tr')).data();
 
-            processbtnLinkClick(_Mode, data);
+            processbtnLinkClick(_Mode, data, dataForTable);
             return false;
         });
     });

@@ -12,20 +12,12 @@
     }
 </style>
 <script>
-    var CreateMasterTableDetailURL = '@Url.Action("CreateMasterTableDetail", "CommonTask", new { area = string.Empty })';
-    var CreateMasterTableDetailForPayToURL = '@Url.Action("CreateMasterTableDetailForPayTo", "CommonTask", new { area = string.Empty })';
     var GetIndexDataURL = '@Url.Action("AjaxIndexData", "CourtCases", new { area = string.Empty })';
-    var GetClientClassificationURL = '@Url.Action("GetTab", "CourtCases", new { area = string.Empty })';
-    var GetRegisterIdURL = '@Url.Action("GetRegisterId", "CommonTask", new { area = string.Empty })';
-    var GetSessionRollURL = '@Url.Action("GetTab", "SessionRoll", new { area = string.Empty })';
     var DDLToAppend;
     var ValidationMessage = "";
     var NotValid = false;
     var DefendentTable;
-    var CurrentCaseLevel = 0;
-    var ClientClassification = 0;
-    var ClientClassificationCode = "";
-
+    var SmartFilter = false;
     var bkClientReply = "";
     var bkRequirements = "";
     var bkFirstEmailDate = "";
@@ -35,6 +27,50 @@
     var bkCourtFollowRequirement = "";
     var bkCommissioningDate = "";
 
+    var bkReqWorkRequired = "";
+    var bkReqSessionNotes = "";
+    var bkReqLastDate = "";
+    var bkReqFollowerId = "";
+
+    var bkSuspendedWorkRequired = "";
+    var bkSuspendedSessionNotes = "";
+    var bkSuspendedLastDate = "";
+    var bkSuspendedFollowerId = "";
+    var _parameters = {};
+    var GetTabFromSessionRoll = function (divToLoad, p_url, p_parameters) {
+        divToLoad.empty();
+        divToLoad.append("Loading...");
+
+        $.ajax({
+            url: p_url,
+            type: "POST",
+            data: p_parameters,
+            success: function (data, textStatus, jqXHR) {
+
+                divToLoad.html(data);
+
+                $.fn.autoResize = function () {
+                    let r = e => {
+                        e.style.height = '';
+                        e.style.height = e.scrollHeight + 'px'
+                    };
+                    return this.each((i, e) => {
+                        e.style.overflow = 'hidden';
+                        r(e);
+                        $(e).bind('input', e => {
+                            r(e.target);
+                        })
+                    })
+                };
+
+                $('html, body').animate({
+                    scrollTop: $("#ModificationContainer").offset().top
+                }, 1000);
+
+                $('textarea').autoResize();
+            }
+        });
+    };
     var GetTab = function (divToLoad, p_url, p_parameters) {
         divToLoad.empty();
         divToLoad.append("Loading...");
@@ -51,6 +87,60 @@
             }
         });
     };
+    function ShowDIV() {
+
+        if ($('#ShowFollowup').val() == "True") {
+            $("#FollowDIV").removeClass("AppHidden");
+
+            bkReqWorkRequired = $('#WorkRequired').val();
+            bkReqSessionNotes = $('#SessionNotes').val();
+            bkReqLastDate = $('#LastDate').val();
+            bkReqFollowerId = $('#FollowerId').val();
+        }
+        else {
+            if ($('#txtViewToLoad').val() == "_SessionFollow")
+                $("#FollowDIV").removeClass("AppHidden");
+
+            bkReqWorkRequired = $('#WorkRequired').val();
+            bkReqSessionNotes = $('#SessionNotes').val();
+            bkReqLastDate = $('#LastDate').val();
+            bkReqFollowerId = $('#FollowerId').val();
+        }
+
+        if ($('#ShowSuspend').val() == "True") {
+            $("#ForMemoDIV").removeClass("AppHidden");
+
+            bkSuspendedWorkRequired = $('#SuspendedWorkRequired').val();
+            bkSuspendedSessionNotes = $('#SuspendedSessionNotes').val();
+            bkSuspendedLastDate = $('#SuspendedLastDate').val();
+            bkSuspendedFollowerId = $('#SuspendedFollowerId').val();
+
+        }
+        else {
+            if ($('#txtViewToLoad').val() == "_SessionSuspended")
+                $("#FollowDIV").removeClass("AppHidden");
+
+            bkSuspendedWorkRequired = $('#SuspendedWorkRequired').val();
+            bkSuspendedSessionNotes = $('#SuspendedSessionNotes').val();
+            bkSuspendedLastDate = $('#SuspendedLastDate').val();
+            bkSuspendedFollowerId = $('#SuspendedFollowerId').val();
+
+
+        }
+
+        $('textarea').autoResize();
+    }
+    function ShowSessionNoteBanner() {
+        if (!$.trim($("#SessionNote_Remark").val())) {
+            $("#DIV_NOTES_BANNER").removeClass("AppHidden").addClass("AppHidden");
+            $("#spnNotesBanner").text("");
+        }
+        else {
+            $("#DIV_NOTES_BANNER").removeClass("AppHidden");
+            $("#spnNotesBanner").text($.trim($("#SessionNote_Remark").val()));
+            $('textarea').autoResize();
+        }
+    }
     function LoadPartialView(data, container) {
         console.log(container.attr("id"));
         container.empty();
@@ -89,12 +179,56 @@
                 }, 200);
             }
         }
+        else if (container.attr("id") == "EnforcementLevelContainer") {
+            if (container.length) {
+                $('html, body').animate({
+                    scrollTop: container.offset().top
+                }, 200);
+            }
+            LoadUpdate($('#EnforcementlevelId').val());
+        }
+        else if (container.attr("id") == "ENF_DIV_UPDATE") {
+            if (container.hasClass("AppHidden"))
+                container.removeClass("AppHidden");
+
+            if (container.length) {
+                $('html, body').animate({
+                    scrollTop: container.offset().top
+                }, 200);
+            }
+        }
         else if (container.attr("id") == "TBR_Modify_Detail") {
             console.log("File Status :: " + $('#FileStatus').val());
             console.log("Case Id :: " + $("#HFCaseId").val());
             console.log("Case Registration Id :: " + $("#hidCaseRegistrationId").val());
+            console.log("Case hidFileStatus Value :: " + $("#hidFileStatus").val());
+            console.log("Case FileStatus :: " + $("#FileStatus").val());
 
-            var skipFileStatus = ["1", "9", "11"];
+            var skipFileStatus = [OfficeFileStatus.Transfer, OfficeFileStatus.Registered, "11"];
+
+            if ($('#hidFileStatusChanged').val() === "Y") {
+                if ($("#hidFileStatus").val() === $("#FileStatus").val()) {
+                    console.log("Same file status need to be restore Values");
+                    $("#FormPrintWorkRequired").val($("#hidFormPrintWorkRequired").val());
+                    $("#OfficeProcedure").val($("#hidOfficeProcedure").val());
+
+                    if ($("#hidFormPrintLastDate").val() != "")
+                        $("#FormPrintLastDate").datepicker("setDate", $("#hidFormPrintLastDate").val());
+                }
+                else {
+                    $("#FormPrintWorkRequired").val('');
+                    $("#OfficeProcedure").val('');
+                    $("#FormPrintLastDate").val('');
+
+                    $('#FormPrintLastDate').datepicker({
+                        format: "dd/mm/yyyy",
+                        todayBtn: "linked",
+                        clearBtn: true,
+                        autoclose: true,
+                        orientation: "bottom auto"
+                    });
+                }
+            }
 
             if (skipFileStatus.indexOf($("#FileStatus").val()) == -1) {
                 if (!$.trim($("#DIV_REMARKS").html())) {
@@ -102,6 +236,13 @@
                     GetTab($("#DIV_REMARKS"), GetClientClassificationURL, _parameters);
 
                 }
+            }
+
+            if ($("#FileStatus").val() == OfficeFileStatus.Registered) {
+                $("#DIV_TBR_UPDATED").empty();
+                _parameters = { ClassificationId: "_TBR_UPDATED_REG", Mode: $("#HFCaseId").val(), DefendentTransfer: "", CaseRegistrationId: $("#hidCaseRegistrationId").val() };
+                GetTab($("#DIV_TBR_UPDATED"), GetClientClassificationURL, _parameters);
+
             }
         }
         else if (container.attr("id") == "DIV_REMARKS") {
@@ -209,7 +350,6 @@
 
     }
     function processbtnLinkClick(_Mode, data, tableName) {
-
         if (_Mode == "D") {
             Swal.fire({
                 title: 'Are you sure?',
@@ -348,25 +488,94 @@
             $("#hidDefendentTransferId").val($DefendentTransferId);
             $("#PV_OFFICE_FILE_NO").val($OfficeFileNo);
 
-            //console.log(data.CaseId);
-            //console.log($CaseId);
-            //console.log($("#HFCaseId").val());
-
-            //console.log(data.OfficeFileNo);
-            //console.log($OfficeFileNo);
-            //console.log($("#PV_OFFICE_FILE_NO").val());
-
-            //console.log(data.DefendentTransferId);
-            //console.log($DefendentTransferId);
-            //console.log($("#hidDefendentTransferId").val());
-
             if (typeof tableName !== 'undefined')
                 $("#hidCurrentTableName").val(tableName);
 
-            var _PartialViewName = "_ENF_Modify";
-            var PartialContainer = $("#ENF_ModificationContainer");
-            _parameters = { ClassificationId: _PartialViewName, Mode: $CaseId };
+            if (tableName == "ENF-CLREPLY") {
+                Swal.fire({
+                    title: 'ARE YOU SURE?',
+                    text: "YOU WON'T BE ABLE TO REVERT THIS!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'CANCEL',
+                    confirmButtonText: 'CLIENT DONE'
+                }).then((result) => {
+                    if (result.value) {
+
+                        var form = $('#__AjaxAntiForgeryForm');
+                        var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+                        $.ajax({
+                            url: "/CommonTask/ProcessReset",
+                            type: 'POST',
+                            cache: false,
+                            data: {
+                                __RequestVerificationToken: token,
+                                CaseId: $CaseId,
+                                ResetName: tableName
+                            },
+                            statusCode: {
+                                401: function (response) {
+                                    alert(response);
+                                }
+                            },
+                            success: function (result) {
+                                if (result.redirectTo) {
+                                    Swal.fire(
+                                        'PROCEED!',
+                                        'Your file has been updated.',
+                                        'success'
+                                    )
+                                    Swal.fire({
+                                        type: 'success',
+                                        title: '',
+                                        html: 'Your file has been updated.'
+                                    }).then(function () {
+                                        table.ajax.reload(function (json) {
+                                            var info = table.page.info();
+                                            var MCTRecords = table.ajax.json().MuscatTotal;
+                                            var SLLRecords = table.ajax.json().SalalahTotal;
+                                            var recordsTotal = table.ajax.json().recordsTotal;
+
+                                            if ($("#txtUserRole").val() == "VoucherApproval") {
+                                                $('#MCTTTL').text("MUSCAT : " + MCTRecords);
+                                                $('#SLLTTL').text("SALALAH : " + SLLRecords);
+                                                $('#TTL').text(recordsTotal);
+                                            }
+                                        });
+                                    });
+                                }
+                                else {
+                                    //console.log(result);
+                                    var errorHtml = $('<div />').append(result).find('.content').html();
+                                    //console.log(errorHtml);
+                                    Swal.fire({
+                                        type: 'error',
+                                        title: 'Error in Update!',
+                                        html: errorHtml,
+                                        width: '50%'
+                                        //grow: 'row'
+                                    });
+
+                                }
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                Swal.fire("Error processing!", "Please try again" + thrownError + "" + xhr.textStatus, "error");
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                var _PartialViewName = "_ENF_Modify";
+                var PartialContainer = $("#ENF_ModificationContainer");
+                _parameters = { ClassificationId: _PartialViewName, Mode: $CaseId };
+            }
+
             GetTab(PartialContainer, GetClientClassificationURL, _parameters);
+
         }
         else if (_Mode == "T") {
             CancelTBR();
@@ -386,48 +595,79 @@
             _parameters = { ClassificationId: _PartialViewName, Mode: $("#HFCaseId").val(), DefendentTransfer: "", CaseRegistrationId: $CaseRegistrationId };
             GetTab(PartialContainer, GetClientClassificationURL, _parameters);
         }
+        else if (_Mode == "CD") {
+            var $CaseId = data.CaseId;
+            var $OfficeFileNo = data.OfficeFileNo;
+            var $DetailId = data.DetailId;
+            var $CaseLevelCode = data.CaseLevelCode;
+            var $Courtid = parseInt(data.CaseLevelCode) - 2;
+            var $SessionRollId = parseInt(data.SessionRollId);
+
+            $("#HFCaseId").val($CaseId);
+            $("#hid_DetailId").val($DetailId);
+            $("#hid_Courtid").val($Courtid);
+            $("#hid_CaseLevelCode").val($CaseLevelCode);
+            $("#hid_SessionRollId").val($SessionRollId);
+
+            if (typeof tableName !== 'undefined')
+                $("#hidCurrentTableName").val(tableName);
+
+            var _PartialViewName = "_CaseDetail_Modify";
+            var PartialContainer = $("#ModificationContainer");
+            _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: $CaseId, SessionRollId: $SessionRollId, CaseLevel: $CaseLevelCode };
+            GetTabFromSessionRoll(PartialContainer, GetSessionRollURL, _parameters);
+        }
         else {
-            if (tableName == "ToBeRegister") {
-                p_parameters = { "CaseId": parseInt(data.CaseId) };
-                $.ajax({
-                    url: GetRegisterIdURL,
-                    type: "POST",
-                    data: JSON.stringify(p_parameters),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: 'json',
-                    success: function (result) {
-                        $.blockUI();
-                        console.log(result);
-                        console.log(result.CaseRegistrationId);
-                        var RedirectURL = "/CaseRegistration/IndexMain/" + result.CaseRegistrationId;
-                        window.location = RedirectURL;
-                    }
-                });
-            }
-            else {
-                console.log($("#txtViewToLoad").val());
-                console.log($("#txtViewContainer").val());
 
-                console.log(data);
-
-                var _PartialViewName = "_ModifyCase";
-                var PartialContainer = $($("#txtViewContainer").val());
-
-                if (_PartialViewName == "_ModifyCase") {
-                    $(".navButton").each(function () {
-                        var btnActiveClass = $(this).attr("id").split('_')[1] + "Active";
-                        $(this).removeClass(btnActiveClass);
+            switch (tableName) {
+                case "ToBeRegister":
+                    p_parameters = { "CaseId": parseInt(data.CaseId) };
+                    $.ajax({
+                        url: GetRegisterIdURL,
+                        type: "POST",
+                        data: JSON.stringify(p_parameters),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: 'json',
+                        success: function (result) {
+                            $.blockUI();
+                            console.log(result);
+                            console.log(result.CaseRegistrationId);
+                            var RedirectURL = "/CaseRegistration/IndexMain/" + result.CaseRegistrationId;
+                            window.location = RedirectURL;
+                        }
                     });
-                    $("#spanCreateBtnText").text("");
-                    $("#spanCreateBtnText").text("MODIFY CASE");
-                    $("#txtViewToLoad").val("_ModifyCase");
-                    $("#btn_CreateCase").addClass("CreateCaseActive");
+                    break;
+                case "CORPORATE":
+                    var _PartialViewName = "_ModifyCase";
+                    var PartialContainer = $("#ModificationContainer");
                     _parameters = { ClassificationId: _PartialViewName, Mode: data.CaseId };
-                }
-                else
-                    _parameters = { ClassificationId: _PartialViewName, Mode: "C" };
+                    GetTab(PartialContainer, GetClientClassificationURL, _parameters);
+                    break;
+                case "TRANSELATION":
+                    var _PartialViewName = "_PartViewTranslation";
+                    var PartialContainer = $("#ModificationContainer");
+                    _parameters = { ClassificationId: _PartialViewName, Mode: data.CaseId };
+                    GetTab(PartialContainer, GetClientClassificationURL, _parameters);
+                    break;
+                default:
+                    var _PartialViewName = "_ModifyCase";
+                    var PartialContainer = $($("#txtViewContainer").val());
 
-                GetTab(PartialContainer, GetClientClassificationURL, _parameters);
+                    if (_PartialViewName == "_ModifyCase") {
+                        $(".navButton").each(function () {
+                            var btnActiveClass = $(this).attr("id").split('_')[1] + "Active";
+                            $(this).removeClass(btnActiveClass);
+                        });
+                        $("#spanCreateBtnText").text("");
+                        $("#spanCreateBtnText").text("MODIFY CASE");
+                        $("#txtViewToLoad").val("_ModifyCase");
+                        $("#btn_CreateCase").addClass("CreateCaseActive");
+                        _parameters = { ClassificationId: _PartialViewName, Mode: data.CaseId };
+                    }
+                    else
+                        _parameters = { ClassificationId: _PartialViewName, Mode: "C" };
+
+                    GetTab(PartialContainer, GetClientClassificationURL, _parameters);
             }
         }
     }
@@ -435,7 +675,6 @@
         var parts = date.split("/");
         return new Date(parts[2], parts[1] - 1, parts[0]);
     }
-
     function ValidateBasic() {
         console.log("ValidateBasic()");
 
@@ -680,337 +919,6 @@
 
         return NotValid;
     }
-    //var AuctionProcessObj = {
-    //    "data": [
-    //        {
-    //            "Mst_Value": 1,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 1,
-    //            "From": 45,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 1,
-    //            "From": 30,
-    //            "To": 45,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 12,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 12,
-    //            "From": 40,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 12,
-    //            "From": 25,
-    //            "To": 40,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 2,
-    //            "From": 30,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 2,
-    //            "From": 20,
-    //            "To": 30,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 2,
-    //            "From": 10,
-    //            "To": 20,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 3,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 3,
-    //            "From": 30,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 3,
-    //            "From": 15,
-    //            "To": 30,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 13,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 13,
-    //            "From": 45,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 13,
-    //            "From": 30,
-    //            "To": 45,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 14,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 14,
-    //            "From": 45,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 14,
-    //            "From": 30,
-    //            "To": 45,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 4,
-    //            "From": 30,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 4,
-    //            "From": 20,
-    //            "To": 30,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 4,
-    //            "From": 15,
-    //            "To": 20,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 5,
-    //            "From": 35,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 5,
-    //            "From": 25,
-    //            "To": 35,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 5,
-    //            "From": 15,
-    //            "To": 25,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 6,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 6,
-    //            "From": 40,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 6,
-    //            "From": 20,
-    //            "To": 40,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 7,
-    //            "From": 35,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 7,
-    //            "From": 25,
-    //            "To": 35,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 7,
-    //            "From": 20,
-    //            "To": 25,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 15,
-    //            "From": 30,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 15,
-    //            "From": 20,
-    //            "To": 30,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 15,
-    //            "From": 10,
-    //            "To": 20,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 8,
-    //            "From": 40,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 8,
-    //            "From": 30,
-    //            "To": 40,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 8,
-    //            "From": 20,
-    //            "To": 30,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 9,
-    //            "From": 60,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 9,
-    //            "From": 40,
-    //            "To": 60,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 9,
-    //            "From": 30,
-    //            "To": 40,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 17,
-    //            "From": 30,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 17,
-    //            "From": 25,
-    //            "To": 30,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 17,
-    //            "From": 20,
-    //            "To": 25,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 16,
-    //            "From": 21,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 16,
-    //            "From": 14,
-    //            "To": 21,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 16,
-    //            "From": 7,
-    //            "To": 14,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 18,
-    //            "From": 28,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 18,
-    //            "From": 21,
-    //            "To": 28,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 18,
-    //            "From": 14,
-    //            "To": 21,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 11,
-    //            "From": 5,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 11,
-    //            "From": 3,
-    //            "To": 5,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 11,
-    //            "From": 2,
-    //            "To": 3,
-    //            "ClassName": "tblThirdCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 19,
-    //            "From": 30,
-    //            "To": 999999,
-    //            "ClassName": "tblFirstCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 19,
-    //            "From": 20,
-    //            "To": 30,
-    //            "ClassName": "tblSecondCondition"
-    //        },
-    //        {
-    //            "Mst_Value": 19,
-    //            "From": 10,
-    //            "To": 20,
-    //            "ClassName": "tblThirdCondition"
-    //        }
-    //    ]
-    //};
-
-    var AuctionProcessObj = { "data": [{ "Mst_Value": 1, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 1, "From": 45, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 1, "From": 30, "To": 45, "ClassName": "tblThirdCondition" }, { "Mst_Value": 2, "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 2, "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "Mst_Value": 2, "From": 10, "To": 20, "ClassName": "tblThirdCondition" }, { "Mst_Value": 3, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 3, "From": 30, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 3, "From": 15, "To": 30, "ClassName": "tblThirdCondition" }, { "Mst_Value": 4, "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 4, "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "Mst_Value": 4, "From": 15, "To": 20, "ClassName": "tblThirdCondition" }, { "Mst_Value": 5, "From": 35, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 5, "From": 25, "To": 35, "ClassName": "tblSecondCondition" }, { "Mst_Value": 5, "From": 15, "To": 25, "ClassName": "tblThirdCondition" }, { "Mst_Value": 6, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 6, "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 6, "From": 20, "To": 40, "ClassName": "tblThirdCondition" }, { "Mst_Value": 7, "From": 35, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 7, "From": 25, "To": 35, "ClassName": "tblSecondCondition" }, { "Mst_Value": 7, "From": 20, "To": 25, "ClassName": "tblThirdCondition" }, { "Mst_Value": 8, "From": 40, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 8, "From": 30, "To": 40, "ClassName": "tblSecondCondition" }, { "Mst_Value": 8, "From": 20, "To": 30, "ClassName": "tblThirdCondition" }, { "Mst_Value": 9, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 9, "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 9, "From": 30, "To": 40, "ClassName": "tblThirdCondition" }, { "Mst_Value": 11, "From": 5, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 11, "From": 3, "To": 5, "ClassName": "tblSecondCondition" }, { "Mst_Value": 11, "From": 2, "To": 3, "ClassName": "tblThirdCondition" }, { "Mst_Value": 12, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 12, "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 12, "From": 25, "To": 40, "ClassName": "tblThirdCondition" }, { "Mst_Value": 13, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 13, "From": 45, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 13, "From": 30, "To": 45, "ClassName": "tblThirdCondition" }, { "Mst_Value": 14, "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 14, "From": 45, "To": 60, "ClassName": "tblSecondCondition" }, { "Mst_Value": 14, "From": 30, "To": 45, "ClassName": "tblThirdCondition" }, { "Mst_Value": 15, "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 15, "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "Mst_Value": 15, "From": 10, "To": 20, "ClassName": "tblThirdCondition" }, { "Mst_Value": 16, "From": 21, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 16, "From": 14, "To": 21, "ClassName": "tblSecondCondition" }, { "Mst_Value": 16, "From": 7, "To": 14, "ClassName": "tblThirdCondition" }, { "Mst_Value": 17, "From": 28, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 17, "From": 21, "To": 28, "ClassName": "tblSecondCondition" }, { "Mst_Value": 17, "From": 14, "To": 21, "ClassName": "tblThirdCondition" }, { "Mst_Value": 18, "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 18, "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "Mst_Value": 18, "From": 10, "To": 20, "ClassName": "tblThirdCondition" }, { "Mst_Value": 19, "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 19, "From": 25, "To": 30, "ClassName": "tblSecondCondition" }, { "Mst_Value": 19, "From": 20, "To": 25, "ClassName": "tblThirdCondition" }, { "Mst_Value": 20, "From": 100, "To": 999999, "ClassName": "tblFirstCondition" }, { "Mst_Value": 20, "From": 70, "To": 100, "ClassName": "tblSecondCondition" }, { "Mst_Value": 20, "From": 40, "To": 70, "ClassName": "tblThirdCondition" }] };
-    var dtObjDataTable = { "data": [{ "dtTableName": "ENF-AGAINSUR", "From": 90, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-AGAINSUR", "From": 60, "To": 90, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-AGAINSUR", "From": 40, "To": 60, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-ANN", "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-ANN", "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-ANN", "From": 20, "To": 40, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-ARORD", "From": 120, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-ARORD", "From": 90, "To": 120, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-ARORD", "From": 70, "To": 90, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-ARREQ", "From": 50, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-ARREQ", "From": 30, "To": 50, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-ARREQ", "From": 15, "To": 30, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-COURTFOL", "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-COURTFOL", "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-COURTFOL", "From": "", "To": "", "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-DEFTRANS", "From": 90, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-DEFTRANS", "From": 60, "To": 90, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-DEFTRANS", "From": 30, "To": 60, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-INQ", "From": 120, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-INQ", "From": 90, "To": 120, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-INQ", "From": 60, "To": 90, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-ONLINEREG", "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-ONLINEREG", "From": 30, "To": 60, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-ONLINEREG", "From": 15, "To": 30, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-RECFRCOURT", "From": 100, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-RECFRCOURT", "From": 70, "To": 100, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-RECFRCOURT", "From": 40, "To": 70, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-SUSPEND", "From": "", "To": "", "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-SUSPEND", "From": "", "To": "", "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-SUSPEND", "From": "", "To": "", "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-FILEREV", "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-FILEREV", "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-FILEREV", "From": 20, "To": 40, "ClassName": "tblThirdCondition" }, { "dtTableName": "ENF-TOMJUDG", "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "ENF-TOMJUDG", "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "dtTableName": "ENF-TOMJUDG", "From": 20, "To": 40, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-NewCase", "From": 60, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-NewCase", "From": 40, "To": 60, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-NewCase", "From": 20, "To": 40, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-AppSubmissionY", "From": 11, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-AppSubmissionY", "From": 9, "To": 11, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-AppSubmissionY", "From": 5, "To": 9, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-AppSubmissionN", "From": 20, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-AppSubmissionN", "From": 15, "To": 20, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-AppSubmissionN", "From": 10, "To": 15, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-SupSubmission", "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-SupSubmission", "From": 25, "To": 30, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-SupSubmission", "From": 15, "To": 25, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-PriDispute", "From": 12, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-PriDispute", "From": 8, "To": 12, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-PriDispute", "From": 4, "To": 8, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-AplDispute", "From": 5, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-AplDispute", "From": 3, "To": 5, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-AplDispute", "From": 2, "To": 3, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-SupDispute", "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-SupDispute", "From": 25, "To": 30, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-SupDispute", "From": 15, "To": 25, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-TRansfer", "From": 22, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-TRansfer", "From": 14, "To": 22, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-TRansfer", "From": 7, "To": 14, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-LegalNotice", "From": 40, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-LegalNotice", "From": 20, "To": 40, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-LegalNotice", "From": 0, "To": 20, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-CompDocs", "From": 30, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-CompDocs", "From": 20, "To": 30, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-CompDocs", "From": 7, "To": 20, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-Translation", "From": 21, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-Translation", "From": 14, "To": 21, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-Translation", "From": 7, "To": 14, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-ClientApproval", "From": 24, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-ClientApproval", "From": 12, "To": 24, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-ClientApproval", "From": 7, "To": 12, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-Scanned", "From": 9, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-Scanned", "From": 5, "To": 9, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-Scanned", "From": 3, "To": 5, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-OnlineSubm", "From": 21, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-OnlineSubm", "From": 14, "To": 21, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-OnlineSubm", "From": 7, "To": 14, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-CourtRequest", "From": 2, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-CourtRequest", "From": 1, "To": 2, "ClassName": "tblThirdCondition" }, { "dtTableName": "TBR-Payment", "From": 2, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-Payment", "From": 1, "To": 2, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-WithLawyer", "From": 21, "To": 999999, "ClassName": "tblFirstCondition" }, { "dtTableName": "TBR-WithLawyer", "From": 14, "To": 21, "ClassName": "tblSecondCondition" }, { "dtTableName": "TBR-WithLawyer", "From": 7, "To": 14, "ClassName": "tblThirdCondition" }] };
     function GetAuctionClassName(p_Mst_Value, p_DaysPassed) {
         var result = $.grep(AuctionProcessObj.data, function (e) { return e.Mst_Value === p_Mst_Value && p_DaysPassed >= e.From && p_DaysPassed < e.To; });
 
@@ -1020,11 +928,11 @@
             return "";
     }
     function ResetHiddenItems() {
-        $("#hidRequirement").val("");
-        $("#hidFirstEmailDate").val("");
-        $("#hidNextHearingDate").val("");
-        $("#hidCourtDecisionChange").val("");
-        $("#hidCurrentHearingDate").val("");
+        $("#hidRequirement").val('');
+        $("#hidFirstEmailDate").val('');
+        $("#hidNextHearingDate").val('');
+        $("#hidCourtDecisionChange").val('');
+        $("#hidCurrentHearingDate").val('');
 
         bkClientReply = "";
         bkRequirements = "";
@@ -1262,8 +1170,103 @@
 
         return DataToDisplay;
     }
+    function LoadPrintRequirementForm(PartialViewName) {
+        var _PartialViewName = PartialViewName;
+        P_CaseId = parseInt($("#CaseId").val());
+        P_SessionRollId = 0;
+        var _Mode = "C";
+
+        var PartialContainer = $("#div_PrintRequirementForm");
+        PartialContainer.empty();
+
+        _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
+
+
+        $.ajax({
+            url: GetSessionRollURL,
+            type: "POST",
+            data: _parameters,
+            success: function (data, textStatus, jqXHR) {
+                PartialContainer.html(data);
+                Swal.fire({
+                    type: 'success',
+                    title: '',
+                    width: 700,
+                    html: $("#ContentDIV").html()
+                }).then(function () {
+                    CopyToClipboard('swal2-content');
+
+                    if ($("#hidIsCorporate").val() == "Y" || $("#hidIsTranselation").val() == "Y") {
+                        table.ajax.reload(function (json) {
+                            var info = table.page.info();
+                            var MCTRecords = table.ajax.json().MuscatTotal;
+                            var SLLRecords = table.ajax.json().SalalahTotal;
+                            var recordsTotal = table.ajax.json().recordsTotal;
+
+                            if ($("#txtUserRole").val() == "VoucherApproval") {
+                                $('#MCTTTL').text("MUSCAT : " + MCTRecords);
+                                $('#SLLTTL').text("SALALAH : " + SLLRecords);
+                                $('#TTL').text(recordsTotal);
+                            }
+                        });
+                        $('html, body').animate({
+                            scrollTop: $("#PartialViewContainer").offset().top
+                        }, 1000);
+                    }
+                    else {
+                        $("#btn_General").trigger('click');
+                    }
+                });
+            }
+        });
+    }
+    function ClearDivElements(ControlNames, ControlTypes, DefaultSelectVal, DivID) {
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, clear it!'
+        }).then((result) => {
+            if (result.value) {
+                if (ControlNames.indexOf(",") !== -1) {
+                    var Namesarray = ControlNames.split(",");
+                    var Typesarray = ControlTypes.split(",");
+                    var DefaultSelectValarray = DefaultSelectVal.split(",");
+
+                    for (i = 0; i < Namesarray.length; i++) {
+                        if (Typesarray[i] == "select2")
+                            $("#" + Namesarray[i]).val(DefaultSelectValarray[i]).trigger('change');
+                        else
+                            $("#" + Namesarray[i]).val(DefaultSelectValarray[i]);
+                    }
+                }
+                else {
+                    if (ControlTypes == "select2")
+                        $("#" + ControlNames).val(DefaultSelectVal).trigger('change');
+                    else
+                        $("#" + ControlNames).val(DefaultSelectVal);
+                }
+                $("#" + DivID).removeClass("AppHidden").addClass("AppHidden");
+            }
+        });
+    }
+    function ValidateTranslation() {
+        console.log("ValidateTranslation()");
+        NotValid = false;
+        
+        if ($("#CourtDecisionTranslated").val() == "") {
+            ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER TRANSELATION" : ValidationMessage + "<br />" + "PLEASE ENTER TRANSELATION";
+            NotValid = true;
+        }
+        return NotValid;
+    }
 
 </script>
+<div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -1315,10 +1318,6 @@
         <div class="card card-primary card-outline">
             <div class="card-header">
                 <h3 class="card-title">LIST OF COURT CASES</h3>
-
-                @*<div class="card-tools">
-                        <button style="width:200px;" title="CREATE CASE" class="btn btn-success btn-lg" onclick="location.href='@Url.Action("Create", "CourtCases")';return false;">  CREATE CASE</button>
-                    </div>*@
             </div>
             <div class="card-body">
                 <div id="div_courtCasesMailButton" style="padding-bottom:10px;" class="col-sm-12">
@@ -1349,9 +1348,14 @@
                         </div>
                     </div>
                 </div>
-                <div style="padding-top:10px;" class="row">
-                    <div class="col-sm-12">
+                <div class="row">
+                    <div style="padding-bottom:10px;padding-top:10px;" class="col-sm-12">
                         <div id="PartialViewContainer" class="clsPVContainer">
+
+                        </div>
+                    </div>
+                    <div style="padding-bottom:10px;padding-top:10px;" class="col-sm-12">
+                        <div id="ModificationContainer" class="clsPVContainer">
 
                         </div>
                     </div>
@@ -1391,6 +1395,8 @@
     <input type="hidden" id="HFCaseId" value="@ViewBag.HFCaseId" />
     <input type="hidden" id="hidIsCourtFollow" value="@ViewBag.hidIsCourtFollow" />
     <input type="hidden" id="hidIsClientReply" value="@ViewBag.hidIsClientReply" />
+    <input type="hidden" id="hidIsCorporate" value="@ViewBag.hidIsCorporate" />
+    <input type="hidden" id="hidIsTranselation" value="@ViewBag.hidIsTranselation" />
     <input type="hidden" id="hidIsAgainstClient" value="N" />
     <input type="hidden" id="hidRequirement" value="" />
     <input type="hidden" id="hidFirstEmailDate" value="" />
@@ -1403,6 +1409,12 @@
     <input type="hidden" id="hidActionLevel" value="" />
     <input type="hidden" id="hidDisputeLevel" value="" />
     <input type="hidden" id="hidUserName" value="@User.Identity.Name" />
+
+    <input type="hidden" id="hid_Courtid" value="@ViewBag.hid_Courtid" />
+    <input type="hidden" id="hid_CaseLevelCode" value="@ViewBag.hid_CaseLevelCode" />
+    <input type="hidden" id="hid_DetailId" value="@ViewBag.hid_DetailId" />
+    <input type="hidden" id="hid_SessionRollId" value="@ViewBag.hid_SessionRollId" />
+
     @if (User.IsInRole("TBRRemarks"))
     {
         <input type="hidden" id="hidTBRRemarks" value="Y" />
@@ -1424,29 +1436,6 @@
     {
         @Html.AntiForgeryToken()
     }
-</div>
-<div class="modal fade" id="modal-PVForm">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content bg-gradient-light">
-            <div id="modalPVFormoverlay" class="overlay">
-                <i class="fas fa-2x fa-sync fa-spin"></i>
-            </div>
-            <div class="modal-header">
-                <h4 class="modal-title"><span>ADD PAYMENT VOUCHER</span></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="PVCreateForm"></div>
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
 </div>
 <div class="modal fade" id="modal-AddMaster">
     <div class="modal-dialog">
@@ -1471,7 +1460,7 @@
     <!-- /.modal-dialog -->
 </div>
 <div class="modal fade" id="modal-preSubmit">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content bg-gradient-light">
             <div class="modal-header">
                 <h4 class="modal-title"></h4>
@@ -1507,11 +1496,11 @@
                 <div id="DIV_CHANGE_UPDATE_DATE" class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <label dir="auto" for="selUpdateDateYN">أنت لم تقم بتغيير تاريخ التحديث (تاريخ الجلسة)؟</label>
+                            <label dir="auto" for="selUpdateDateYN">Change (Update Date) to be today's date? هل تريد تغيير ( تاريخ التحديث ) ليكون تاريخ اليوم؟</label>
                             <select class="form-control select2bs4" id="selUpdateDateYN">
                                 <option value="">PLEASE SELECT</option>
-                                <option value="N">حفظ بدون تغيير CONTUNUE</option>
-                                <option value="Y">تغييرالتاريخ والحفظ CHANGE</option>
+                                <option value="Y">YES</option>
+                                <option value="N">NO</option>
                             </select>
                         </div>
                     </div>
@@ -1542,7 +1531,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
             console.log("Ajax Index CourtCases Document Page");
-            var _parameters = "";
             var bootstrapTooltip = $.fn.tooltip.noConflict();
             $.fn.bstooltip = bootstrapTooltip;
             $.fn.autoResize = function () {
@@ -1566,6 +1554,19 @@
                 _parameters = { ClassificationId: _PartialViewName, Mode: $('#HFCaseId').val() };
             else
                 _parameters = { ClassificationId: _PartialViewName, Mode: "C" };
+
+            if ($("#hidIsCorporate").val() == "Y") {
+                $("#div_IsCourtFollow").removeClass("AppHidden").addClass("AppHidden");
+                $("#div_courtCasesMailButton").removeClass("AppHidden").addClass("AppHidden");
+                $('.clsCourtCases').removeClass("active");
+                $(".clsCorporate").addClass("active");
+            }
+            else if ($("#hidIsTranselation").val() == "Y") {
+                $("#div_IsCourtFollow").removeClass("AppHidden").addClass("AppHidden");
+                $("#div_courtCasesMailButton").removeClass("AppHidden").addClass("AppHidden");
+                $('.clsCourtCases').removeClass("active");
+                $(".clsTranselation").addClass("active");
+            }
 
             GetTab(PartialContainer, GetClientClassificationURL, _parameters);
 
@@ -1663,21 +1664,50 @@
             });
 
             $('#selUpdateDateYN').on("change", function () {
-                if ($('#selUpdateDateYN').val() == "Y") {
-                    $('#modal-preSubmit').modal('hide');
+                if ($('#selUpdateDateYN').val() == "")
+                    return false;
+
+                if ($('#selUpdateDateYN').val() == "N") {
+                    $("#hidCourtDecisionChange").val("N");
                 }
-                else if ($('#selUpdateDateYN').val() == "N") {
+                else if ($('#selUpdateDateYN').val() == "Y") {
                     $("#CurrentHearingDate").datepicker("setDate", new Date).datepicker({
                         format: 'dd/mm/yyyy',
                         autoclose: true
                     });
                 }
+                ShowPreSubmit();
             });
 
             $('#selNextHearingDateYN').on("change", function () {
                 if ($('#selNextHearingDateYN').val() == "N") {
                     $('#modal-preSubmit').modal('hide');
                 }
+            });
+
+            $("body").on('propertychange change keyup paste input', "#CourtDecision", function (e) {
+                console.log("body change");
+
+                $("#hidCourtDecisionChange").val("N");
+                if (this.value.length) {
+                    $("#hidCourtDecisionChange").val("Y");
+                }
+
+                $('textarea').autoResize();
+            });
+
+            $("body").on('propertychange change keyup paste input', "#CourtDecisionTranslated", function (e) {
+                if (this.value.length) {
+                    var $hidCourtDecision = $("#hidCourtDecision").val() + '\n';
+                    var $CourtDecisionTranslated = $("#CourtDecisionTranslated").val();
+
+                    $("#CourtDecision").val($hidCourtDecision + $CourtDecisionTranslated);
+                }
+                else {
+                    $("#CourtDecision").val($("#hidCourtDecision").val());
+                }
+
+                $('textarea').autoResize();
             });
         });
     </script>

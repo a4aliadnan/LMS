@@ -111,7 +111,7 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Twilio.Api">
-      <HintPath>..\..\..\Resources\Twilio.Api.dll</HintPath>
+      <HintPath>..\..\Resources\Twilio.Api.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>

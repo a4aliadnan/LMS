@@ -147,7 +147,7 @@
                         <i class="nav-icon fas fa-file text-red"></i><p>CASES REPORT</p>
                     </a>
                 </li>
-                @if (User.IsInRole("VoucherApproval") || User.Identity.Name.Equals("4") || User.Identity.Name.Equals("5") || User.Identity.Name.Equals("6") || User.Identity.Name.Equals("9"))
+                @if (User.IsInRole("VoucherApproval") || User.Identity.Name.Equals("4") || User.Identity.Name.Equals("5") || User.Identity.Name.Equals("6") || User.Identity.Name.Equals("9") || User.Identity.Name.Equals("46"))
                 {
                     <li class="nav-item has-treeview @Html.RouteIf("Report", "menu-open")">
                         <a href="#" class="nav-link">

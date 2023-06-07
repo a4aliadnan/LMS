@@ -221,8 +221,19 @@
         if ($('#FileStatus').val() == OfficeFileStatus.Transfer || $('#FileStatus').val() == OfficeFileStatus.Registered) {
             $("#DIV_REMARKS").empty();
             $('textarea').autoResize();
-        }
 
+            if ($('#FileStatus').val() == OfficeFileStatus.Registered && $('#IsFileStatusRegistered').val() == "N") {
+                $(".clsRegisterNotShow").removeClass("AppHidden").addClass("AppHidden");
+                $('#IsFileStatusRegistered').val("Y");
+            }
+        }
+        else {
+            if ($('#IsFileStatusRegistered').val() == "Y") {
+                $(".clsRegisterNotShow").removeClass("AppHidden");
+                $('#IsFileStatusRegistered').val("N");
+                $('textarea').autoResize();
+            }
+        }
 
         _parameters = { ClassificationId: _PartialViewName, Mode: $("#HFCaseId").val(), DefendentTransfer: "", CaseRegistrationId: $("#hidCaseRegistrationId").val() };
         GetTab(PartialContainer, GetClientClassificationURL, _parameters);

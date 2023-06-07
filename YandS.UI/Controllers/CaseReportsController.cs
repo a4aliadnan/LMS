@@ -18,7 +18,7 @@ namespace YandS.UI.Controllers
         public ActionResult CourtCasesDetail()
         {
             var modal = new RepCaseParameterForm();
-            ViewBag.ViewToLoad = "_litigation";
+            ViewBag.ViewToLoad = "_beforeCourt";
             return View(modal);
         }
 
@@ -197,7 +197,7 @@ namespace YandS.UI.Controllers
                         ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
                         ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
                         //ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
-                        ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc");
+                        ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(), "Mst_Value", "Mst_Desc");
                         ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
                         ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
                         ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", "1");
@@ -292,7 +292,7 @@ namespace YandS.UI.Controllers
                 ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
                 ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
                 //ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
-                ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc");
+                ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(), "Mst_Value", "Mst_Desc");
                 ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
                 ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
                 ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", "1");
@@ -401,7 +401,7 @@ namespace YandS.UI.Controllers
                 ViewBag.AgainstCode = new SelectList(Helper.GetCaseAgainst(), "Mst_Value", "Mst_Desc");
                 ViewBag.CaseLevelCode = new SelectList(Helper.GetCaseLevelList("A"), "Mst_Value", "Mst_Desc");
                 //ViewBag.EnforcementlevelId = new SelectList(Helper.GetCurEnfcLevel(), "Mst_Value", "Mst_Desc");
-                ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc");
+                ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(), "Mst_Value", "Mst_Desc");
                 ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("1"), "Mst_Value", "Mst_Desc");
                 ViewBag.CaseTypeCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.CaseType), "Mst_Value", "Mst_Desc");
                 ViewBag.CaseStatus = new SelectList(Helper.GetStatusCodeList(false, StatusCodes), "Mst_Value", "Mst_Desc", "1");

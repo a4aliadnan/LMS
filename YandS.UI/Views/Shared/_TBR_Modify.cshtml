@@ -208,7 +208,7 @@
                 </div>
             </div>
             <div id="DIV_INVESTMENT_BANNER" class="card-header GeneralActive AppHidden">
-                <div class="row">
+                <div class="row clsRegisterNotShow">
                     <div class="col-12 text-center">
                         <h3><span>APPEAL WITHIN </span><span class="YandSTitleSpacing">(15 يوم)</span><span>مدةالإستئناف</span></h3>
 
@@ -219,7 +219,7 @@
                 <div class="card-body">
                     @if (int.Parse(Model.ActionLevel) == 2)
                     {
-                        <div class="row">
+                        <div class="row clsRegisterNotShow">
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="DepartmentType">INVESTMENT تبسيط الإجراءات</label>
@@ -239,7 +239,7 @@
                         {
                             @Html.HiddenFor(model => model.EnforcementDispute)
 
-                            <div class="row">
+                            <div class="row clsRegisterNotShow">
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="DisputeLevel">ENFORCEMENT DISPUTE</label>
@@ -260,7 +260,7 @@
                             @Html.HiddenFor(model => model.DisputeType)
                         }
                     }
-                    <div class="row">
+                    <div class="row clsRegisterNotShow">
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="FormPrintWorkRequired">WORK REQUIRED العمل المطلوب</label>
@@ -319,3 +319,4 @@
 <input type="hidden" id="hidOfficeProcedure" value="@Model.OfficeProcedure" />
 <input type="hidden" id="hidFormPrintLastDate" value="@strFormPrintLastDate" />
 <input type="hidden" id="hidFileStatusChanged" value="N" />
+<input type="hidden" id="IsFileStatusRegistered" value="N" />

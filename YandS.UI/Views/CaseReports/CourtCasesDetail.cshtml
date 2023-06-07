@@ -177,10 +177,10 @@
         <div style="padding-bottom:10px;" class="col-sm-12">
             <div class="row">
                 <div class="col">
-                    <button type="button" id="_beforeCourt" style="font-size: 1.25rem !important;" class="btn btn-block btn-lg beforeCourt navButton">SHORT DATA</button>
+                    <button type="button" id="_beforeCourt" style="font-size: 1.25rem !important;" class="btn btn-block btn-lg beforeCourt beforeCourtActive navButton">SHORT DATA</button>
                 </div>
                 <div class="col">
-                    <button type="button" id="_litigation" style="font-size: 1.25rem !important;" class="btn btn-block btn-lg litigation litigationActive navButton">LITIGATION</button>
+                    <button type="button" id="_litigation" style="font-size: 1.25rem !important;" class="btn btn-block btn-lg litigation navButton">LITIGATION</button>
                 </div>
                 <div class="col">
                     <button type="button" id="_enforcement" style="font-size: 1.25rem !important;" class="btn btn-block btn-lg enforcement navButton">ENFORCEMENT</button>
@@ -229,8 +229,9 @@
             console.log("Reporting Case Detail form ");
             var _PartialViewName = $("#txtViewToLoad").val();// "_litigation";
             console.log(_PartialViewName);
+            $("#PartialViewName").val(_PartialViewName);
 
-            if (_PartialViewName == "_litigation") {
+            if (_PartialViewName == "_beforeCourt") {
                 _parameters = { PartialViewName: _PartialViewName };
 
                 GetPartialView($("#PartialViewDetail"), GetPartialViewURL, _parameters);

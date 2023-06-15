@@ -1747,18 +1747,18 @@ namespace YandS.UI.Controllers
                     db.Entry(courtCases).Entity.FinanceFileClosureDate = modal.FinanceFileClosureDate;
                 }
 
-                db.Entry(courtCases).Entity.ReceiveLevelCode = modal.ReceiveLevelCode;
-                db.Entry(courtCases).Entity.CaseTypeCode = modal.CaseTypeCode;
-                db.Entry(courtCases).Entity.AgainstCode = modal.AgainstCode;
-                db.Entry(courtCases).Entity.ClaimAmount = modal.ClaimAmount;
-                db.Entry(courtCases).Entity.OmaniExp = modal.OmaniExp;
-                db.Entry(courtCases).Entity.ClientCaseType = modal.ClientCaseType;
-                db.Entry(courtCases).Entity.AccountContractNo = modal.AccountContractNo;
-                db.Entry(courtCases).Entity.ClientFileNo = modal.ClientFileNo;
-                db.Entry(courtCases).Entity.ODBBankBranch = modal.ODBBankBranch;
-                db.Entry(courtCases).Entity.LoanManager = modal.LoanManager;
-                db.Entry(courtCases).Entity.GovernorateId = modal.GovernorateId;
-                db.Entry(courtCases).Entity.ReOpenEnforcement = modal.ReOpenEnforcement;
+                //db.Entry(courtCases).Entity.ReceiveLevelCode = modal.ReceiveLevelCode;
+                //db.Entry(courtCases).Entity.CaseTypeCode = modal.CaseTypeCode;
+                //db.Entry(courtCases).Entity.AgainstCode = modal.AgainstCode;
+                //db.Entry(courtCases).Entity.ClaimAmount = modal.ClaimAmount;
+                //db.Entry(courtCases).Entity.OmaniExp = modal.OmaniExp;
+                //db.Entry(courtCases).Entity.ClientCaseType = modal.ClientCaseType;
+                //db.Entry(courtCases).Entity.AccountContractNo = modal.AccountContractNo;
+                //db.Entry(courtCases).Entity.ClientFileNo = modal.ClientFileNo;
+                //db.Entry(courtCases).Entity.ODBBankBranch = modal.ODBBankBranch;
+                //db.Entry(courtCases).Entity.LoanManager = modal.LoanManager;
+                //db.Entry(courtCases).Entity.GovernorateId = modal.GovernorateId;
+                //db.Entry(courtCases).Entity.ReOpenEnforcement = modal.ReOpenEnforcement;
 
                 db.Entry(courtCases).State = EntityState.Modified;
                 db.SaveChanges();
@@ -3212,6 +3212,8 @@ namespace YandS.UI.Controllers
                                 RetModel.CourtDecision = courtCases.CourtDecision;
 
                                 ViewBag.hidCourtDecision = courtCases.CourtDecision;
+                                //var CreadFileName = Path.Combine(Helper.GetTemplateRoot, @"virtual-sylph-389717-f865ac5800e8.json");
+                                //var client = TranslationClient.Create(Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(CreadFileName));
 
                                 //// Set up the Arabic text
                                 //string arabicText = courtCases.CourtDecision;

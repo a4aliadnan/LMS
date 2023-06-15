@@ -851,7 +851,7 @@
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? StatusDate { get; set; }
 
-        [Display(Name = "FILE STATUS")]
+        [Display(Name = "REASON سبب الغلق")]
         public string ReasonCode { get; set; } //Dropdown Case Status
 
         [Display(Name = "CURRENT CASE LEVEL")]

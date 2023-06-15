@@ -1257,7 +1257,7 @@
     function ValidateTranslation() {
         console.log("ValidateTranslation()");
         NotValid = false;
-        
+
         if ($("#CourtDecisionTranslated").val() == "") {
             ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER TRANSELATION" : ValidationMessage + "<br />" + "PLEASE ENTER TRANSELATION";
             NotValid = true;
@@ -1685,30 +1685,30 @@
                 }
             });
 
-            $("body").on('propertychange change keyup paste input', "#CourtDecision", function (e) {
-                console.log("body change");
+            //$("body").on('propertychange change keyup paste input', "#CourtDecision", function (e) {
+            //    console.log("body change");
 
-                $("#hidCourtDecisionChange").val("N");
-                if (this.value.length) {
-                    $("#hidCourtDecisionChange").val("Y");
-                }
+            //    $("#hidCourtDecisionChange").val("N");
+            //    if (this.value.length) {
+            //        $("#hidCourtDecisionChange").val("Y");
+            //    }
 
-                $('textarea').autoResize();
-            });
+            //    $('textarea').autoResize();
+            //});
 
-            $("body").on('propertychange change keyup paste input', "#CourtDecisionTranslated", function (e) {
-                if (this.value.length) {
-                    var $hidCourtDecision = $("#hidCourtDecision").val() + '\n';
-                    var $CourtDecisionTranslated = $("#CourtDecisionTranslated").val();
+            //$("body").on('propertychange change keyup paste input', "#CourtDecision", function (e) {
+            //    if (this.value.length) {
+            //        var $hidCourtDecision = $("#hidCourtDecision").val() + '\n';
+            //        var $CourtDecisionTranslated = $("#CourtDecision").val();
 
-                    $("#CourtDecision").val($hidCourtDecision + $CourtDecisionTranslated);
-                }
-                else {
-                    $("#CourtDecision").val($("#hidCourtDecision").val());
-                }
+            //        $("#CourtDecisionTranslated").val(this.value);
+            //    }
+            //    else {
+            //        $("#CourtDecisionTranslated").val($("#hidCourtDecision").val());
+            //    }
 
-                $('textarea').autoResize();
-            });
+            //    $('textarea').autoResize();
+            //});
         });
     </script>
 }

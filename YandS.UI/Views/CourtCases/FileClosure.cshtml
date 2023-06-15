@@ -149,135 +149,6 @@
                         @Html.HiddenFor(model => model.btnSave)
 
                         <div class="card card-secondary">
-                            <div class="card-header">
-                                <div class="text-center">
-                                    <span class="h3">BASIC INFORMATION المعلومات الأساسية</span>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.ReceiveLevelCode)
-                                            @Html.DropDownList("ReceiveLevelCode", null, htmlAttributes: new { @class = "form-control select2bs4", @tabindex = "1" })
-                                        </div>
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.ClaimAmount)
-                                            @Html.EditorFor(model => model.ClaimAmount, new { htmlAttributes = new { @class = "form-control", @tabindex = "4" } })
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="row">
-                                                <label for="AccountContractNo"><span id="lblAccountContractNo">A/C No</span></label>
-                                                <div class="input-group mb-3">
-                                                    @Html.EditorFor(model => model.AccountContractNo, new { htmlAttributes = new { @class = "form-control", @tabindex = "7", onblur = "fnCheckDuplicate(this)" } })
-                                                    <div class="input-group-append">
-                                                        <button type="button" id="btn-AccountContractNo" class="btn btn-warning" onclick="generate_modal_body('AccountContractNo')">CHECK</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 ClientODB AppHidden">
-                                            <div class="row">
-                                                @Html.LabelFor(model => model.ClientCaseType)
-                                                <div class="input-group mb-3">
-                                                    @Html.DropDownList("ClientCaseType", null, htmlAttributes: new { @class = "form-control select2bs4", @tabindex = "10" })
-                                                    <div class="input-group-append">
-                                                        <button type="button" class="btn btn-info AddNewMaster" id="285">
-                                                            ADD
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.CaseTypeCode)
-                                            @Html.DropDownList("CaseTypeCode", null, htmlAttributes: new { @class = "form-control select2bs4", @tabindex = "2" })
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="row">
-                                                @Html.LabelFor(model => model.OmaniExp)
-                                                <div class="input-group mb-3">
-                                                    @Html.DropDownList("OmaniExp", null, htmlAttributes: new { @class = "form-control select2bs4", @tabindex = "5" })
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="row">
-                                                <label for="ClientFileNo">CLIENT FILE No</label>
-                                                <div class="input-group mb-3">
-                                                    @Html.EditorFor(model => model.ClientFileNo, new { htmlAttributes = new { @class = "form-control", @tabindex = "8", onblur = "fnCheckDuplicate(this)" } })
-                                                    <div class="input-group-append">
-                                                        <button type="button" id="btn-ClientFileNo" class="btn btn-warning" onclick="generate_modal_body('ClientFileNo')">CHECK</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 ClientODB AppHidden">
-                                            <div class="row">
-                                                @Html.LabelFor(model => model.ODBBankBranch)
-                                                <div class="input-group mb-3">
-                                                    @Html.DropDownList("ODBBankBranch", null, htmlAttributes: new { @class = "form-control select2bs4", @tabindex = "11" })
-                                                    <div class="input-group-append">
-                                                        <button type="button" class="btn btn-info AddNewMaster" id="18">
-                                                            ADD
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.AgainstCode)
-                                            @Html.DropDownList("AgainstCode", null, htmlAttributes: new { @class = "form-control select2bs4", @tabindex = "3" })
-                                        </div>
-                                        <div class="form-group">
-                                            <label>GOVERNORATE المحافظة</label>
-                                            @Html.DropDownList("GovernorateId", null, htmlAttributes: new { @class = "form-control select2bs4", @tabindex = "6" })
-                                        </div>
-                                        <div class="form-group">
-                                            <label>RE-OPEN ENFC  إعادة فتح ملف التنفيذ</label>
-                                            @Html.DropDownList("ReOpenEnforcement", null, htmlAttributes: new { @class = "form-control select2bs4", @tabindex = "9" })
-                                        </div>
-                                        <div class="col-sm-12 ClientODB AppHidden">
-                                            <div class="row">
-                                                @Html.LabelFor(model => model.LoanManager)
-                                                <div class="input-group mb-3">
-                                                    @Html.DropDownList("LoanManager", null, htmlAttributes: new { @class = "form-control select2bs4", @tabindex = "12" })
-                                                    <div class="input-group-append">
-                                                        <button type="button" class="btn btn-info AddNewMaster" id="428">
-                                                            ADD
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="card card-secondary">
-                                <div class="card-header ArabicInfoBanner">
-                                    <div class="text-center">
-                                        <span class="h3">LITIGATION FILE CLOSURE</span>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <div class="form-group">
-                                                @Html.LabelFor(model => model.LitigationFileClosureDate)
-                                                @Html.EditorFor(model => model.LitigationFileClosureDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer text-center">
-                                    <button type="button" id="btnLitigationSave" class="btn btn-secondary btnSave"><i class="fas fa-save"></i> SAVE</button>
-                                </div>
-                            </div>
                             <div class="card card-secondary">
                                 <div class="card-header FinalClosureBanner">
                                     <div class="text-center">
@@ -519,55 +390,6 @@
             return new Date(parts[2], parts[1] - 1, parts[0]);
         }
 
-        function ValidateBasic() {
-            console.log("ValidateBasic()");
-
-            if ($("#ReceiveLevelCode").val() == "0") {
-                ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT RECEIVE LEVEL" : ValidationMessage + "<br />" + "PLEASE SELECT RECEIVE LEVEL";
-                NotValid = true;
-            }
-
-            if ($("#CaseTypeCode").val() == "0") {
-                ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT CASE TYPE" : ValidationMessage + "<br />" + "PLEASE SELECT CASE TYPE";
-                NotValid = true;
-            }
-
-            if ($("#AgainstCode").val() == "0") {
-                ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT AGAINST" : ValidationMessage + "<br />" + "PLEASE SELECT AGAINST";
-                NotValid = true;
-            }
-
-            if ($("#OmaniExp").val() == "0") {
-                ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT NATIONALITY" : ValidationMessage + "<br />" + "PLEASE SELECT NATIONALITY";
-                NotValid = true;
-            }
-
-            if ($("#GovernorateId").val() == "0") {
-                ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT GOVERNORATE" : ValidationMessage + "<br />" + "PLEASE SELECT GOVERNORATE";
-                NotValid = true;
-            }
-
-            if ($("#ClientCode").val() == "10") {
-                if ($("#ClientCaseType").val() == "0") {
-                    ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT ODB LOAN TYPE" : ValidationMessage + "<br />" + "PLEASE SELECT ODB LOAN TYPE";
-                    NotValid = true;
-                }
-
-                if ($("#ODBBankBranch").val() == "0") {
-                    ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT ODB BANK BRANCH" : ValidationMessage + "<br />" + "PLEASE SELECT ODB BANK BRANCH";
-                    NotValid = true;
-                }
-
-                if ($("#LoanManager").val() == "0") {
-                    ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT LOAN MANAGER" : ValidationMessage + "<br />" + "PLEASE SELECT LOAN MANAGER";
-                    NotValid = true;
-                }
-            }
-
-            return NotValid;
-
-        }
-
         function ProcessAddClient() {
             if ($("#MstDesc").val() != "") {
                 console.log(parseInt($("#MstParentId").val()));
@@ -726,7 +548,6 @@
                 ValidationMessage = "";
                 NotValid = false;
 
-                NotValid = ValidateBasic();
 
                 if ($("#btnSave").val() == "btnLitigationSave") {
                     if ($("#LitigationFileClosureDate").val() == "") {

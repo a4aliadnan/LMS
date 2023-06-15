@@ -1,6 +1,30 @@
 ﻿<script type="text/javascript">
     var SubmitFormURL = '@Url.Action("submitTranslation", "CommonTask", new { area = string.Empty })';
+
+    function translateText() {
+
+        var sourceText = document.getElementById("CourtDecision").value;
+        var sourceLang = 'ar';
+        var targetLang = 'en';
+
+        var url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + sourceLang + "&tl=" + targetLang + "&dt=t&q=" + encodeURI(sourceText);
+
+        $.getJSON(url, function (data) {
+
+            var translatedText = data[0][0][0];
+
+            var $hidCourtDecision = $("#hidCourtDecision").val() + '\n';
+            var $CourtDecisionTranslated = $hidCourtDecision + translatedText;
+
+            document.getElementById("CourtDecision").value = $CourtDecisionTranslated;
+            $('textarea').autoResize();
+        });
+
+    }
     $(document).ready(function () {
+
+        translateText();
+
         $('textarea').autoResize();
         $('#btnSubmitForm').on("click", function () {
             ValidationMessage = "";
@@ -64,20 +88,20 @@
         <div class="card-body">
             <div style="padding-top:10px;padding-bottom:10px;" class="col-sm-12">
                 <div class="row">
-                    <div class="col">
+                    @*<div class="col">
                         <div class="form-group">
                             <label for="CourtDecisionTranslated">TRANSELATION</label>
                             <div class="form-group">
                                 @Html.TextAreaFor(model => model.CourtDecisionTranslated, 1, 200, new { @class = "form-control", @dir = "auto" })
                             </div>
                         </div>
-                    </div>
+                    </div>*@
                     <div class="col">
                         <input type="hidden" id="hidCourtDecision" value="@ViewBag.hidCourtDecision" />
                         <div class="form-group">
                             <label for="CourtDecision">UPDATES تحديث</label>
                             <div class="form-group">
-                                @Html.TextAreaFor(model => model.CourtDecision, 1, 200, new { @class = "form-control", @dir = "auto", @readonly = "readonly" })
+                                @Html.TextAreaFor(model => model.CourtDecision, 1, 200, new { @class = "form-control", @dir = "auto" })
                             </div>
                         </div>
                     </div>

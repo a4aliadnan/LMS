@@ -15,7 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YandS.UI</RootNamespace>
     <AssemblyName>YandS.UI</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
@@ -27,6 +27,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>3.4</TypeScriptToolsVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,16 +57,14 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
@@ -110,6 +109,7 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="Twilio.Api">
       <HintPath>..\..\Resources\Twilio.Api.dll</HintPath>
     </Reference>
@@ -3536,6 +3536,7 @@
     <Content Include="DBScripts\Queries\GetPVForIndexQuery.sql" />
     <Content Include="DBScripts\Queries\IdentityServerUpdateQuery.sql" />
     <Content Include="DBScripts\Queries\InsertCaseRegister.sql" />
+    <Content Include="DBScripts\Queries\InsertTranslation.sql" />
     <Content Include="DBScripts\Queries\InvoiceImportScript.sql" />
     <Content Include="DBScripts\Queries\iNVOICENOTIFICATION.sql" />
     <Content Include="DBScripts\Queries\iNVOICENOTIFICATION2.sql" />
@@ -4204,6 +4205,7 @@
     <Content Include="Template\ShortDataEN.xlsx" />
     <Content Include="Template\BD_REPORT.xlsx" />
     <Content Include="Views\Finance\_CaseInvoiceFeeCalcPrint - Copy %284%29.cshtml" />
+    <Content Include="Template\virtual-sylph-389717-f865ac5800e8.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

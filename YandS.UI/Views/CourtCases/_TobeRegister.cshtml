@@ -245,39 +245,43 @@
             NotValid = true;
         }
 
-        if ($("#ActionLevel").val() == "2") {
-            if ($("#DepartmentType").val() == "0") {
-                ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT INVESTMENT" : ValidationMessage + "<br />" + "PLEASE SELECT INVESTMENT";
-                NotValid = true;
-
-            }
-
-            if ($("#FormPrintLastDate").val() == "") {
-                ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER LAST DATE" : ValidationMessage + "<br />" + "PLEASE ENTER LAST DATE";
-                NotValid = true;
-
-            }
-            else {
-                var LastDate = $("#FormPrintLastDate").val();
-                var dtLastDate = moment(moment(LastDate, 'DD/MM/YYYY').format("YYYY-MM-DD"));
-                var currDate = moment(moment(new Date()).format("YYYY-MM-DD"));
-                var result = dtLastDate.diff(currDate, 'days');
-
-                console.log(result);
-                if ($("#DepartmentType").val() == "1" && result > 20) {
-                    ValidationMessage = ValidationMessage == "" ? "LAST DATE CANNOT BE GREATER THEN 20 DAYS" : ValidationMessage + "<br />" + "LAST DATE CANNOT BE GREATER THEN 20 DAYS";
+        if ($("#FileStatus").val() == OfficeFileStatus.Registered) {
+            console.log("NO Validate REGISTERED");
+        }
+        else {
+            if ($("#ActionLevel").val() == "2") {
+                if ($("#DepartmentType").val() == "0") {
+                    ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT INVESTMENT" : ValidationMessage + "<br />" + "PLEASE SELECT INVESTMENT";
                     NotValid = true;
 
                 }
 
-                if ($("#DepartmentType").val() == "2" && result > 10) {
-                    ValidationMessage = ValidationMessage == "" ? "LAST DATE CANNOT BE GREATER THEN 10 DAYS" : ValidationMessage + "<br />" + "LAST DATE CANNOT BE GREATER THEN 10 DAYS";
+                if ($("#FormPrintLastDate").val() == "") {
+                    ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER LAST DATE" : ValidationMessage + "<br />" + "PLEASE ENTER LAST DATE";
                     NotValid = true;
 
+                }
+                else {
+                    var LastDate = $("#FormPrintLastDate").val();
+                    var dtLastDate = moment(moment(LastDate, 'DD/MM/YYYY').format("YYYY-MM-DD"));
+                    var currDate = moment(moment(new Date()).format("YYYY-MM-DD"));
+                    var result = dtLastDate.diff(currDate, 'days');
+
+                    console.log(result);
+                    if ($("#DepartmentType").val() == "1" && result > 20) {
+                        ValidationMessage = ValidationMessage == "" ? "LAST DATE CANNOT BE GREATER THEN 20 DAYS" : ValidationMessage + "<br />" + "LAST DATE CANNOT BE GREATER THEN 20 DAYS";
+                        NotValid = true;
+
+                    }
+
+                    if ($("#DepartmentType").val() == "2" && result > 10) {
+                        ValidationMessage = ValidationMessage == "" ? "LAST DATE CANNOT BE GREATER THEN 10 DAYS" : ValidationMessage + "<br />" + "LAST DATE CANNOT BE GREATER THEN 10 DAYS";
+                        NotValid = true;
+
+                    }
                 }
             }
         }
-
         
 
         return NotValid;

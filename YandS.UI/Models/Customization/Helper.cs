@@ -9,6 +9,7 @@ using YandS.DAL;
 using YandS.UI.Models;
 using System.Xml.Linq;
 using System.Data.Entity;
+using Google.Cloud.Translation.V2;
 
 namespace YandS.UI
 {
@@ -4160,5 +4161,25 @@ namespace YandS.UI
             return RetResult;
         }
 
+        public static string GetTranslatedText(string textToTranslate, string textToLang = "en", string textFromLang = "ar")
+        {
+            string translatedTextReturn = string.Empty;
+            try
+            {
+                var client = TranslationClient.Create(Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(Path.Combine(GetTemplateRoot, @"virtual-sylph-389717-f865ac5800e8.json")));
+                
+                TranslationResult translationResult = client.TranslateText(textToTranslate, textToLang, textFromLang, TranslationModel.NeuralMachineTranslation);
+
+                translatedTextReturn = translationResult.TranslatedText;
+                
+            }
+            catch(Exception e)
+            {
+                translatedTextReturn = e.Message;
+                return string.Empty;
+            }
+
+            return translatedTextReturn;
+        }
     }
 }

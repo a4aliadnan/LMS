@@ -3212,8 +3212,13 @@ namespace YandS.UI.Controllers
                                 RetModel.CourtDecision = courtCases.CourtDecision;
 
                                 ViewBag.hidCourtDecision = courtCases.CourtDecision;
-                                //var CreadFileName = Path.Combine(Helper.GetTemplateRoot, @"virtual-sylph-389717-f865ac5800e8.json");
-                                //var client = TranslationClient.Create(Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(CreadFileName));
+
+                                string englishText = Helper.GetTranslatedText(courtCases.CourtDecision);
+
+                                if (!string.IsNullOrEmpty(englishText))
+                                {
+                                    RetModel.CourtDecision = ViewBag.hidCourtDecision + Environment.NewLine + englishText;
+                                }
 
                                 //// Set up the Arabic text
                                 //string arabicText = courtCases.CourtDecision;

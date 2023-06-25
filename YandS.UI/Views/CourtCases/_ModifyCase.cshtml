@@ -948,7 +948,7 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                     <div class="col-sm-12">
                         <div class="row">
                             <label for="SessionClientId">CLIENT الموكل</label>
@@ -963,13 +963,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                     <div class="form-group">
                         <label for="SessionRollDefendentName">DEFENDANT الخصم</label>
                         @Html.EditorFor(model => model.SessionRollDefendentName, new { htmlAttributes = new { @class = "form-control" } })
                     </div>
                 </div>
-
+                <div class="col-sm-2">
+                    <label class="" for="StatusCode">TRANSELATION</label>
+                    @Html.DropDownList("Translation", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                </div>
             </div>
         </div>
     </div>

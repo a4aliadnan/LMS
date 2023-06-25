@@ -633,6 +633,7 @@ namespace YandS.UI.Controllers
                 ViewModal.OfficeFileStatus = courtCases.OfficeFileStatus;
                 ViewModal.CorporateFee = courtCases.CorporateFee;
                 ViewModal.CorporateWorkDetail = courtCases.CorporateWorkDetail;
+                ViewModal.Translation = courtCases.Translation;
 
                 #region BEFORE COURT
 
@@ -1016,6 +1017,7 @@ namespace YandS.UI.Controllers
 
             db.Entry(courtCases).Entity.SessionClientId = RegModal.SessionClientId;
             db.Entry(courtCases).Entity.SessionRollDefendentName = RegModal.SessionRollDefendentName;
+            db.Entry(courtCases).Entity.Translation = RegModal.Translation;
 
             db.Entry(courtCases).Entity.CaseLevelCode = RegModal.CaseLevelCode;
 
@@ -1118,6 +1120,12 @@ namespace YandS.UI.Controllers
 
             db.Entry(courtCases).State = EntityState.Modified;
             db.SaveChanges();
+
+
+            if (RegModal.Translation == "1")
+            {
+                Helper.CreateTranslation(RegModal, "ToBeRegisterVM");
+            }
 
             if (RegModal.CaseLevelCode == "1")
             {
@@ -2335,6 +2343,7 @@ namespace YandS.UI.Controllers
                     ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
                     ViewBag.CourtFollow = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.CourtFollow);
                     ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
+                    ViewBag.Translation = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.Translation);
 
                     if (ViewModal.UpdatePV_Type == "ENF_UPDATE_SESSION")
                     {
@@ -3034,6 +3043,7 @@ namespace YandS.UI.Controllers
                             ViewBag.OmaniExp = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.OmaniExp), "Mst_Value", "Mst_Desc", ViewModal.OmaniExp);
                             ViewBag.ClientReply = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.ClientReply);
                             ViewBag.TransportationSource = new SelectList(Helper.GetTransSourceSelect(), "Mst_Value", "Mst_Desc", ViewModal.TransportationSource);
+                            ViewBag.Translation = new SelectList(Helper.GetYesForSelect(), "Mst_Value", "Mst_Desc", ViewModal.Translation);
 
                             DataTable _result = Helper.GetDetailTable("CASEHISTTEXT", 0, ViewModal.CaseId);
 
@@ -3219,23 +3229,6 @@ namespace YandS.UI.Controllers
                                 {
                                     RetModel.CourtDecision = ViewBag.hidCourtDecision + Environment.NewLine + englishText;
                                 }
-
-                                //// Set up the Arabic text
-                                //string arabicText = courtCases.CourtDecision;
-
-                                //System.Text.Encoding originalEncoding = System.Text.Encoding.GetEncoding("windows-1256");
-
-                                //// Convert the string to UTF-8
-                                //byte[] utf8Bytes = System.Text.Encoding.Convert(originalEncoding, System.Text.Encoding.UTF8, originalEncoding.GetBytes(arabicText));
-                                //string utf8String = System.Text.Encoding.UTF8.GetString(utf8Bytes);
-                                //// Create a CultureInfo object for Arabic
-                                //System.Globalization.CultureInfo arabicCulture = new System.Globalization.CultureInfo("ar");
-
-                                //// Use the TextInfo object to convert the Arabic text to English
-                                //System.Globalization.TextInfo arabicTextInfo = arabicCulture.TextInfo;
-                                //string englishText = arabicTextInfo.ToTitleCase(utf8String);
-
-                                //RetModel.CourtDecisionTranslated = englishText;
 
                                 return PartialView(PartialViewName, RetModel);
                             }
@@ -3549,7 +3542,7 @@ namespace YandS.UI.Controllers
 
                 if (Courtid == "1")
                 {
-                    var CaseRegistered = db.CaseRegistration.Where(w => w.CaseId == CaseId && w.ActionLevel == "1").FirstOrDefault();
+                    var CaseRegistered = db.CaseRegistration.Where(w => w.CaseId == CaseId && w.ActionLevel == "1" && w.EnforcementDispute == "0" && !w.IsDeleted).FirstOrDefault();
 
                     if (CaseRegistered != null)
                     {

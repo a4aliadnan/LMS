@@ -1,4 +1,4 @@
-﻿<script type="text/javascript">
+<script type="text/javascript">
     var table;
     var dataForTable = "CASE_MANAGEMENT";
     var SP_NAME = "CASE_MANAGEMENT-GET_CASE_DETAIL";
@@ -32,8 +32,10 @@
                 { data: 'OfficeFileNo', name: 'OfficeFileNo', autoWidth: false },
                 { data: 'ClientName', name: 'ClientName', autoWidth: false },
                 { data: 'Defendant', name: 'Defendant', autoWidth: false },
+                { data: 'CaseLevelCode', name: 'CaseLevelCode', autoWidth: false },
                 { data: 'CourtRefNo', name: 'CourtRefNo', autoWidth: false, render: function (data) { if (data) return data.split("^ ").join("<br/>"); else return ""; } },
                 { data: 'AccountContractNo', name: 'AccountContractNo', autoWidth: false, render: function (data, type, row) { return FormatAccount_ClientFileNo(row); } },
+                { data: 'FileStatusName', name: 'FileStatusName', autoWidth: false },
                 { data: 'CurrentHearingDate', name: 'CurrentHearingDate', autoWidth: false },
                 { data: 'CourtDecision', name: 'CourtDecision', autoWidth: true },
                 {
@@ -79,10 +81,10 @@
                         else
                             return "";
                     },
-                    targets: [1, 2, 3, 4]
+                    targets: [1, 2, 3, 4, 5, 6]
                 },
                 {
-                    targets: 6, render: function (data) {
+                    targets: 8, render: function (data) {
                         if (data) {
                             return "<div dir = 'auto' class='text-right text-wrap'>" + data.replace(/(\r\n|\n|\r)/g, "<br />"); +"</div>";
                         }
@@ -97,7 +99,7 @@
                         else
                             return "";
                     },
-                    targets: 5
+                    targets: 7
                 }
             ],
             "drawCallback": function (settings) {
@@ -165,8 +167,10 @@
                     <th style="width:35px !important;" class="all VMiddle text-center">FILE<br />NO.</th>
                     <th style="width:150px !important;" class="VMiddle text-center">CLIENT NAME</th>
                     <th style="width:150px !important;" class="VMiddle text-center">DEFENDANT /<br />PLAINTIFF NAME</th>
+                    <th style="width:80px !important;" class="VMiddle text-center">CASE LEVEL</th>
                     <th style="width:80px !important;" class="VMiddle text-center">CASE NO</th>
                     <th style="width:200px !important;" class="VMiddle text-center">A/C NO<br /><span class="emphasized">CLIENT FILE NO</span></th>
+                    <th style="width:100px !important;" class="VMiddle text-center">FILE STATUS</th>
                     <th style="width:60px !important;" class="VMiddle text-center">UPDATE DATE<br />تاريخ التحديث</th>
                     <th class="VMiddle text-center">COURT DECISION<br />قرار المحكمة</th>
                     <th style="width:15px !important;" class="all"></th>

@@ -22,7 +22,57 @@ DECLARE
 @TableQuery			NVARCHAR(MAX),
 @AdditionalWhere	NVARCHAR(MAX) = ' where 1=1',
 @QueryFirstPart		NVARCHAR(MAX),
-@SelectColumns		NVARCHAR(MAX) = '
+@SelectColumns		NVARCHAR(MAX),
+@SummaryQuery		NVARCHAR(MAX),
+@JoinTables			NVARCHAR(MAX),
+@Where				NVARCHAR(MAX)
+
+
+BEGIN
+
+	IF @CaseLevelCode = '5'
+		begin
+			SET @SelectColumns = '
+			FROM (
+				  SELECT 
+				  CC.CaseId
+				 ,case when CR.ActionLevel = ''4'' then CR.CaseRegistrationId else CCD.DetailId end  as DetailId
+				 ,CC.OfficeFileNo,ClientMas.Mst_Desc as ClientName,CC.Defendant,CC.AccountContractNo,CC.ClientFileNo
+				 ,case when CR.ActionLevel = ''4'' then ''SUPREME DISPUTE'' else ''SUPREME'' end  AS CaseLevelCode
+				 ,CNW.CASE_NO as CourtRefNo
+				 ,case when ( CC.OfficeFileStatus = ''0'' OR CC.OfficeFileStatus is null) then NULL else FileStatus.Mst_Desc end as FileStatusName
+				 ,CC.CurrentHearingDate, CC.CourtDecision, CC.NextHearingDate, CC.OfficeFileStatus
+				 ,ISNULL(SR.SessionRollId,0) as SessionRollId
+				 from CourtCases as CC
+				 '
+
+			SET @SummaryQuery = '
+					SELECT
+					COUNT(*) as recordsTotal,
+					count(case when left(CC.OfficeFileNo,1) = ''M'' then 1 end) MCTRecords,
+					count(case when left(CC.OfficeFileNo,1) = ''S'' then 1 end) SLLRecords
+					from CourtCases as CC
+					'
+
+			SET @JoinTables	= '
+					Inner Join MASTER_S ClientMas on CC.ClientCode = ClientMas.Mst_Value and ClientMas.MstParentId = 241
+					Left  Join CourtCasesDetails CCD on CCD.CaseId = CC.CaseId and CCD.CaseLevelCode = CC.CaseLevelCode
+					Left  join MASTER_S FileStatus on CC.OfficeFileStatus = FileStatus.Mst_Value and FileStatus.MstParentId = 1573 
+					Left  Join CaseNosVW CNW on CNW.CaseId = CC.CaseId
+					Left  Join SessionsRolls SR on SR.CaseId = CC.CaseId and SR.DeletedOn is null
+					Left  Join CaseRegistrations CR on CR.CaseId = CC.CaseId  and CR.IsDeleted = 0 AND CR.ActionLevel = ''4'' AND   CR.DisputeLevel = ''3''
+					'
+
+			SET	@Where = ' 
+					where CC.CaseStatus = ''1''
+					AND	  1 = case when CR.ActionLevel = ''4'' then 1 when CC.CaseLevelCode = ''5'' then 1 else 0 end
+					AND   (LEFT(CC.OfficeFileNo,1) = '''+@Location+''' OR '''+@Location+''' = ''A'')
+					'
+		end
+	ELSE
+		begin
+		
+			SET @SelectColumns = '
 			FROM (
 				  SELECT CC.CaseId,CCD.DetailId,CC.OfficeFileNo,ClientMas.Mst_Desc as ClientName,CC.Defendant,CC.AccountContractNo,CC.ClientFileNo,CC.CaseLevelCode
 						,CNW.CASE_NO as CourtRefNo
@@ -30,29 +80,31 @@ DECLARE
 						,case when ( CC.OfficeFileStatus = ''0'' OR CC.OfficeFileStatus is null) then NULL else FileStatus.Mst_Desc end as FileStatusName
 						,ISNULL(SR.SessionRollId,0) as SessionRollId
 						from CourtCases as CC
-						',
+						'
 
-@SummaryQuery		NVARCHAR(MAX) = '
+			SET @SummaryQuery = '
 									SELECT
 									COUNT(*) as recordsTotal,
 									count(case when left(CC.OfficeFileNo,1) = ''M'' then 1 end) MCTRecords,
 									count(case when left(CC.OfficeFileNo,1) = ''S'' then 1 end) SLLRecords
 									from CourtCases as CC
-									',
-@JoinTables			NVARCHAR(MAX) = ' 
+									'
+
+			SET @JoinTables	= ' 
 									Inner Join MASTER_S ClientMas on CC.ClientCode = ClientMas.Mst_Value and ClientMas.MstParentId = 241
 									Left  Join CourtCasesDetails CCD on CCD.CaseId = CC.CaseId and CCD.CaseLevelCode = CC.CaseLevelCode
 									Left  join MASTER_S FileStatus on CC.OfficeFileStatus = FileStatus.Mst_Value and FileStatus.MstParentId = 1573 
 									Left  Join CaseNosVW CNW on CNW.CaseId = CC.CaseId
 									Left  Join SessionsRolls SR on SR.CaseId = CC.CaseId and SR.DeletedOn is null
-									',
-@Where				NVARCHAR(MAX) = ' 
+									'
+
+			SET	@Where = ' 
 									where CC.CaseStatus = ''1''
 									AND	  CC.CaseLevelCode = '''+@CaseLevelCode+'''
 									AND   (LEFT(CC.OfficeFileNo,1) = '''+@Location+''' OR '''+@Location+''' = ''A'')
 									'
 
-BEGIN
+		end
 
 
 	SET @QueryFirstPart = '

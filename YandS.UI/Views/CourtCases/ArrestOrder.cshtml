@@ -1,7 +1,7 @@
 ﻿<script type="text/javascript">
     var table;
     var dataForTable = "ENF-ARORD";
-    $(document).ready(function () {
+    function LoadResultTable() {
         if (typeof table != 'undefined')
             table.destroy();
 
@@ -34,6 +34,11 @@
                 data: function (d) {
                     d.DataTableName = dataForTable;
                     d.LocationId = $('#txtUserRole').val() == "VoucherApproval" ? $('input[name="rdoLocation"]:checked').val() : $('#txtLocationId').val();
+                    d.CallerName = $('#hidUserName').val();
+                    d.EnfGovernorate = $('#GovernorateId').val();
+                    d.EnfCourtLocation = $('#CourtLocationid').val();
+                    d.EnfClientCode = $('#ClientCode').val();
+
                 }
             },
             "columns": [
@@ -189,8 +194,21 @@
             processbtnLinkClick(_Mode, data);
             return false;
         });
+    }
+
+    $(document).ready(function () {
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        $('#btnPrintResult').on("click", function () {
+            LoadResultTable();
+        });
+
+        LoadResultTable();
     });
 </script>
+@model YandS.UI.Models.ToBeRegisterVM
 <div style="padding-bottom:0px;padding-top:10px;" class="row ArrestOrderActive">
     <div class="col-sm-3 text-left"><h3><span id="MCTTTL"></span></h3></div>
     <div class="col-sm-6 text-center"><h3>ARREST ORDER تفاصيل أمر الحبس الصادر</h3></div>
@@ -199,6 +217,7 @@
 <div style="padding-bottom:0px;padding-top:10px;" class="row ArrestOrderActive">
     <div class="col-sm-12 text-center"><h3><span id="TTL"></span></h3></div>
 </div>
+@Html.Partial("_EnfCommonSearch", Model)
 <div class="row">
     <div style="padding-bottom:0px;padding-top:10px;" class="col-sm-12">
 

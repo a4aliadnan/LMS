@@ -1,4 +1,4 @@
-﻿@model YandS.UI.Models.CaseInvoice
+@model YandS.UI.Models.CaseInvoice
 @if (Model.ClientName.ToUpper().Trim() == "BANK MUSCAT" || Model.ClientName.ToUpper().Trim() == "MEETHAQ ISLAMIC BANKING")
 {
     <tr height="29" style="mso-height-source:userset;height:21.95pt">
@@ -315,6 +315,30 @@ else if (Model.ClientName.ToUpper().Trim() == "OMASCO")
         <td class="auto-style4"></td>
     </tr>
 }
+else if (Model.ClientName.ToUpper().Trim() == "FIRST ABU DHABI BANK")
+{
+    <tr height="29" style="mso-height-source:userset;height:21.95pt">
+        <td class="auto-style3" height="29"></td>
+        <td class="auto-style4"></td>
+        <td class="auto-style5" colspan="23" rowspan="2">FIRST ABU DHABI BANK</td>
+        <td class="auto-style4"></td>
+        <td class="auto-style4"></td>
+    </tr>
+    <tr height="29" style="mso-height-source:userset;height:21.95pt">
+        <td class="auto-style3" height="29"></td>
+        <td class="auto-style4"></td>
+        <td class="auto-style4"></td>
+        <td class="auto-style4"></td>
+    </tr>
+    <tr height="29" style="mso-height-source:userset;height:21.95pt">
+        <td class="auto-style3" height="29"></td>
+        <td class="auto-style4"></td>
+        <td class="auto-style6" colspan="23">VATIN : OM1100005291</td>
+        <td class="auto-style4"></td>
+        <td class="auto-style4"></td>
+    </tr>
+}
+
 else
 {
     <tr height="29" style="mso-height-source:userset;height:21.95pt">

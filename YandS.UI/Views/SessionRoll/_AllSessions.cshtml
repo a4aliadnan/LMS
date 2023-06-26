@@ -50,8 +50,7 @@
                 { data: 'SessionRollDefendentName', name: 'SessionRollDefendentName', autoWidth: true },
                 { data: 'SessionFileStatusDesc', name: 'SessionFileStatusDesc' },
                 { data: 'CourtDecision', name: 'CourtDecision' },
-                { data: 'AccountContractNo', name: 'AccountContractNo' },
-                { data: 'ClientFileNo', name: 'ClientFileNo' },
+                { data: 'AccountContractNo', name: 'AccountContractNo', autoWidth: false, render: function (data, type, row) { return FormatAccount_ClientFileNo(row); } },
                 {
                     data: null,
                     render: function (data, type, row) {
@@ -263,10 +262,9 @@
                 <th style="width:80px !important" class="VMiddle text-center">COURT</th>
                 <th style="width:100px !important" class="VMiddle text-center">CLIENT الموكل</th>
                 <th style="width:100px !important" class="VMiddle text-center">DEF الخصم</th>
-                <th style="width:70px !important" class="VMiddle text-center">FILE STATUS<br />حالة الملف</th>
+                <th style="width:200px !important" class="VMiddle text-center">FILE STATUS<br />حالة الملف</th>
                 <th class="VMiddle">COURT DECISION<br />قرار المحكمة</th>
-                <th class="VMiddle">A/C</th>
-                <th style="width:70px !important" class="VMiddle text-center">CLIENT<br />FILE NO.</th>
+                <th style="width:150px !important;" class="VMiddle text-center">A/C NO<br /><span class="emphasized">CLIENT FILE NO</span></th>
                 <th class="all"></th>
             </tr>
         </thead>

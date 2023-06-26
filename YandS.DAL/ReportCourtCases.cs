@@ -686,7 +686,9 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                                                     };
             return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "GetCourtCaseListForIndex", parameterList).Tables[0].DataTableToList<CourtCaseListForIndex>();
         }
-        public CourtCaseDTView getCourtCaseListWithPaging(int start, string searchvalue, int Length, string SortColumn, string sortDirection, string UserLocation, string DataFor, string CaseLevel, DateTime DateFrom, DateTime DateTo, string CallerName, string EnfCourtLocation, string EnfGovernorate)
+
+
+        public CourtCaseDTView getCourtCaseListWithPaging(int start, string searchvalue, int Length, string SortColumn, string sortDirection, string UserLocation, string DataFor, string CaseLevel, DateTime DateFrom, DateTime DateTo, string CallerName, string EnfCourtLocation, string EnfGovernorate, string EnfClientCode, string EnfStage, string EnfAuctionCode)
         {
             CourtCaseDTView _result = new CourtCaseDTView();
             SqlParameter[] parameterList = new SqlParameter[]
@@ -703,6 +705,10 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                                                          new SqlParameter("@DateTo", DateTo),
                                                          new SqlParameter("@CallerName", CallerName),
                                                          new SqlParameter("@EnfCourtLocation", EnfCourtLocation),
+                                                         new SqlParameter("@EnfGovernorate", EnfGovernorate),
+                                                         new SqlParameter("@EnfClientCode", EnfClientCode),
+                                                         new SqlParameter("@EnfStage", EnfStage),
+                                                         new SqlParameter("@EnfAuctionCode", EnfAuctionCode)
                                                          new SqlParameter("@EnfGovernorate", EnfGovernorate)
                                                     };
 

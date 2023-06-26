@@ -1,4 +1,4 @@
-﻿<script>
+<script>
     var GetSessionRollURL = '@Url.Action("GetTab", "SessionRoll", new { area = string.Empty })';
     var GetCaseDetailURL = '@Url.Action("GetCaseDetail", "SessionRoll", new { area = string.Empty })';
     var CreateMasterTableDetailURL = '@Url.Action("CreateMasterTableDetail", "CommonTask", new { area = string.Empty })';
@@ -95,6 +95,36 @@
             }
         });
     }
+    function FormatAccount_ClientFileNo(row) {
+        var DataToDisplay = "";
+        if (row.AccountContractNo && row.ClientFileNo) {
+            if (row.AccountContractNo.length > 40) {
+                DataToDisplay = row.AccountContractNo.replace(/\W+/g, " ") + "<br />" + "<span class='emphasized'>" + row.ClientFileNo + "</span>";
+                return "<div class='text-wrap'>" + DataToDisplay + "</div>";
+            }
+            else {
+                DataToDisplay = row.AccountContractNo + "<br />" + "<span class='emphasized'>" + row.ClientFileNo + "</span>";
+                return "<div class='text-wrap'>" + DataToDisplay + "</div>";
+            }
+        }
+        else if (row.AccountContractNo && row.ClientFileNo == null) {
+            if (row.AccountContractNo.length > 40) {
+                DataToDisplay = row.AccountContractNo.replace(/\W+/g, " ");
+                return "<div class='text-wrap'>" + DataToDisplay + "</div>";
+            }
+            else {
+                DataToDisplay = row.AccountContractNo;
+                return "<div class='text-wrap'>" + DataToDisplay + "</div>";
+            }
+        }
+        else if (row.AccountContractNo == null && row.ClientFileNo) {
+            DataToDisplay = "<span class='emphasized'>" + row.ClientFileNo + "</span>";
+            return "<div class='text-wrap'>" + DataToDisplay + "</div>";
+        }
+
+        return DataToDisplay;
+    }
+
 </script>
 <div class="modal fade" id="SessionNotesPopupModal">
     <div class="modal-dialog modal-xl">

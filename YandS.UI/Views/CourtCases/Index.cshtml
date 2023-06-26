@@ -1235,6 +1235,100 @@
         }
         return NotValid;
     }
+    function LoadPrintRequirementForm(PartialViewName) {
+        var _PartialViewName = PartialViewName;
+        P_CaseId = parseInt($("#CaseId").val());
+        P_SessionRollId = 0;
+        var _Mode = "C";
+
+        var PartialContainer = $("#div_PrintRequirementForm");
+        PartialContainer.empty();
+
+        _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: P_CaseId, SessionRollId: P_SessionRollId };
+
+
+        $.ajax({
+            url: GetSessionRollURL,
+            type: "POST",
+            data: _parameters,
+            success: function (data, textStatus, jqXHR) {
+                PartialContainer.html(data);
+                Swal.fire({
+                    type: 'success',
+                    title: '',
+                    width: 700,
+                    html: $("#ContentDIV").html()
+                }).then(function () {
+                    CopyToClipboard('swal2-content');
+
+                    if ($("#hidIsCorporate").val() == "Y" || $("#hidIsTranselation").val() == "Y") {
+                        table.ajax.reload(function (json) {
+                            var info = table.page.info();
+                            var MCTRecords = table.ajax.json().MuscatTotal;
+                            var SLLRecords = table.ajax.json().SalalahTotal;
+                            var recordsTotal = table.ajax.json().recordsTotal;
+
+                            if ($("#txtUserRole").val() == "VoucherApproval") {
+                                $('#MCTTTL').text("MUSCAT : " + MCTRecords);
+                                $('#SLLTTL').text("SALALAH : " + SLLRecords);
+                                $('#TTL').text(recordsTotal);
+                            }
+                        });
+                        $('html, body').animate({
+                            scrollTop: $("#PartialViewContainer").offset().top
+                        }, 1000);
+                    }
+                    else {
+                        $("#btn_General").trigger('click');
+                    }
+                });
+            }
+        });
+    }
+    function ClearDivElements(ControlNames, ControlTypes, DefaultSelectVal, DivID) {
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, clear it!'
+        }).then((result) => {
+            if (result.value) {
+                if (ControlNames.indexOf(",") !== -1) {
+                    var Namesarray = ControlNames.split(",");
+                    var Typesarray = ControlTypes.split(",");
+                    var DefaultSelectValarray = DefaultSelectVal.split(",");
+
+                    for (i = 0; i < Namesarray.length; i++) {
+                        if (Typesarray[i] == "select2")
+                            $("#" + Namesarray[i]).val(DefaultSelectValarray[i]).trigger('change');
+                        else
+                            $("#" + Namesarray[i]).val(DefaultSelectValarray[i]);
+                    }
+                }
+                else {
+                    if (ControlTypes == "select2")
+                        $("#" + ControlNames).val(DefaultSelectVal).trigger('change');
+                    else
+                        $("#" + ControlNames).val(DefaultSelectVal);
+                }
+                $("#" + DivID).removeClass("AppHidden").addClass("AppHidden");
+            }
+        });
+    }
+    function ValidateTranslation() {
+        console.log("ValidateTranslation()");
+        NotValid = false;
+
+        if ($("#CourtDecisionTranslated").val() == "") {
+            ValidationMessage = ValidationMessage == "" ? "PLEASE ENTER TRANSELATION" : ValidationMessage + "<br />" + "PLEASE ENTER TRANSELATION";
+            NotValid = true;
+        }
+        return NotValid;
+    }
 
 </script>
 <div id="div_PrintRequirementForm" style="position: absolute; left: -1000px; top: -1000px"></div>

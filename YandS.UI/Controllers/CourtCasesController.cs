@@ -1337,6 +1337,10 @@ namespace YandS.UI.Controllers
             string UserLocation = string.Empty;
             string EnfCourtLocation = string.Empty;
             string EnfGovernorate = string.Empty;
+            string EnfClientCode = string.Empty;
+            string EnfStage = string.Empty;
+            string EnfAuctionCode = string.Empty;
+
             var request = HttpContext.Request;
             if (User.IsInRole("CourtCasesViewAll") || User.IsSysAdmin())
                 UserLocation = "A";
@@ -1445,20 +1449,75 @@ namespace YandS.UI.Controllers
 
                 }
 
-                if (DataFor == "ENF-CONTRESULT" || DataFor == "ENF-RECFRCOURT" || DataFor == "ENF-SUSPEND")
+                switch (DataFor)
                 {
-                    DateFrom = request.Params["DateFrom"].ToString() == "" ? DateTime.Now.AddYears(-100) : DateTime.ParseExact(request.Params["DateFrom"].ToString(), "dd/MM/yyyy", null);
-                    DateTo = request.Params["DateTo"].ToString() == "" ? DateTime.Now.AddYears(100) : DateTime.ParseExact(request.Params["DateTo"].ToString(), "dd/MM/yyyy", null);
-                    CallerName = request.Params["CallerName"].ToString();
-                }
-                else if (DataFor == "ENF-GENERAL")
-                {
-                    CallerName = request.Params["CallerName"].ToString();
-                    EnfCourtLocation = request.Params["EnfCourtLocation"].ToString();
-                    EnfGovernorate = request.Params["EnfGovernorate"].ToString();
+                    #region "FOR = ENF-CONTRESULT ENF-RECFRCOURT ENF-SUSPEND"
+                    case "ENF-CONTRESULT":
+                    case "ENF-RECFRCOURT":
+                    case "ENF-SUSPEND":
+
+                        DateFrom = request.Params["DateFrom"].ToString() == "" ? DateTime.Now.AddYears(-100) : DateTime.ParseExact(request.Params["DateFrom"].ToString(), "dd/MM/yyyy", null);
+                        DateTo = request.Params["DateTo"].ToString() == "" ? DateTime.Now.AddYears(100) : DateTime.ParseExact(request.Params["DateTo"].ToString(), "dd/MM/yyyy", null);
+                        CallerName = request.Params["CallerName"].ToString();
+
+                        break;
+                    #endregion
+
+                    #region "FOR = ENF-GENERAL"
+                    case "ENF-GENERAL":
+                        CallerName = request.Params["CallerName"].ToString();
+                        EnfCourtLocation = request.Params["EnfCourtLocation"].ToString();
+                        EnfGovernorate = request.Params["EnfGovernorate"].ToString();
+                        EnfClientCode = request.Params["EnfClientCode"].ToString();
+                        EnfStage = request.Params["EnfStage"].ToString();
+
+                        break;
+                    #endregion
+
+                    #region "FOR = ENF-JUDSALE"
+                    case "ENF-JUDSALE":
+                        CallerName = request.Params["CallerName"].ToString();
+                        EnfCourtLocation = request.Params["EnfCourtLocation"].ToString();
+                        EnfGovernorate = request.Params["EnfGovernorate"].ToString();
+                        EnfClientCode = request.Params["EnfClientCode"].ToString();
+                        EnfAuctionCode = request.Params["EnfAuctionCode"].ToString();
+
+                        break;
+
+                    #endregion
+
+                    #region "FOR = ENF-ARREQ ENF-ARORD ENF-INQ ENF-ANN ENF-ONLINEREG"
+                    case "ENF-ARREQ":
+                    case "ENF-ARORD":
+                    case "ENF-INQ":
+                    case "ENF-ANN":
+                    case "ENF-ONLINEREG":
+                        CallerName = request.Params["CallerName"].ToString();
+                        EnfCourtLocation = request.Params["EnfCourtLocation"].ToString();
+                        EnfGovernorate = request.Params["EnfGovernorate"].ToString();
+                        EnfClientCode = request.Params["EnfClientCode"].ToString();
+
+                        break;
+                    #endregion
+
                 }
 
-                DtView = Helper.GetCaseList(sortcoloumnIndex, start, searchvalue, Length, sortDirection, LocationId, DataFor, CaseLevel, DateFrom, DateTo, CallerName, EnfCourtLocation, EnfGovernorate);
+                //if (DataFor.In("ENF-CONTRESULT", "ENF-RECFRCOURT", "ENF-SUSPEND"))
+                //{
+                //    DateFrom = request.Params["DateFrom"].ToString() == "" ? DateTime.Now.AddYears(-100) : DateTime.ParseExact(request.Params["DateFrom"].ToString(), "dd/MM/yyyy", null);
+                //    DateTo = request.Params["DateTo"].ToString() == "" ? DateTime.Now.AddYears(100) : DateTime.ParseExact(request.Params["DateTo"].ToString(), "dd/MM/yyyy", null);
+                //    CallerName = request.Params["CallerName"].ToString();
+                //}
+                //else if (DataFor == "ENF-GENERAL")
+                //{
+                //    CallerName = request.Params["CallerName"].ToString();
+                //    EnfCourtLocation = request.Params["EnfCourtLocation"].ToString();
+                //    EnfGovernorate = request.Params["EnfGovernorate"].ToString();
+                //    EnfClientCode = request.Params["EnfClientCode"].ToString();
+                //    EnfStage = request.Params["EnfStage"].ToString();
+                //}
+
+                DtView = Helper.GetCaseList(sortcoloumnIndex, start, searchvalue, Length, sortDirection, LocationId, DataFor, CaseLevel, DateFrom, DateTo, CallerName, EnfCourtLocation, EnfGovernorate, EnfClientCode, EnfStage, EnfAuctionCode);
 
                 recordsTotal = data.Count > 0 ? data[0].TotalRecords : 0;
                 return Json(new { data = DtView.data, recordsTotal = DtView.recordsTotal, recordsFiltered = DtView.recordsFiltered, MuscatTotal = DtView.MCTRecords, SalalahTotal = DtView.SLLRecords }, JsonRequestBehavior.AllowGet);
@@ -2852,6 +2911,20 @@ namespace YandS.UI.Controllers
 
                         ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", CourtDDLSelectedValue);
                         ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(true), "Mst_Value", "Mst_Desc", GovDDLSelectedValue);
+                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc", "0");
+                        ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc", "0");
+
+                    }
+                    else if (PartialViewName == "JudicialSale")
+                    {
+                        string GovDDLSelectedValue = "0";
+                        string CourtDDLSelectedValue = "0";
+
+
+                        ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", CourtDDLSelectedValue);
+                        ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(true), "Mst_Value", "Mst_Desc", GovDDLSelectedValue);
+                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc", "0");
+                        ViewBag.AuctionProcess = new SelectList(Helper.GetAuctionProcess(), "Mst_Value", "Mst_Desc", "0");
 
                     }
                     else if (PartialViewName == "RecoveryFromCourt")
@@ -2885,6 +2958,17 @@ namespace YandS.UI.Controllers
                         ViewBag.ActionLevel = "4";
                         ViewBag.DisputeLevel = "3";
                     }
+
+                    if (PartialViewName.In("ArrestOrder", "Inquiry", "OnlineReg", "Announcement", "ArrestRequst"))
+                    {
+                        string GovDDLSelectedValue = "0";
+                        string CourtDDLSelectedValue = "0";
+
+                        ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", CourtDDLSelectedValue);
+                        ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(true), "Mst_Value", "Mst_Desc", GovDDLSelectedValue);
+                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                    }
+                        
 
                     return PartialView(PartialViewName);
                 }

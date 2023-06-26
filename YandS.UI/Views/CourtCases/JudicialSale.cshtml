@@ -1,7 +1,7 @@
 ﻿<script type="text/javascript">
     var table;
     var dataForTable = "ENF-JUDSALE";
-    $(document).ready(function () {
+    function LoadResultTable() {
         if (typeof table != 'undefined')
             table.destroy();
 
@@ -34,6 +34,12 @@
                 data: function (d) {
                     d.DataTableName = dataForTable;
                     d.LocationId = $('#txtUserRole').val() == "VoucherApproval" ? $('input[name="rdoLocation"]:checked').val() : $('#txtLocationId').val();
+                    d.CallerName = $('#hidUserName').val();
+                    d.EnfGovernorate = $('#GovernorateId').val();
+                    d.EnfCourtLocation = $('#CourtLocationid').val();
+                    d.EnfClientCode = $('#ClientCode').val();
+                    d.EnfAuctionCode = $('#AuctionProcess').val();
+
                 }
             },
             "columns": [
@@ -179,8 +185,22 @@
             processbtnLinkClick(_Mode, data);
             return false;
         });
+    }
+
+    $(document).ready(function () {
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        $('#btnPrintResult').on("click", function () {
+            LoadResultTable();
+        });
+
+        LoadResultTable();
     });
 </script>
+@model YandS.UI.Models.ToBeRegisterVM
+
 <div style="padding-bottom:0px;padding-top:10px;" class="row JudicialSaleActive">
     <div class="col-sm-3 text-left"><h3><span id="MCTTTL"></span></h3></div>
     <div class="col-sm-6 text-center"><h3>JUDICIAL SALE البيع القضائي</h3></div>
@@ -188,6 +208,35 @@
 </div>
 <div style="padding-bottom:0px;padding-top:10px;" class="row JudicialSaleActive">
     <div class="col-sm-12 text-center"><h3><span id="TTL"></span></h3></div>
+</div>
+<div style="padding-bottom:0px;padding-top:10px;" class="row">
+    <div class="col">
+        <div class="form-group">
+            <label>GOVERNORATE المحافظة</label>
+            @Html.DropDownList("GovernorateId", null, htmlAttributes: new { @class = "form-control select2bs4" })
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CourtLocationid)
+            @Html.DropDownList("CourtLocationid", null, htmlAttributes: new { @class = "form-control select2bs4" })
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label for="ClientCode">CLIENT NAME</label>
+            @Html.DropDownList("ClientCode", null, htmlAttributes: new { @class = "form-control select2bs4" })
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            @Html.LabelFor(model => model.AuctionProcess)
+            @Html.DropDownList("AuctionProcess", null, htmlAttributes: new { @class = "form-control select2bs4" })
+        </div>
+    </div>
+    <div class="col" style="padding-top:30px;">
+        <button id="btnPrintResult" type="button" class="btn btn-success"><i class="fas fa-file"></i> SHOW</button>
+    </div>
 </div>
 <div class="row">
     <div style="padding-bottom:0px;padding-top:10px;" class="col-sm-12">

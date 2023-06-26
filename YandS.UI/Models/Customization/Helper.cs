@@ -800,7 +800,7 @@ namespace YandS.UI
             return ResultList;
             
         }
-        public static CourtCaseDTView GetCaseList(int sortcoloumnIndex, int start, string searchvalue, int Length, string sortDirection, string UserLocation, string DataFor, string CaseLevel, DateTime DateFrom, DateTime DateTo, string CallerName, string EnfCourtLocation, string EnfGovernorate)
+        public static CourtCaseDTView GetCaseList(int sortcoloumnIndex, int start, string searchvalue, int Length, string sortDirection, string UserLocation, string DataFor, string CaseLevel, DateTime DateFrom, DateTime DateTo, string CallerName, string EnfCourtLocation, string EnfGovernorate, string EnfClientCode, string EnfStage, string EnfAuctionCode)
         {
             CourtCaseDTView ReturnResult = new CourtCaseDTView();
 
@@ -846,7 +846,7 @@ namespace YandS.UI
                 }
 
 
-                ReturnResult = new ReportCourtCases().getCourtCaseListWithPaging(start, searchvalue, Length, SortColumn, sortDirection, UserLocation.ToUpper().Substring(0, 1), DataFor, CaseLevel, DateFrom, DateTo, CallerName, EnfCourtLocation, EnfGovernorate);
+                ReturnResult = new ReportCourtCases().getCourtCaseListWithPaging(start, searchvalue, Length, SortColumn, sortDirection, UserLocation.ToUpper().Substring(0, 1), DataFor, CaseLevel, DateFrom, DateTo, CallerName, EnfCourtLocation, EnfGovernorate, EnfClientCode, EnfStage, EnfAuctionCode);
             }
             catch (Exception ex)
             {

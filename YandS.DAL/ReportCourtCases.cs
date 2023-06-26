@@ -709,7 +709,6 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                                                          new SqlParameter("@EnfClientCode", EnfClientCode),
                                                          new SqlParameter("@EnfStage", EnfStage),
                                                          new SqlParameter("@EnfAuctionCode", EnfAuctionCode)
-                                                         new SqlParameter("@EnfGovernorate", EnfGovernorate)
                                                     };
 
             DataSet DS = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "GetCourtCaseListWithPaging", parameterList);

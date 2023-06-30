@@ -4018,7 +4018,6 @@
     <Content Include="Views\Finance\_PayVoucherApprove.cshtml" />
     <Content Include="Views\Finance\_PayVoucherCreateRefunable.cshtml" />
     <Content Include="Views\Finance\_PayVoucherEdit.cshtml" />
-    <Content Include="Views\SessionRoll\Index.cshtml" />
     <Content Include="Views\SessionRoll\_SessionRollRegister.cshtml" />
     <Content Include="Views\SessionRoll\_AllSessionsEditForm.cshtml" />
     <Content Include="Views\SessionRoll\_SessionPrint.cshtml" />
@@ -4089,8 +4088,6 @@
     <Content Include="Views\CourtCases\_BeforeCourt.cshtml" />
     <Content Include="Views\CourtCases\_Primary.cshtml" />
     <Content Include="Views\CourtCases\_Appeal.cshtml" />
-    <Content Include="Views\CourtCases\_Supreme.cshtml" />
-    <Content Include="Views\CourtCases\EnfGeneral.cshtml" />
     <Content Include="Views\CourtCases\_TobeRegister.cshtml" />
     <Content Include="Views\CourtCases\_CreateCase.cshtml" />
     <Content Include="Views\CourtCases\_ModifyCase.cshtml" />
@@ -4122,7 +4119,6 @@
     <Content Include="Views\CourtCases\Inquiry.cshtml" />
     <Content Include="Views\CourtCases\ArrestRequst.cshtml" />
     <Content Include="Views\CourtCases\ArrestOrder.cshtml" />
-    <Content Include="Views\CourtCases\JudicialSale.cshtml" />
     <Content Include="Views\CourtCases\Suspended.cshtml" />
     <Content Include="Views\CourtCases\RecoveryFromCourt.cshtml" />
     <Content Include="Views\CourtCases\DefendantTransfer.cshtml" />
@@ -4249,8 +4245,12 @@
     <Content Include="Views\Finance\_CaseInvoiceFeeCalcPrint - Copy %284%29.cshtml" />
     <Content Include="Template\virtual-sylph-389717-f865ac5800e8.json" />
     <Content Include="Views\CourtCases\_EnfCommonSearch.cshtml" />
-
-
+    <Content Include="Views\CourtCases\_Supreme.cshtml" />
+    <Content Include="Views\CourtCases\JudicialSale.cshtml" />
+    <Content Include="Views\CourtCases\EnfGeneral.cshtml" />
+    <Content Include="Views\SessionRoll\Index.cshtml" />
+    <Content Include="Views\CourtCases\_AgainstClient.cshtml" />
+    <Content Include="Views\CourtCases\ENF_LVL_TRANSFER.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

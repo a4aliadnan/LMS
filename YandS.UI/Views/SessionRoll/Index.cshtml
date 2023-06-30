@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewBag.Title = "Y & S Associates - SESSIONS ROLL LIST";
     ViewBag.Div_OfficeFileNoMain = "AppHidden";
 }
@@ -65,11 +65,11 @@
         color: white !important;
     }
 
-    .SessionJudgementCorrected:hover {
-        background-color: #002060 !important;
-        color: white !important;
-        font-weight: bold;
-    }
+        .SessionJudgementCorrected:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
 
     .SessionJudgementCorrectedActive {
         background-color: #002060 !important;
@@ -1592,7 +1592,7 @@
             }
         });
     }
-    
+
 
     function ProcessPreSubmit() {
         var IsShowCientReply = false; //DIV_WAITING_CLIENT_REPLY
@@ -1857,7 +1857,7 @@
 
             if (JudgementReceivedDate == "")
                 $('#IsDelete').val("N");
-            else 
+            else
                 $('#IsDelete').val("Y");
         }
         else
@@ -1948,7 +1948,7 @@
                         </div>
                     </div>
                     <div style="padding-bottom:10px;" class="row">
-                        
+
                         <div class="col">
                             @*<button type="button" id="btn_SessionJudgement" style="font-size: 1rem !important;" class="btn btn-block SessionJudgement @ViewBag.SessionJudgementActive btn-lg navButton">استلام أحكام غير مطابقة<br />JUDGMENT</button>*@
                         </div>
@@ -2322,7 +2322,7 @@
                 }
                 ShowPreSubmit();
             });
-
+             
             $('#selNextHearingDateYN').on("change", function () {
                 if ($('#selNextHearingDateYN').val() == "N") {
                     $('#modal-preSubmit').modal('hide');

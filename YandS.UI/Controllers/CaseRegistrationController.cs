@@ -211,6 +211,7 @@ namespace YandS.UI.Controllers
                             ViewBag.DisputeType = new SelectList(Helper.GetDisputeType(), "Mst_Value", "Mst_Desc", ViewModal.DisputeType);
                             ViewBag.Session_CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc");
                             ViewBag.Session_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc");
+                            ViewBag.IsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", ViewModal.IsFavorable);
 
                             ViewBag.CaseRegistrationId = modal.CaseRegistrationId;
                             ViewBag.hid_DetailId = ViewModal.DetailId;
@@ -420,6 +421,40 @@ namespace YandS.UI.Controllers
                     db.Entry(ModelToSave).Entity.DisputeType = modal.DisputeType;
                 }
 
+                if (modal.CurrentTableName.In("TBR-AppSubmission", "TBR-AplDispute", "TBR-SupSubmission", "TBR-SupDispute"))
+                {
+                    SessionsRoll sessionsRoll = db.SessionsRoll.Find(modal.JDSessionId);
+                    if (sessionsRoll != null)
+                    {
+                        switch (modal.JDCaseLevelCode)
+                        {
+                            case "3":
+                                db.Entry(sessionsRoll).Entity.PrimaryJudgementsDate = modal.JudgementsDate;
+                                db.Entry(sessionsRoll).Entity.PrimaryJDReceiveDate = modal.JDReceiveDate;
+                                db.Entry(sessionsRoll).Entity.PrimaryIsFavorable = modal.IsFavorable;
+                                break;
+                            case "4":
+                                db.Entry(sessionsRoll).Entity.AppealJudgementsDate = modal.JudgementsDate;
+                                db.Entry(sessionsRoll).Entity.AppealJDReceiveDate = modal.JDReceiveDate;
+                                db.Entry(sessionsRoll).Entity.AppealIsFavorable = modal.IsFavorable;
+                                break;
+                            case "5":
+                                db.Entry(sessionsRoll).Entity.SupremeJudgementsDate = modal.JudgementsDate;
+                                db.Entry(sessionsRoll).Entity.SupremeJDReceiveDate = modal.JDReceiveDate;
+                                db.Entry(sessionsRoll).Entity.SupremeIsFavorable = modal.IsFavorable;
+                                break;
+                            case "6":
+                                db.Entry(sessionsRoll).Entity.EnforcementJudgementsDate = modal.JudgementsDate;
+                                db.Entry(sessionsRoll).Entity.EnforcementJDReceiveDate = modal.JDReceiveDate;
+                                db.Entry(sessionsRoll).Entity.EnforcementIsFavorable = modal.IsFavorable;
+
+                                break;
+                        }
+
+                        db.Entry(sessionsRoll).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                }
                 switch (modal.PartialViewName)
                 {
                     case "TBR-TRANSFER":

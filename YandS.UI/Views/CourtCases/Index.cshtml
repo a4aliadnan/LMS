@@ -10,6 +10,36 @@
     .tableColorDarkRed {
         color: #c00000 !important;
     }
+    .AgainstClient {
+        background-color: #e8e8e8 !important;
+        color: black !important;
+    }
+
+        .AgainstClient:hover {
+            background-color: #002060 !important;
+            color: white !important;
+        }
+    .AgainstClientActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .EnfGeneral {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .EnfGeneral:hover {
+            background-color: #002060 !important;
+            color: white !important;
+        }
+
+    .EnfGeneralActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
 </style>
 <script>
     var GetIndexDataURL = '@Url.Action("AjaxIndexData", "CourtCases", new { area = string.Empty })';
@@ -1410,6 +1440,9 @@
                         </div>
                         <div class="col">
                             <button type="button" id="btn_Enforcement" style="font-size: 1.2rem !important;" class="btn btn-block Enforcement @ViewBag.EnforcementActive btn-lg navButton">ENFORCEMENT</button>
+                        </div>
+                        <div class="col">
+                            <button type="button" id="btn_AgainstClient" style="font-size: 1.2rem !important;" class="btn btn-block AgainstClient @ViewBag.AgainstClientActive btn-lg navButton">AGAINST CLIENT</button>
                         </div>
                     </div>
                 </div>

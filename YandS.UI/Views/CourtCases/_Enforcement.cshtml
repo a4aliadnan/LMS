@@ -33,7 +33,7 @@
         var PartialContainer = $("#ENF_PartialViewContainer");
 
         if ($("#hidIsCourtFollow").val() == "N" && $("#hidIsClientReply").val() == "N")
-            $("#enfbtn_enfGeneral").addClass("enfGeneralActive");
+            $("#enfbtn_EnfGeneral").addClass("enfGeneralActive");
         else {
 
             $("#div_IsCourtFollow").removeClass("AppHidden").addClass("AppHidden");
@@ -96,7 +96,7 @@
         <div class="col">
             <button type="button" id="enfbtn_Announcement" style="font-size: 1rem !important;" class="btn btn-block Announcement @ViewBag.AnnouncementActive btn-lg enfNavButton">الإعلان<br />ANNOUNCEMENT</button>
         </div>
-        <div class="col-2">
+        <div class="col">
             <button type="button" id="enfbtn_Inquiry" style="font-size: 1rem !important;" class="btn btn-block Inquiry @ViewBag.InquiryActive btn-lg enfNavButton">استعلام الجهات<br />CONTACTING AUTHORITIES</button>
         </div>
         <div class="col">
@@ -105,11 +105,11 @@
         <div class="col">
             <button type="button" id="enfbtn_ArrestOrder" style="font-size: 1rem !important;" class="btn btn-block ArrestOrder @ViewBag.ArrestOrderActive btn-lg enfNavButton">قرار بالحبس<br />ARREST ORDER</button>
         </div>
-    </div>
-    <div style="padding-bottom:0px;padding-top:10px;" class="row">
         <div class="col">
             <button type="button" id="enfbtn_JudicialSale" style="font-size: 1rem !important;" class="btn btn-block JudicialSale @ViewBag.JudicialSaleActive btn-lg enfNavButton">البيع القضائي<br />JUDICIAL SALE</button>
         </div>
+    </div>
+    <div style="padding-bottom:0px;padding-top:10px;" class="row">
         <div class="col">
             <button type="button" id="enfbtn_Suspended" style="font-size: 1rem !important;" class="btn btn-block Suspended @ViewBag.SuspendedActive btn-lg enfNavButton">وقف مؤقت<br />SUSPENDED</button>
         </div>
@@ -123,15 +123,6 @@
             <button type="button" id="enfbtn_RecoveryFromCourt" style="font-size: 1rem !important;" class="btn btn-block RecoveryFromCourt @ViewBag.RecoveryFromCourtActive btn-lg enfNavButton">استرداد الصيغة<br />RECOVERY JUDGMENT</button>
         </div>
         <div class="col">
-            <button type="button" id="enfbtn_AgainstClient" style="font-size: 1rem !important;" class="btn btn-block AgainstClient @ViewBag.AgainstClientActive btn-lg enfNavButton">تنفيذ ضد الموكل<br />AGAINST CLIENT</button>
-        </div>
-    </div>
-
-    <div style="padding-bottom:0px;padding-top:10px;" class="row">
-        @*<div class="col">
-            <button type="button" id="enfbtn_SealOfJudgement" style="font-size: 1rem !important;" class="btn btn-block SealOfJudgement @ViewBag.SealOfJudgementActive btn-lg enfNavButton">ختم الأحكام<br />SEAL OF JUDGMENT</button>
-        </div>*@
-        <div class="col">
             <button type="button" id="enfbtn_FileReview" style="font-size: 1rem !important;" class="btn btn-block FileReview @ViewBag.FileReviewActive btn-lg enfNavButton">دراسة الملف<br />FILE REVIEW</button>
         </div>
         <div class="col">
@@ -140,8 +131,20 @@
         <div class="col">
             <button type="button" id="enfbtn_ContactResult" style="font-size: 1rem !important;" class="btn btn-block ContactResult @ViewBag.ContactResultActive btn-lg enfNavButton">نتائج الاتصالات<br />CONTACT'S RESULT</button>
         </div>
+        @*<div class="col">
+            <button type="button" id="enfbtn_AgainstClient" style="font-size: 1rem !important;" class="btn btn-block AgainstClient @ViewBag.AgainstClientActive btn-lg enfNavButton">تنفيذ ضد الموكل<br />AGAINST CLIENT</button>
+        </div>*@
+    </div>
+
+    <div style="padding-bottom:0px;padding-top:10px;" class="row">
+        @*<div class="col">
+            <button type="button" id="enfbtn_SealOfJudgement" style="font-size: 1rem !important;" class="btn btn-block SealOfJudgement @ViewBag.SealOfJudgementActive btn-lg enfNavButton">ختم الأحكام<br />SEAL OF JUDGMENT</button>
+        </div>*@
+        
         <div class="col">
             @*<button type="button" id="enfbtn_EnfGovernorate" style="font-size: 1rem !important;" class="btn btn-block EnfGovernorate @ViewBag.EnfGovernorateActive btn-lg enfNavButton">المحافظة<br />GOVERNORATE</button>*@
+        </div>
+        <div class="col">
         </div>
         <div class="col">
         </div>

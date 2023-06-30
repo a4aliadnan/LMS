@@ -393,6 +393,8 @@ namespace YandS.UI.Controllers
                             _ModalToSave.SupremePlaintNo = modal.SupremePlaintNo;
                             _ModalToSave.SupremePlaintCourt = modal.SupremePlaintCourt;
                         }
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.Transfer.ToString()) 
+                            ProcessCaseRegister(modal, PartialViewName);
                     }
 
                     db.CourtCasesEnforcement.Add(_ModalToSave);
@@ -503,6 +505,8 @@ namespace YandS.UI.Controllers
                             db.Entry(_ModalToSave).Entity.SupremePlaintNo = modal.SupremePlaintNo;
                             db.Entry(_ModalToSave).Entity.SupremePlaintCourt = modal.SupremePlaintCourt;
                         }
+                        else if (modal.EnforcementlevelId == OfficeFileStatus.Transfer.ToString())
+                            ProcessCaseRegister(modal, PartialViewName);
                     }
 
                     db.Entry(_ModalToSave).State = EntityState.Modified;
@@ -670,6 +674,9 @@ namespace YandS.UI.Controllers
                     ViewModal.FormPrintLastDate = caseRegistration.FormPrintLastDate;
                     ViewModal.FormPrintWorkRequired = caseRegistration.FormPrintWorkRequired;
                     ViewModal.FileStatus = courtCases.OfficeFileStatus;
+                    ViewModal.DisputeLevel = caseRegistration.DisputeLevel;
+                    ViewModal.DisputeType = caseRegistration.DisputeType;
+                    ViewModal.EnforcementDispute = caseRegistration.EnforcementDispute;
                 }
 
                 #endregion
@@ -1116,8 +1123,6 @@ namespace YandS.UI.Controllers
                 db.Entry(courtCases).Entity.OfficeFileStatus = RegModal.EnforcementlevelId;
             }
 
-
-
             db.Entry(courtCases).State = EntityState.Modified;
             db.SaveChanges();
 
@@ -1128,46 +1133,7 @@ namespace YandS.UI.Controllers
             }
 
             if (RegModal.CaseLevelCode == "1")
-            {
-                CaseRegistration ModelToSave = new CaseRegistration();
-                ModelToSave = db.CaseRegistration.Where(w => w.CaseId == RegModal.CaseId && !w.IsDeleted).OrderByDescending(o => o.CaseRegistrationId).FirstOrDefault();
-
-                if (ModelToSave == null)
-                {
-                    ModelToSave = new CaseRegistration();
-                    ModelToSave.CaseId = courtCases.CaseId;
-                    ModelToSave.ActionDate = RegModal.ActionDate;// DateTime.UtcNow.AddHours(4);
-                    ModelToSave.AdminFile = RegModal.AdminFile;
-                    ModelToSave.UrgentCaseDays = RegModal.UrgentCaseDays;
-                    ModelToSave.CourtDetailRegistered = RegModal.CourtDetailRegistered;
-                    ModelToSave.OfficeProcedure = RegModal.OfficeProcedure;
-                    ModelToSave.Remarks = RegModal.MainRemarks;
-
-                    ModelToSave.FormPrintWorkRequired = RegModal.FormPrintWorkRequired;
-                    ModelToSave.FormPrintLastDate = RegModal.FormPrintLastDate;
-                    //ModelToSave.FileStatus = RegModal.FileStatus;
-
-                    db.CaseRegistration.Add(ModelToSave);
-                    db.SaveChanges();
-                    Helper.UpdateOfficeFileStatus(courtCases.CaseId, RegModal.FileStatus);
-                }
-                else
-                {
-                    db.Entry(ModelToSave).Entity.ActionDate = RegModal.ActionDate;
-                    db.Entry(ModelToSave).Entity.AdminFile = RegModal.AdminFile;
-                    db.Entry(ModelToSave).Entity.UrgentCaseDays = RegModal.UrgentCaseDays;
-                    db.Entry(ModelToSave).Entity.CourtDetailRegistered = RegModal.CourtDetailRegistered;
-                    db.Entry(ModelToSave).Entity.OfficeProcedure = RegModal.OfficeProcedure;
-                    db.Entry(ModelToSave).Entity.Remarks = RegModal.MainRemarks;
-                    db.Entry(ModelToSave).Entity.FormPrintWorkRequired = RegModal.FormPrintWorkRequired;
-                    db.Entry(ModelToSave).Entity.FormPrintLastDate = RegModal.FormPrintLastDate;
-                    //db.Entry(ModelToSave).Entity.FileStatus = RegModal.FileStatus;
-
-                    db.Entry(ModelToSave).State = EntityState.Modified;
-                    db.SaveChanges();
-                    Helper.UpdateOfficeFileStatus(courtCases.CaseId, RegModal.FileStatus);
-                }
-            }
+                ProcessCaseRegister(RegModal);
             else if (courtCases.CaseLevelCode == "2")
                 UpdateBeforeCourt("CREATEBEFORECOURT", RegModal);
             else if (int.Parse(courtCases.CaseLevelCode) >= 3 && int.Parse(courtCases.CaseLevelCode) <= 5)
@@ -1210,6 +1176,98 @@ namespace YandS.UI.Controllers
         {
             return Helper.CreatePaymentVoucher(modal, "ToBeRegisterVM");
         }
+        private void ProcessCaseRegister(ToBeRegisterVM RegModal, string PartialViewName = null)
+        {
+            CaseRegistration ModelToSave = new CaseRegistration();
+            if (string.IsNullOrEmpty(PartialViewName))
+            {
+                ModelToSave = db.CaseRegistration.Where(w => w.CaseId == RegModal.CaseId && !w.IsDeleted).OrderByDescending(o => o.CaseRegistrationId).FirstOrDefault();
+
+                if (ModelToSave == null)
+                {
+                    ModelToSave = new CaseRegistration();
+                    ModelToSave.CaseId = RegModal.CaseId;
+                    ModelToSave.ActionDate = RegModal.ActionDate;// DateTime.UtcNow.AddHours(4);
+                    ModelToSave.AdminFile = RegModal.AdminFile;
+                    ModelToSave.UrgentCaseDays = RegModal.UrgentCaseDays;
+                    ModelToSave.CourtDetailRegistered = RegModal.CourtDetailRegistered;
+                    ModelToSave.OfficeProcedure = RegModal.OfficeProcedure;
+                    ModelToSave.Remarks = RegModal.MainRemarks;
+
+                    ModelToSave.FormPrintWorkRequired = RegModal.FormPrintWorkRequired;
+                    ModelToSave.FormPrintLastDate = RegModal.FormPrintLastDate;
+                    //ModelToSave.FileStatus = RegModal.FileStatus;
+
+                    db.CaseRegistration.Add(ModelToSave);
+                    db.SaveChanges();
+                    Helper.UpdateOfficeFileStatus(RegModal.CaseId, RegModal.FileStatus);
+                }
+                else
+                {
+                    db.Entry(ModelToSave).Entity.ActionDate = RegModal.ActionDate;
+                    db.Entry(ModelToSave).Entity.AdminFile = RegModal.AdminFile;
+                    db.Entry(ModelToSave).Entity.UrgentCaseDays = RegModal.UrgentCaseDays;
+                    db.Entry(ModelToSave).Entity.CourtDetailRegistered = RegModal.CourtDetailRegistered;
+                    db.Entry(ModelToSave).Entity.OfficeProcedure = RegModal.OfficeProcedure;
+                    db.Entry(ModelToSave).Entity.Remarks = RegModal.MainRemarks;
+                    db.Entry(ModelToSave).Entity.FormPrintWorkRequired = RegModal.FormPrintWorkRequired;
+                    db.Entry(ModelToSave).Entity.FormPrintLastDate = RegModal.FormPrintLastDate;
+                    //db.Entry(ModelToSave).Entity.FileStatus = RegModal.FileStatus;
+
+                    db.Entry(ModelToSave).State = EntityState.Modified;
+                    db.SaveChanges();
+                    Helper.UpdateOfficeFileStatus(RegModal.CaseId, RegModal.FileStatus);
+                }
+            }
+            else
+            {
+                ModelToSave = db.CaseRegistration.Where(w => w.CaseId == RegModal.CaseId && !w.IsDeleted).OrderByDescending(o => o.CaseRegistrationId).FirstOrDefault();
+
+                if (ModelToSave == null)
+                {
+                    ModelToSave = new CaseRegistration();
+                    ModelToSave.CaseId = RegModal.CaseId;
+                    ModelToSave.ActionDate = RegModal.EnforcementActionDate ?? DateTime.UtcNow.AddHours(4);
+                    ModelToSave.AdminFile = RegModal.AdminFile;
+                    ModelToSave.UrgentCaseDays = RegModal.UrgentCaseDays;
+                    ModelToSave.CourtDetailRegistered = RegModal.CourtDetailRegistered;
+                    ModelToSave.OfficeProcedure = RegModal.OfficeProcedure;
+                    ModelToSave.ActionLevel = "4";
+                    ModelToSave.DisputeLevel = RegModal.DisputeLevel;
+                    ModelToSave.DisputeType = RegModal.DisputeType;
+                    ModelToSave.EnforcementDispute = RegModal.EnforcementDispute;
+                    ModelToSave.CourtLocationid = RegModal.CourtLocationid;
+
+                    ModelToSave.FormPrintWorkRequired = RegModal.FormPrintWorkRequired;
+                    ModelToSave.FormPrintLastDate = RegModal.FormPrintLastDate;
+                    ModelToSave.FileStatus = RegModal.FileStatus;
+                    ModelToSave.DisputrRegisterDate = DateTime.UtcNow.AddHours(4);
+
+                    db.CaseRegistration.Add(ModelToSave);
+                    db.SaveChanges();
+                    Helper.UpdateOfficeFileStatus(RegModal.CaseId, RegModal.FileStatus);
+                }
+                else
+                {
+                    db.Entry(ModelToSave).Entity.ActionDate = RegModal.EnforcementActionDate ?? DateTime.UtcNow.AddHours(4);
+                    db.Entry(ModelToSave).Entity.OfficeProcedure = RegModal.OfficeProcedure;
+                    db.Entry(ModelToSave).Entity.FormPrintWorkRequired = RegModal.FormPrintWorkRequired;
+                    db.Entry(ModelToSave).Entity.FormPrintLastDate = RegModal.FormPrintLastDate;
+                    db.Entry(ModelToSave).Entity.ActionLevel = "4";
+                    db.Entry(ModelToSave).Entity.DisputeLevel = RegModal.DisputeLevel;
+                    db.Entry(ModelToSave).Entity.DisputeType = RegModal.DisputeType;
+                    db.Entry(ModelToSave).Entity.EnforcementDispute = RegModal.EnforcementDispute;
+                    db.Entry(ModelToSave).Entity.CourtLocationid = RegModal.CourtLocationid;
+                    db.Entry(ModelToSave).Entity.FileStatus = RegModal.FileStatus;
+                    db.Entry(ModelToSave).Entity.DisputrRegisterDate = DateTime.UtcNow.AddHours(4);
+
+                    db.Entry(ModelToSave).State = EntityState.Modified;
+                    db.SaveChanges();
+                    Helper.UpdateOfficeFileStatus(RegModal.CaseId, RegModal.FileStatus);
+                }
+            }
+        }
+
         #endregion
 
         public ActionResult Index(int? id)
@@ -1249,6 +1307,7 @@ namespace YandS.UI.Controllers
             ViewBag.AppealActive = "";
             ViewBag.SupremeActive = "";
             ViewBag.EnforcementActive = "";
+            ViewBag.AgainstClientActive = "";
             ViewBag.CreateBtnText = "CREATE CASE";
             ViewBag.ViewContainer = "#PartialViewContainer";
             ViewBag.IsCourtFollow = "";
@@ -1424,7 +1483,7 @@ namespace YandS.UI.Controllers
                 }
                 else
                 {
-                    if (DataFor == "CASE_MANAGEMENT")
+                    if (DataFor.In("CASE_MANAGEMENT", "AGNCLIENT"))
                     {
                         List<string> parName = Helper.getDefaultParNames();
                         List<object> parValues = Helper.getDefaultParValues();
@@ -2647,6 +2706,7 @@ namespace YandS.UI.Controllers
                         ViewBag.DisputeType = new SelectList(Helper.GetDisputeType(), "Mst_Value", "Mst_Desc", ViewModal.DisputeType);
                         //ViewBag.Session_CaseType = new SelectList(Helper.GetSessionCaseType(), "Mst_Value", "Mst_Desc");
                         //ViewBag.Session_LawyerId = new SelectList(Helper.GetSessionLawyers(), "Mst_Value", "Mst_Desc");
+                        ViewBag.IsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", ViewModal.IsFavorable);
 
                         ViewBag.CaseRegistrationId = caseRegistrationId;
 
@@ -2909,10 +2969,10 @@ namespace YandS.UI.Controllers
                         if (User.Identity.Name == "48")
                             CourtDDLSelectedValue = "4";
 
-                        ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", CourtDDLSelectedValue);
-                        ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(true), "Mst_Value", "Mst_Desc", GovDDLSelectedValue);
-                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc", "0");
-                        ViewBag.EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc", "0");
+                        ViewBag.ENF_SEARCH_CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", CourtDDLSelectedValue);
+                        ViewBag.ENF_SEARCH_GovernorateId = new SelectList(Helper.GetGovernorate(true), "Mst_Value", "Mst_Desc", GovDDLSelectedValue);
+                        ViewBag.ENF_SEARCH_ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc", "0");
+                        ViewBag.ENF_SEARCH_EnforcementlevelId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF), "Mst_Value", "Mst_Desc", "0");
 
                     }
                     else if (PartialViewName == "JudicialSale")
@@ -2921,16 +2981,16 @@ namespace YandS.UI.Controllers
                         string CourtDDLSelectedValue = "0";
 
 
-                        ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", CourtDDLSelectedValue);
-                        ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(true), "Mst_Value", "Mst_Desc", GovDDLSelectedValue);
-                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc", "0");
-                        ViewBag.AuctionProcess = new SelectList(Helper.GetAuctionProcess(), "Mst_Value", "Mst_Desc", "0");
+                        ViewBag.ENF_SEARCH_CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", CourtDDLSelectedValue);
+                        ViewBag.ENF_SEARCH_GovernorateId = new SelectList(Helper.GetGovernorate(true), "Mst_Value", "Mst_Desc", GovDDLSelectedValue);
+                        ViewBag.ENF_SEARCH_ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc", "0");
+                        ViewBag.ENF_SEARCH_AuctionProcess = new SelectList(Helper.GetAuctionProcess(), "Mst_Value", "Mst_Desc", "0");
 
                     }
                     else if (PartialViewName == "RecoveryFromCourt")
                     {
                         string[] FileCodes = new[] { "0", "OFS-29", "OFS-30" };
-                        ViewBag.CauseOfRecoveryId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF, FileCodes), "Mst_Value", "Mst_Desc");
+                        ViewBag.ENF_SEARCH_CauseOfRecoveryId = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterENF, FileCodes), "Mst_Value", "Mst_Desc");
 
                     }
                     else if (PartialViewName == "TBRAppSubmission")
@@ -2964,9 +3024,9 @@ namespace YandS.UI.Controllers
                         string GovDDLSelectedValue = "0";
                         string CourtDDLSelectedValue = "0";
 
-                        ViewBag.CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", CourtDDLSelectedValue);
-                        ViewBag.GovernorateId = new SelectList(Helper.GetGovernorate(true), "Mst_Value", "Mst_Desc", GovDDLSelectedValue);
-                        ViewBag.ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
+                        ViewBag.ENF_SEARCH_CourtLocationid = new SelectList(Helper.GetCourtLocationList("4"), "Mst_Value", "Mst_Desc", CourtDDLSelectedValue);
+                        ViewBag.ENF_SEARCH_GovernorateId = new SelectList(Helper.GetGovernorate(true), "Mst_Value", "Mst_Desc", GovDDLSelectedValue);
+                        ViewBag.ENF_SEARCH_ClientCode = new SelectList(db.MasterSetup.Where(m => m.MstParentId == (int)MASTER_S.Client), "Mst_Value", "Mst_Desc");
                     }
                         
 
@@ -3399,6 +3459,12 @@ namespace YandS.UI.Controllers
                             ViewBag.ApealPlaintCourt = new SelectList(Helper.GetCourtLocationList("2"), "Mst_Value", "Mst_Desc", ViewModal.ApealPlaintCourt);
                             ViewBag.SupremePlaintCourt = new SelectList(Helper.GetCourtLocationList("3"), "Mst_Value", "Mst_Desc", ViewModal.SupremePlaintCourt);
 
+                        }
+                        else if (PartialViewName == "ENF_LVL_TRANSFER")
+                        {
+                            ViewBag.FileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR, FileStatusCodesTBR), "Mst_Value", "Mst_Desc", ViewModal.FileStatus);
+                            ViewBag.DisputeLevel = new SelectList(Helper.GetDisputeLevel(), "Mst_Value", "Mst_Desc", ViewModal.DisputeLevel);
+                            ViewBag.DisputeType = new SelectList(Helper.GetDisputeType(), "Mst_Value", "Mst_Desc", ViewModal.DisputeType);
                         }
                     }
                     ViewBag.hid_DetailId = ViewModal.DetailId;

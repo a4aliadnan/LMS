@@ -160,6 +160,30 @@
         $('#DepartmentType').on("change", function () {
             ShowInvesmentBanner();
         });
+
+        if ($("#hidCurrentTableName").val() == "TBR-AppSubmission" || $("#hidCurrentTableName").val() == "TBR-AplDispute" || $("#hidCurrentTableName").val() == "TBR-SupSubmission" || $("#hidCurrentTableName").val() == "TBR-SupDispute") {
+            $(".clsForDisputeShow").removeClass("AppHidden");
+            $("#CurrentTableName").val($("#hidCurrentTableName").val());
+
+            /*
+            //In Case Custom Label by Case Level
+            //==================================
+            var PriJudgementLabel = "PRIMARY JUDGMENT DATE تاريخ الحكم الابتدائي";
+            var PriJDReceiveLabel = "PRI.JUG.RECEIVE تاريخ استلام الحكم الابتدائي";
+
+            var AplJudgementLabel = "APPEAL JUDGMENT DATE تاريخ الحكم الاستئناف";
+            var AplJDReceiveLabel = "APP.JUG.RECEIVE تاريخ استلام الحكم الاستئناف";
+            
+            var SupJudgementLabel = "SUPREME JUDGMENT DATE تاريخ الحكم";
+
+            var DispJDReceiveLabel = "DISPUTE JUG.RECEIVE تاريخ استلام حكم المنازعة";
+
+            
+             if ($("#JDCaseLevelCode").val() == "3") {
+             }
+            */
+        }
+
     });
 
 </script>
@@ -175,6 +199,9 @@
     @Html.HiddenFor(model => model.OfficeFileNo)
     @Html.HiddenFor(model => model.SessionRollId)
     @Html.HiddenFor(model => model.TransportationFee)
+    @Html.HiddenFor(model => model.JDCaseLevelCode)
+    @Html.HiddenFor(model => model.CurrentTableName)
+    @Html.HiddenFor(model => model.JDSessionId)
 
     @Html.AntiForgeryToken()
     if (int.Parse(Model.ActionLevel) == 1 && int.Parse(Model.EnforcementDispute) == 0)
@@ -288,6 +315,24 @@
                                 @Html.DropDownList("FileStatus", null, htmlAttributes: new { @class = "form-control select2bs4" })
                             </div>
 
+                        </div>
+                        <div class="col-sm-3 clsForDisputeShow AppHidden">
+                            <div class="form-group">
+                                <label for="JudgementsDate">JUDGMENT DATE تاريخ الحكم</label>
+                                @Html.EditorFor(model => model.JudgementsDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                            </div>
+                        </div>
+                        <div class="col-sm-3 clsForDisputeShow AppHidden">
+                            <div class="form-group">
+                                <label for="JDReceiveDate">JUG.RECEIVE تاريخ استلام الحكم</label>
+                                @Html.EditorFor(model => model.JDReceiveDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                            </div>
+                        </div>
+                        <div class="col-sm-3 clsForDisputeShow AppHidden">
+                            <div class="form-group">
+                                <label for="IsFavorable">FAVORABLE مطابقة الحكم</label>
+                                @Html.DropDownList("IsFavorable", null, htmlAttributes: new { @class = "form-control select2bs4" })
+                            </div>
                         </div>
                     </div>
                 </div>

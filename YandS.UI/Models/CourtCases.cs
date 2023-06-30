@@ -484,7 +484,10 @@
         [Display(Name = "FILE STATUS حالة الملف")]
         public string FileStatus { get; set; }
         public string OfficeFileStatus { get; set; }
-
+        [Display(Name = "ENFORCEMENT DISPUTE")]
+        public string EnforcementDispute { get; set; }
+        public string DisputeLevel { get; set; }
+        public string DisputeType { get; set; }
         #endregion
 
         #region PRIMARY APPEAL SUPREME ENFORCEMENT

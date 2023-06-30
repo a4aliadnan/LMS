@@ -1,8 +1,8 @@
 ﻿<script type="text/javascript">
     var table;
-    var dataForTable = "CASE_MANAGEMENT";
+    var dataForTable = "AGNCLIENT";
     var SP_NAME = "CASE_MANAGEMENT-GET_CASE_DETAIL";
-    var CASE_LEVEL = "5";
+    var CASE_LEVEL = "A";
 
     $(document).ready(function () {
         if (typeof table != 'undefined')
@@ -32,12 +32,13 @@
                 { data: 'OfficeFileNo', name: 'OfficeFileNo', autoWidth: false },
                 { data: 'ClientName', name: 'ClientName', autoWidth: false },
                 { data: 'Defendant', name: 'Defendant', autoWidth: false },
-                { data: 'CaseLevelCode', name: 'CaseLevelCode', autoWidth: false },
+                { data: 'CaseLevelName', name: 'CaseLevelName', autoWidth: false },
                 { data: 'CourtRefNo', name: 'CourtRefNo', autoWidth: false, render: function (data) { if (data) return data.split("^ ").join("<br/>"); else return ""; } },
                 { data: 'AccountContractNo', name: 'AccountContractNo', autoWidth: false, render: function (data, type, row) { return FormatAccount_ClientFileNo(row); } },
                 { data: 'FileStatusName', name: 'FileStatusName', autoWidth: false },
                 { data: 'CurrentHearingDate', name: 'CurrentHearingDate', autoWidth: false },
                 { data: 'CourtDecision', name: 'CourtDecision', autoWidth: true },
+                { data: 'NextHearingDate', name: 'NextHearingDate', autoWidth: false },
                 {
                     data: null,
                     render: function (data, type, row) {
@@ -99,7 +100,7 @@
                         else
                             return "";
                     },
-                    targets: 7
+                    targets: [7, 9]
                 }
             ],
             "drawCallback": function (settings) {
@@ -150,12 +151,12 @@
         });
     });
 </script>
-<div style="padding-bottom:0px;padding-top:10px;" class="row SupremeActive">
-    <div class="col-sm-3 text-left text-white"><h3><span id="MCTTTL"></span></h3></div>
-    <div class="col-sm-6 text-center"><h3>SUPREME</h3></div>
-    <div class="col-sm-3 text-right text-white"><h3><span id="SLLTTL"></span></h3></div>
+<div style="padding-bottom:0px;padding-top:10px;" class="row AgainstClientActive">
+    <div class="col-sm-3 text-left"><h3><span id="MCTTTL"></span></h3></div>
+    <div class="col-sm-6 text-center"><h3>AGAINST CLIENT تنفيذ ضد الموكل</h3></div>
+    <div class="col-sm-3 text-right"><h3><span id="SLLTTL"></span></h3></div>
 </div>
-<div style="padding-bottom:0px;padding-top:10px;" class="row SupremeActive">
+<div style="padding-bottom:0px;padding-top:10px;" class="row AgainstClientActive">
     <div class="col-sm-12 text-center"><h3><span id="TTL"></span></h3></div>
 </div>
 <div class="row">
@@ -172,6 +173,7 @@
                     <th style="width:100px !important;" class="VMiddle text-center">FILE STATUS</th>
                     <th style="width:60px !important;" class="VMiddle text-center">UPDATE DATE<br />تاريخ التحديث</th>
                     <th class="VMiddle text-center">COURT DECISION<br />قرار المحكمة</th>
+                    <th style="width:50px !important;" class="VMiddle text-center">NEXT HEARING DATE<br />موعد الجلسة القادمة</th>
                     <th style="width:15px !important;" class="all"></th>
                 </tr>
             </thead>

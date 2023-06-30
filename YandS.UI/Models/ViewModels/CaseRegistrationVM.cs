@@ -273,16 +273,26 @@ namespace YandS.UI.Models
         public string Session_LawyerId { get; set; }
         public string Session_FileStatusName { get; set; }
         public string UpdatedOn { get; set; }
-
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? JudgementsDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? JDReceiveDate { get; set; }
+        public string IsFavorable { get; set; }
+        public string JDCaseLevelCode { get; set; }
+        public string CurrentTableName { get; set; }
+        public int JDSessionId { get; set; }
+        public string Judgement { get; set; }
         #endregion
 
         public string UpdatedBy { get; set; }
+        public string IsForDisputeShow { get; set; }
 
 
         public CaseRegistrationVM()
         {
             CaseRegistrationId = 0;
             Amount = 0;
+            JDSessionId = 0;
         }
     }
 }

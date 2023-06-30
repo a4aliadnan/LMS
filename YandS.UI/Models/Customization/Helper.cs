@@ -2829,7 +2829,7 @@ namespace YandS.UI
         public static void GetCaseRegistrationVM(int CaseRegistrationId, ref CaseRegistrationVM ViewModal)
         {
             CaseRegistration caseRegistration = new CaseRegistration();
-            
+
             using (var db = new RBACDbContext())
             {
                 caseRegistration = db.CaseRegistration.Where(w => w.CaseRegistrationId == CaseRegistrationId && !w.IsDeleted).FirstOrDefault();
@@ -3055,6 +3055,29 @@ namespace YandS.UI
                         ViewModal.Cheque_Number = PayVoucher.Cheque_Number;
                         ViewModal.Cheque_Date = PayVoucher.Cheque_Date;
                     }
+
+                    #region GETTING LAST JUDGEMENT DETAILS
+
+                    DataTable _result = GetLastJudgemntDetailsByCaseId(CaseId);
+                    if(_result.Rows.Count > 0)
+                    {
+                        try
+                        {
+                            ViewModal.JDCaseLevelCode = _result.Rows[0]["CaseLevelCode"].ToString();
+                            ViewModal.IsFavorable = _result.Rows[0]["IsFavorable"].ToString();
+                            ViewModal.Judgement = _result.Rows[0]["Judgement"].ToString();
+                            ViewModal.JDSessionId = Convert.ToInt32(_result.Rows[0]["SessionRollId"].ToString());
+                            ViewModal.JudgementsDate = string.IsNullOrEmpty(Convert.ToString(_result.Rows[0]["JudgementsDate"])) ? (DateTime?)null : Convert.ToDateTime(_result.Rows[0]["JudgementsDate"].ToString());
+                            ViewModal.JDReceiveDate = string.IsNullOrEmpty(Convert.ToString(_result.Rows[0]["JudgementReceive"])) ? (DateTime?)null : Convert.ToDateTime(_result.Rows[0]["JudgementReceive"].ToString());
+
+                        }
+                        catch (Exception e)
+                        {
+                            string message = e.Message;
+                        }
+                    }
+
+                    #endregion
                 }
             }
         }
@@ -4160,7 +4183,6 @@ namespace YandS.UI
             }
             return RetResult;
         }
-
         public static string GetTranslatedText(string textToTranslate, string textToLang = "en", string textFromLang = "ar")
         {
             string translatedTextReturn = string.Empty;
@@ -4180,6 +4202,26 @@ namespace YandS.UI
             }
 
             return translatedTextReturn;
+        }
+        public static DataTable GetLastJudgemntDetailsByCaseId(int CaseId)
+        {
+            DataTable retDT = new DataTable(); 
+            try
+            {
+                string DataFor = "LASTJUDDETAIL";
+                int SessionRollId = 0;
+                string spName = @"[dbo].[GetDetailTable]";
+                List<string> parName = new List<string>() { "@DataFor", "@SessionRollId", "@CaseId" };
+                List<object> parValues = new List<object>() { DataFor, SessionRollId, CaseId };
+                retDT = getDataTable(parName.ToArray(), parValues.ToArray(), spName);
+            }
+            catch(Exception e)
+            {
+                string error = e.Message;
+                throw;
+            }
+
+            return retDT;
         }
     }
 }

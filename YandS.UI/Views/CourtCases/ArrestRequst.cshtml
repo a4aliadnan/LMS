@@ -35,9 +35,9 @@
                     d.DataTableName = dataForTable;
                     d.LocationId = $('#txtUserRole').val() == "VoucherApproval" ? $('input[name="rdoLocation"]:checked').val() : $('#txtLocationId').val();
                     d.CallerName = $('#hidUserName').val();
-                    d.EnfGovernorate = $('#GovernorateId').val();
-                    d.EnfCourtLocation = $('#CourtLocationid').val();
-                    d.EnfClientCode = $('#ClientCode').val();
+                    d.EnfGovernorate = $('#ENF_SEARCH_GovernorateId').val();
+                    d.EnfCourtLocation = $('#ENF_SEARCH_CourtLocationid').val();
+                    d.EnfClientCode = $('#ENF_SEARCH_ClientCode').val();
 
                 }
             },

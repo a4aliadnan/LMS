@@ -84,6 +84,8 @@
         }
     }
     function LoadEnforcementStage(Enforcementlevel) {
+        console.log("LoadEnforcementStage");
+        console.log(Enforcementlevel);
         $("#div_Def_AnnType").removeClass("AppHidden").addClass("AppHidden");
         var partialViewPrefix = "CEL-ENF_LVL_";
         var _parameters = "";
@@ -143,6 +145,11 @@
                 EnforcementLevelHeading = "DISPUTE منازعة تنفيذ"
                 EnforcementLevelHeaderClass = "GeneralActive";
                 $("#div_Def_AnnType").removeClass("AppHidden");
+                break;
+            case OfficeFileStatus.Transfer:
+                _PartialViewName = partialViewPrefix + "TRANSFER";
+                EnforcementLevelHeading = "TRANSFER"
+                EnforcementLevelHeaderClass = "GeneralActive";
                 break;
         }
 
@@ -825,6 +832,26 @@
         $("#PVDetail_TotalAmount").val(p_TtlAmt);
 
     }
+    function ValidateTBR() {
+
+        if ($("#DisputeLevel").val() == "0") {
+            ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT ENFORCEMENT DISPUTE LEVEL" : ValidationMessage + "<br />" + "PLEASE SELECT ENFORCEMENT DISPUTE LEVEL";
+            NotValid = true;
+        }
+
+        if ($("#DisputeType").val() == "0") {
+            ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT DISPUTE TYPE" : ValidationMessage + "<br />" + "PLEASE SELECT DISPUTE TYPE";
+            NotValid = true;
+        }
+
+        if ($("#FileStatus").val() == OfficeFileStatus.PleaseSelect) {
+            ValidationMessage = ValidationMessage == "" ? "PLEASE SELECT FILE STATUS" : ValidationMessage + "<br />" + "PLEASE SELECT FILE STATUS";
+            NotValid = true;
+        }
+
+
+        return NotValid;
+    }
 
     $(document).ready(function () {
         console.log("Modify Enforcement --> INFO STAGE Partail View Document Page");
@@ -1003,28 +1030,28 @@
                 var $EnforcementlevelId = $('#EnforcementlevelId').val();
 
                 switch ($EnforcementlevelId) {
-                    case "2":
+                    case OfficeFileStatus.Announcement:
                         NotValid = ValidateEnforcementAnnouncement();
                         break;
-                    case "3":
+                    case OfficeFileStatus.ContactingAuthorities:
                         NotValid = ValidateEnforcementInquiry();
                         break;
-                    case "4":
+                    case OfficeFileStatus.JudicalSale:
                         NotValid = ValidateEnforcementJudicialAuction();
                         break;
-                    case "6":
+                    case OfficeFileStatus.ArrestOrder:
                         NotValid = ValidateEnforcementArrestOrder();
                         break;
-                    case "7":
+                    case OfficeFileStatus.Suspendfd:
                         NotValid = ValidateEnforcementSuspended();
                         break;
-                    case "9":
+                    case OfficeFileStatus.RecoveryRedStamp_Re_Open:
                         NotValid = ValidateEnforcementRecoveryAndReopen();
                         break;
-                    case "10":
-                        NotValid = ValidateEnforcementCloseFile();
+                    case OfficeFileStatus.Transfer:
+                        NotValid = ValidateTBR();
                         break;
-                    case "11":
+                    case OfficeFileStatus.Dispute:
                         NotValid = ValidateEnforcementDispute();
                         break;
                 }
@@ -1044,6 +1071,8 @@
         });
 
         $('#EnforcementlevelId').on("change", function () {
+            console.log($('#EnforcementlevelId').val());
+
             $("#EnforcementLevelBox").removeClass("AppHidden").addClass("AppHidden");
 
             $("#EnforcementActionDate").datepicker("setDate", new Date());
@@ -1079,6 +1108,7 @@
             if (this.value == "Y")
                 $(".clsRealEstate").removeClass("AppHidden");
         });
+        console.log($('#EnforcementlevelId').val());
 
         if ($("#hidIsAgainstClient").val() == "N")
             LoadEnforcementStage($('#EnforcementlevelId').val());
@@ -1429,7 +1459,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="card cls_EnfMainAll cls_PVCreate">
         <div id="PVDIV">
             <div class="col-sm-12">
@@ -1453,8 +1483,8 @@
                 @Html.HiddenFor(model => model.PVDetail.TransReasonCode, new { @Value = "0" })
 
             </div>
-            
-                
+
+
             <div class="card-body">
                 <div class="row text-center">
                     <div class="col-6">
@@ -1575,7 +1605,7 @@
                     <div class="col-6"></div>
                 </div>
             </div>
-            
+
             <div class="card-header bg-gradient-purple">
                 <h3 class="card-title">ALREADY CREATED PAYMENT VOUCHER<span style="float:right">آخر التحويلات في هذا الملف</span></h3>
             </div>

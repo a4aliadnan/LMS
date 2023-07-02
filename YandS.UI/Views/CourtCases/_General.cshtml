@@ -30,15 +30,28 @@
                     /*data: 'CaseLevelName', name: 'CaseLevelName', autoWidth: true*/
                     data: null, autoWidth: false,
                     render: function (data, type, row) {
-                        if (data.CaseStatus == "2")
-                            return 'CLOSE';
-                        else
-                            return data.CaseLevelName;
+                        var Court = "";
+                        var CaseLevel = data.CaseLevelName;
+
+                        if (data.COURT !== null)
+                            Court = data.COURT;
+
+                        if (data.CaseStatus == "2") {
+                            return 'CLOSE<br />' + Court;
+                        }
+                        else {
+                            return CaseLevel + '<br />' + Court;
+                        }
+                            
                     }
                 },
-                { data: 'COURT', name: 'COURT', autoWidth: false },
+                //{ data: 'COURT', name: 'COURT', autoWidth: false },
                 { data: 'CourtRefNo', name: 'CourtRefNo', autoWidth: false, render: function (data) { if (data) return data.split("^ ").join("<br/>"); else return ""; } },
                 { data: 'AccountContractNo', name: 'AccountContractNo', autoWidth: false, render: function (data, type, row) { return FormatAccount_ClientFileNo(row); } },
+                { data: 'FileStatusName', name: 'FileStatusName', autoWidth: false },
+                { data: 'CurrentHearingDate', name: 'CurrentHearingDate', autoWidth: false },
+                { data: 'CourtDecision', name: 'CourtDecision', autoWidth: true },
+                { data: 'NextHearingDate', name: 'NextHearingDate', autoWidth: false },
                 {
                     data: null, autoWidth: false,
                     render: function (data, type, row) {
@@ -83,7 +96,25 @@
                         else
                             return "";
                     },
-                    targets: [ 1, 2, 4, 5, 6]
+                    targets: [1, 2, 3, 4, 5, 6]
+                },
+                {
+                    targets: 8, render: function (data) {
+                        if (data) {
+                            return "<div dir = 'auto' class='text-right text-wrap'>" + data.replace(/(\r\n|\n|\r)/g, "<br />"); +"</div>";
+                        }
+                        else
+                            return "";
+                    }
+                },
+                {
+                    render: function (data) {
+                        if (data)
+                            return moment(data).format('DD/MM/YYYY');
+                        else
+                            return "";
+                    },
+                    targets: [7, 9]
                 }
             ],
             "drawCallback": function (settings) {
@@ -206,13 +237,16 @@
         <table id="HtmlTable" class="table table-bordered table-striped dataTable dt-responsive nowrap" style="width:100%">
             <thead>
                 <tr>
-                    <th style="width:50px !important;" class="all">FILE NO.</th>
-                    <th>CLIENT NAME</th>
-                    <th>DEFENDANT/PLAINTIFF NAME</th>
-                    <th style="width:120px !important;">CURRENT LEVEL</th>
-                    <th style="width:80px !important;">COURT</th>
-                    <th style="width:150px !important;">CASE NO</th>
-                    <th style="width:200px !important;" class="VMiddle text-center">A/C NO<br /><span class="emphasized">CLIENT FILE NO</span></th>
+                    <th style="width:35px !important;" class="all">FILE NO.</th>
+                    <th style="width:150px !important;">CLIENT NAME</th>
+                    <th style="width:150px !important;">DEFENDANT/PLAINTIFF NAME</th>
+                    <th style="width:100px !important;">COURT</th>
+                    <th style="width:80px !important;">CASE NO</th>
+                    <th style="width:200px !important;" class="VMiddle text-center">CLIENT REF</th>
+                    <th style="width:150px !important;" class="VMiddle text-center">FILE STATUS</th>
+                    <th style="width:50px !important;" class="VMiddle text-center">UPDATE DATE<br />تاريخ التحديث</th>
+                    <th class="VMiddle text-center">COURT DECISION<br />قرار المحكمة</th>
+                    <th style="width:50px !important;" class="VMiddle text-center">NEXT HEARING DATE<br />موعد الجلسة القادمة</th>
                     <th style="width:100px !important;" class="all"></th>
                 </tr>
             </thead>

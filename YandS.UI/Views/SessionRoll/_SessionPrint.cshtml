@@ -194,6 +194,7 @@
                 { data: 'NextHearingDate', name: 'NextHearingDate', autoWidth: true },
                 { data: 'SessionLevelName', name: 'SessionLevelName', autoWidth: true },
                 { data: 'CountLocationName', name: 'CountLocationName', autoWidth: true },
+                { data: 'CaseTypeName', name: 'CaseTypeName', autoWidth: true },
                 { data: 'SessionRollClientName', name: 'SessionRollClientName', autoWidth: true },
                 { data: 'SessionRollDefendentName', name: 'SessionRollDefendentName', autoWidth: true },
                 { data: 'CourtDecision', name: 'CourtDecision', autoWidth: true },
@@ -203,72 +204,26 @@
             "order": [[1, "desc"]],
             "columnDefs": [
                 { 'orderable': false, 'targets': '_all' },
-            { "className": "dt-center", "targets": "_all" },
-            {
-                render: function (data, type, full, meta) {
-                    if (data)
-                        return "<div class='text-wrap'>" + data + "</div>";
-                    else
-                        return "";
+                { "className": "dt-center", "targets": "_all" },
+                {
+                    render: function (data, type, full, meta) {
+                        if (data)
+                            return "<div class='text-wrap'>" + data + "</div>";
+                        else
+                            return "";
+                    },
+                    targets: [2, 3, 4, 5, 6, 8]
                 },
-                targets: 2
-            },
-            {
-                render: function (data, type, full, meta) {
-                    if (data)
-                        return "<div class='text-wrap'>" + data + "</div>";
-                    else
-                        return "";
-                },
-                targets: 3
-            },
-            {
-                render: function (data, type, full, meta) {
-                    if (data)
-                        return "<div class='text-wrap'>" + data + "</div>";
-                    else
-                        return "";
-                },
-                targets: 4
-            },
-            {
-                render: function (data, type, full, meta) {
-                    if (data)
-                        return "<div class='text-wrap'>" + data + "</div>";
-                    else
-                        return "";
-                },
-                targets: 5
-            },
-            {
-                render: function (data, type, full, meta) {
-                    if (data) {
-                        return "<div dir = 'auto' class='text-right text-wrap'>" + data.replace(/(\r\n|\n|\r)/g, "<br />"); +"</div>";
-                    }
-                    else
-                        return "";
-                },
-                targets: 6
-            },
-            {
-                render: function (data, type, full, meta) {
-                    if (data)
-                        return "<div class='text-wrap'>" + data + "</div>";
-                    else
-                        return "";
-                },
-                targets: 7
-            },
-
-            {
-                targets: 8, render: function (data) {
-                    if (data) {
-                        return "<div dir = 'auto' class='text-right text-wrap'>" + data.replace(/(\r\n|\n|\r)/g, "<br />"); +"</div>";
-                    }
-                    else
-                        return "";
+                {
+                    render: function (data, type, full, meta) {
+                        if (data) {
+                            return "<div dir = 'auto' class='text-right text-wrap'>" + data.replace(/(\r\n|\n|\r)/g, "<br />"); +"</div>";
+                        }
+                        else
+                            return "";
+                    },
+                    targets: [7, 9]
                 }
-            }
             ],
             //"createdRow": function (row, data, dataIndex) {
             //    var rowColor = "";
@@ -457,6 +412,7 @@
                         <th style="width:50px !important" class="VMiddle text-center">DATE التاريخ</th>
                         <th style="width:70px !important" class="VMiddle text-center">LEVEL المرحلة</th>
                         <th style="width:100px !important" class="VMiddle text-center">COURT</th>
+                        <th style="width:50px !important" class="VMiddle text-center">CASE TYPE القاعة</th>
                         <th style="width:170px !important" class="VMiddle text-center">CLIENT الموكل</th>
                         <th style="width:170px !important" class="VMiddle text-center">DEF الخصم</th>
                         <th class="VMiddle text-center">COURT DECISION قرار المحكمة</th>

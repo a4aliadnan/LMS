@@ -1,8 +1,6 @@
 ﻿<script type="text/javascript">
     var table;
-    $(document).ready(function () {
-        $('.clsFollowup').removeClass("active");
-        $('.clsSessionRoll').removeClass("active").addClass("active");
+    function LoadResultTable() {
         if (typeof table != 'undefined')
             table.destroy();
 
@@ -38,7 +36,9 @@
                 "datatype": "json",
                 data: function (d) {
                     d.DataTableName = "SUSPENDED";
-                    d.LocationId = "A";//$('#txtUserRole').val() == "VoucherApproval" ? $('input[name="rdoLocation"]:checked').val() : $('#txtLocationId').val();
+                    d.LocationId = $('#txtUserRole').val() == "VoucherApproval" ? $('input[name="rdoLocation"]:checked').val() : $('#txtLocationId').val();
+                    d.LawyerId = $('#Search_SuspendedFollowerId').val();
+                    d.LawyerUser = $('#hidLawyerUser').val();
                 }
             },
             "columns": [
@@ -216,12 +216,12 @@
                 var info = table.page.info();
 
                 var MCTTTL = table.column(0).data().filter(function (value, index) {
-                        return value.substring(0, 1) == "M" ? true : false;
-                    }).count();
+                    return value.substring(0, 1) == "M" ? true : false;
+                }).count();
 
                 var SSLTTL = table.column(0).data().filter(function (value, index) {
-                        return value.substring(0, 1) == "S" ? true : false;
-                    }).count();
+                    return value.substring(0, 1) == "S" ? true : false;
+                }).count();
 
                 //console.log("MUSCAT TOTAL " + MCTTTL);
                 //console.log("SALALAH TOTAL " + SSLTTL);
@@ -232,9 +232,9 @@
                     $('#SLLTTL').text("SALALAH : " + SSLTTL);
                 }
                 else {
-                    if ($('#txtLocationId').val() == "M") 
+                    if ($('#txtLocationId').val() == "M")
                         $('#MCTTTL').text("MUSCAT : " + MCTTTL);
-                    else 
+                    else
                         $('#MCTTTL').text("SALALAH : " + SSLTTL);
                 }
 
@@ -258,21 +258,37 @@
                     });
             }
         });
-    });
-    $('.table tbody').on('click', '.btnLink', function () {
-        var _Mode = this.id.split('_')[0];
-        var _id = parseInt(this.id.split('_')[1]);
 
-        var data = table.row($(this).parents('tr')).data();
+        $('.table tbody').on('click', '.btnLink', function () {
+            var _Mode = this.id.split('_')[0];
+            var _id = parseInt(this.id.split('_')[1]);
 
-        console.log(data);
-        console.log(_id);
-        console.log(data.CaseId);
-        console.log(data.SessionRollId);
-        
-        processbtnLinkClick(_Mode, data.SessionRollId, data.CaseId, data);
-        return false;
+            var data = table.row($(this).parents('tr')).data();
+
+            console.log(data);
+            console.log(_id);
+            console.log(data.CaseId);
+            console.log(data.SessionRollId);
+
+            processbtnLinkClick(_Mode, data.SessionRollId, data.CaseId, data);
+            return false;
+        });
+    }
+    $(document).ready(function () {
+        $('.clsFollowup').removeClass("active");
+        $('.clsSessionRoll').removeClass("active").addClass("active");
+
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        $('#btnPrintResult').on("click", function () {
+            LoadResultTable();
+        });
+
+        LoadResultTable();
     });
+
 </script>
 <div style="padding-bottom:0px;padding-top:10px;" class="row SessionSuspendedActive">
     <div class="col-sm-3 text-left text-white"><h3><span id="MCTTTL"></span></h3></div>
@@ -281,6 +297,17 @@
 </div>
 <div style="padding-bottom:0px;padding-top:10px;" class="row SessionSuspendedActive">
     <div class="col-sm-12 text-center"><h3><span id="TTL"></span></h3></div>
+</div>
+<div style="padding-bottom:0px;padding-top:10px;" class="row">
+    <div class="col-sm-3">
+        <div class="form-group">
+            <label for="Search_SuspendedFollowerId">ADVISOR المستشار</label>
+            @Html.DropDownList("Search_SuspendedFollowerId", null, htmlAttributes: new { @class = "form-control select2bs4" })
+        </div>
+    </div>
+    <div class="col-sm-3" style="padding-top:30px;">
+        <button id="btnPrintResult" type="button" class="btn btn-success"><i class="fas fa-file"></i> SHOW</button>
+    </div>
 </div>
 <div style="padding-bottom:0px;padding-top:10px;" class="row">
     <div class="col-sm-12">

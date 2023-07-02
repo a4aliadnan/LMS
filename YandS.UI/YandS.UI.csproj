@@ -4251,6 +4251,10 @@
     <Content Include="Views\SessionRoll\Index.cshtml" />
     <Content Include="Views\CourtCases\_AgainstClient.cshtml" />
     <Content Include="Views\CourtCases\ENF_LVL_TRANSFER.cshtml" />
+    <Content Include="Views\SessionRoll\_AfterJudgementEditForm.cshtml" />
+    <Content Include="Views\SessionRoll\_SessionPeriodOfAppeal.cshtml" />
+    <Content Include="Views\SessionRoll\_SessionEnfcApproval.cshtml" />
+    <Content Include="Views\SessionRoll\_SessionFileReview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

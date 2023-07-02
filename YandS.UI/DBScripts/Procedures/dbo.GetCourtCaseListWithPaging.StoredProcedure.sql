@@ -89,10 +89,11 @@ END
 IF (@DataFor = 'GENERAL')
 	BEGIN
 	 CREATE TABLE #T1 (
-					CaseId int,OfficeFileNo varchar(10),ClientName varchar(200),DefClientName varchar(200),AgainstName varchar(50),
-					ReceptionDate DATETIME2,AccountContractNo varchar(100),ClientFileNo varchar(100),CaseTypeName varchar(100),
-					CaseLevelCode varchar(10),CaseLevelName varchar(100),CaseStatus varchar(10),CaseStatusName varchar(100),FSort int,
-					SSort int,ToBeRegisterDays int,CourtRefNo varchar(1000),COURT varchar(100)
+					CaseId int,OfficeFileNo varchar(10),ClientName varchar(2000),DefClientName varchar(200),AgainstName varchar(50),
+					ReceptionDate DATETIME2,AccountContractNo varchar(1000),ClientFileNo varchar(1000),CaseTypeName varchar(1000),
+					CaseLevelCode varchar(10),CaseLevelName varchar(1000),CaseStatus varchar(10),CaseStatusName varchar(1000),FSort int,
+					SSort int,ToBeRegisterDays int,CourtRefNo varchar(1000),COURT varchar(100),CurrentHearingDate DATETIME2,CourtDecision nvarchar(max),
+					NextHearingDate DATETIME2,FileStatusName nvarchar(1000)
 				 )
 
 		SET @SQLQuery = 'SELECT CC.CaseId,CC.OfficeFileNo,ClientMas.Mst_Desc as ClientName,CC.Defendant as DefClientName,AgainstMas.Mst_Desc as AgainstName
@@ -116,13 +117,15 @@ IF (@DataFor = 'GENERAL')
 										else 1
 									end
 								end as SSort,case when CC.CaseLevelCode = ''1'' AND CC.CaseStatus = ''1'' then DATEDIFF(DAY, dateadd(hour , 11, CC.ReceptionDate),dateadd(hour , 11,GETDATE())) else 0 end as ToBeRegisterDays,
-								null as CourtRefNo,null as COURT
+								null as CourtRefNo,null as COURT,CC.CurrentHearingDate,CC.CourtDecision,CC.NextHearingDate
+						,case when ( CC.OfficeFileStatus = ''0'' OR CC.OfficeFileStatus is null) then NULL else FileStatus.Mst_Desc end as FileStatusName
 						from CourtCases as CC
 						join MASTER_S ClientMas on CC.ClientCode = ClientMas.Mst_Value and ClientMas.MstParentId = 241
 						join MASTER_S AgainstMas on CC.AgainstCode = AgainstMas.Mst_Value and AgainstMas.MstParentId = 12
 						join MASTER_S CaseTypeMas on CC.CaseTypeCode = CaseTypeMas.Mst_Value and CaseTypeMas.MstParentId = 14
 						join MASTER_S CaseLevelMas on CC.CaseLevelCode = CaseLevelMas.Mst_Value and CaseLevelMas.MstParentId = 15
 						join MASTER_S CaseStatusMas on CC.CaseStatus = CaseStatusMas.Mst_Value and CaseStatusMas.MstParentId = 252 
+						Left  join MASTER_S FileStatus on CC.OfficeFileStatus = FileStatus.Mst_Value and FileStatus.MstParentId = 1573
 						where CC.CaseStatus != ''-1'' 
 						and   CC.CaseTypeCode != ''6'' 
 						' + @DataForFilter + '

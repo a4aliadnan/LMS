@@ -124,6 +124,52 @@
 
         return DataToDisplay;
     }
+    function SetLabelText() {
+        var DefDisputeDate = "ENFC DIS DATE تاريخ الحكم";
+        var PriDisputeDate = "PRI ENFC DIS DATE تاريخ الحكم الابتدائي";
+        var AplDisputeDate = "APP ENFC DIS DATE تاريخ الحكم الاستئنافي";
+        var SupDisputeDate = "SUP.DISPUTE DATE تاريخ حكم منازعة العليا";
+
+        var DefJDReceiveDate = "DISPUTE JUG.RECEIVE تاريخ استلام حكم المنازعة";
+        var PriJDReceiveDate = "DISPUTE PRI.JUG.RECEIVE تاريخ استلام حكم المنازعة الابتدائي";
+        var AplJDReceiveDate = "DISPUTE APL.JUG.RECEIVE تاريخ استلام حكم منازعة الاستئناف";
+        var SupJDReceiveDate = "DISPUTE SUP.JUG.RECEIVE تاريخ استلام حكم منازعة العليا";
+
+        var DefClaimSummary = "CLAIM SUMMARY طلباتنا في المنازعة";
+        var PriClaimSummary = "PRI CLAIM SUMMARY طلباتنا في المنازعة الابتدائية";
+        var AplClaimSummary = "APP CLAIM SUMMARY طلباتنا في منازعة الاستئناف";
+        var SupClaimSummary = "SUP CLAIM SUMMARY طلباتنا في منازعة العليا";
+
+        var DefJudgements = "DISPUTE SENTENCE حكم المنازعة";
+        var PriJudgements = "DISPUTE PRI SENTENCE حكم المنازعة الإبتدائي";
+        var AplJudgements = "DISPUTE APP SENTENCE حكم منازعة الاستئناف";
+        var SupJudgements = "DISPUTE SUP SENTENCE حكم منازعة العليا";
+
+        if ($('#DisputeLevel').val() == "1") {
+            $("#labelDisputeDate").text(PriDisputeDate);
+            $("#labelJDReceiveDate").text(PriJDReceiveDate);
+            $("#labelClaimSummary").text(PriClaimSummary);
+            $("#labelJudgements").text(PriJudgements);
+        }
+        else if ($('#DisputeLevel').val() == "2") {
+            $("#labelDisputeDate").text(AplDisputeDate);
+            $("#labelJDReceiveDate").text(AplJDReceiveDate);
+            $("#labelClaimSummary").text(AplClaimSummary);
+            $("#labelJudgements").text(AplJudgements);
+        }
+        else if ($('#DisputeLevel').val() == "3") {
+            $("#labelDisputeDate").text(SupDisputeDate);
+            $("#labelJDReceiveDate").text(SupJDReceiveDate);
+            $("#labelClaimSummary").text(SupClaimSummary);
+            $("#labelJudgements").text(SupJudgements);
+        }
+        else {
+            $("#labelDisputeDate").text(DefDisputeDate);
+            $("#labelJDReceiveDate").text(DefJDReceiveDate);
+            $("#labelClaimSummary").text(DefClaimSummary);
+            $("#labelJudgements").text(DefJudgements);
+        }
+    }
 
 </script>
 <div class="modal fade" id="SessionNotesPopupModal">

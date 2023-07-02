@@ -23,6 +23,7 @@ namespace YandS.UI.Controllers
         private string OfficeFileFilterSR = Helper.getOfficeFileFilterSR();
         private string OfficeFileFilterENF = Helper.getOfficeFileFilterENF();
         private string OfficeFileFilterSUP  = Helper.getOfficeFileFilterSUP();
+        private string OfficeFileFilterAJP = Helper.getOfficeFileFilterAJP();
         private string[] FileStatusCodesSR = Helper.getFileStatusCodesSR();
         private string[] FileStatusCodesTBR = Helper.getFileStatusCodesTBR(); 
 
@@ -36,6 +37,11 @@ namespace YandS.UI.Controllers
             }
             else
                 ViewBag.LocationId = Helper.GetEmployeeLocation(User.Identity.Name).Split('-')[1];
+
+            ViewBag.LawyerUser = "N";
+
+            if (!string.IsNullOrEmpty(Helper.GetLawyerId(User.Identity.Name)))
+                ViewBag.LawyerUser = "Y";
 
             ViewBag.OfficeFileNo = "";
             ViewBag.IsEdit = "";
@@ -167,7 +173,13 @@ namespace YandS.UI.Controllers
                     }
 
                     if (modal.SessionRollId > 0) //EDIT
-                        PartialViewName = "_AllSessionsEditForm";
+                    {
+                        if (modal.PartialViewName == "_AfterJudgementEditForm")
+                            PartialViewName = "_AfterJudgementEditForm";
+                        else
+                            PartialViewName = "_AllSessionsEditForm";
+
+                    }
                     else
                     {
                         if (modal.PartialViewName == "_SessionPauseEnfReqDIV")
@@ -238,8 +250,24 @@ namespace YandS.UI.Controllers
 
                     if (PartialViewName == "_SessionRollRegister")
                         return Json(new { redirectTo = "#btn_AllSessions" });
-                    else if(PartialViewName == "_SessionPauseEnfReqDIV")
+                    else if (PartialViewName == "_SessionPauseEnfReqDIV")
                         return Json(new { message = "OK" });
+                    else if (PartialViewName == "_AfterJudgementEditForm")
+                    {
+                        modal.PartialViewName = PartialViewName;
+
+                        ViewBag.SessionRollId = modal.SessionRollId;
+                        ViewBag.HFCaseId = modal.CaseId;
+                        ViewBag.FrmMode = "E";
+
+                        ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterAJP), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                        ViewBag.PrimaryIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.PrimaryIsFavorable);
+                        ViewBag.AppealIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.AppealIsFavorable);
+                        ViewBag.EnforcementIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.EnforcementIsFavorable);
+
+                        return PartialView(PartialViewName, modal);
+
+                    }
                     else
                     {
                         if (modal.PartialViewName == "_SessionRollSupremeUpdate" || modal.PartialViewName == "_SessionJudgementSupreme" || modal.PartialViewName == "_SessionUpdateSupreme" || modal.PartialViewName == "_SessionUpdate" || modal.PartialViewName == "_SessionClose" || modal.PartialViewName == "_SessionFollowSupreme" || modal.PartialViewName == "_SessionJudgementSupreme_CaseDetail")
@@ -254,7 +282,7 @@ namespace YandS.UI.Controllers
                         }
                         else
                             return PartialView(PartialViewName, modal);
-                       
+
                     }
                 }
 
@@ -1224,6 +1252,23 @@ namespace YandS.UI.Controllers
                 else
                     CreateCaseDetail(modal);
             }
+            else if (modal.PartialViewName == "_AfterJudgementEditForm")
+            {
+                db.Entry(ModelToSave).Entity.SessionOnHold = "0";
+                db.Entry(ModelToSave).Entity.SessionOnHoldUntill = null;
+                db.Entry(ModelToSave).Entity.SessionFileStatus = modal.SessionFileStatus;
+
+                UpdateAfterJudgementReceived(modal, ref ModelToSave);
+                UpdateNextHearingDate(modal.CaseId, (DateTime?)null);
+
+                if (modal.IsDelete == "Y")
+                {
+                    db.Entry(ModelToSave).Entity.DeletedOn = DateTime.UtcNow.AddHours(4);
+                    db.Entry(ModelToSave).Entity.DeletedBy = User.Identity.GetUserId();
+                }
+
+                UpdateOfficeFileStatus(modal.CaseId, modal.SessionFileStatus);
+            }
             else if (modal.PartialViewName == "_SessionFollowSupreme")
             {
                 if (modal.DetailId > 0)
@@ -1378,7 +1423,33 @@ namespace YandS.UI.Controllers
 
                 db.Entry(ModelToSave).Entity.EnforcementJudgements = modal.EnforcementJudgements;
                 db.Entry(ModelToSave).Entity.EnforcementJDReceiveDate = modal.EnforcementJDReceiveDate;
-                db.Entry(ModelToSave).Entity.EnforcementJudgementsDate = modal.EnforcementJDReceiveDate;
+                db.Entry(ModelToSave).Entity.EnforcementJudgementsDate = modal.EnforcementJudgementsDate;
+                db.Entry(ModelToSave).Entity.EnforcementIsFavorable = modal.EnforcementIsFavorable;
+            }
+        }
+        private void UpdateAfterJudgementReceived(SessionsRollVM modal, ref SessionsRoll ModelToSave)
+        {
+            if (modal.JudgementLevel == "1")
+            {
+                db.Entry(ModelToSave).Entity.PrimaryJudgementsDate = modal.PrimaryJudgementsDate;
+                db.Entry(ModelToSave).Entity.PrimaryIsFavorable = modal.PrimaryIsFavorable;
+                db.Entry(ModelToSave).Entity.PrimaryJDReceiveDate = modal.PrimaryJDReceiveDate;
+            }
+            else if (modal.JudgementLevel == "2")
+            {
+                db.Entry(ModelToSave).Entity.AppealJudgementsDate = modal.AppealJudgementsDate;
+                db.Entry(ModelToSave).Entity.AppealIsFavorable = modal.AppealIsFavorable;
+                db.Entry(ModelToSave).Entity.AppealJDReceiveDate = modal.AppealJDReceiveDate;
+            }
+            else if (modal.JudgementLevel == "3")
+            {
+                db.Entry(ModelToSave).Entity.SupremeJudgementsDate = modal.SupremeJudgementsDate;
+                db.Entry(ModelToSave).Entity.SupremeJDReceiveDate = modal.SupremeJDReceiveDate;
+            }
+            else if (modal.JudgementLevel == "4")
+            {
+                db.Entry(ModelToSave).Entity.EnforcementJDReceiveDate = modal.EnforcementJDReceiveDate;
+                db.Entry(ModelToSave).Entity.EnforcementJudgementsDate = modal.EnforcementJudgementsDate;
                 db.Entry(ModelToSave).Entity.EnforcementIsFavorable = modal.EnforcementIsFavorable;
             }
         }
@@ -1894,6 +1965,7 @@ namespace YandS.UI.Controllers
                 DateTime DateTo = DateTime.Now;
                 string CountLocationId = string.Empty;
                 string LawyerId = string.Empty;
+                string LawyerUser = string.Empty;
                 int MCTRecords = 0;
                 int SLLRecords = 0;
                 string ProcedureName = string.Empty;
@@ -1903,7 +1975,7 @@ namespace YandS.UI.Controllers
                     DataFor = request.Params["DataTableName"].ToString();
                     LocationId = request.Params["LocationId"].ToString();
 
-                    if (DataFor.In("TO_RECEIVE_JUDGEMENT","SUPREME"))
+                    if (DataFor.In("TO_RECEIVE_JUDGEMENT","SUPREME", "OFS-13", "OFS-33", "OFS-34", "OFS-35", "OFS-36", "OFS-37", "OFS-38", "OFS-39"))
                     {
                         List<string> parName = Helper.getDefaultParNames();
                         List<object> parValues = Helper.getDefaultParValues();
@@ -1946,6 +2018,16 @@ namespace YandS.UI.Controllers
                             ClientCode = request.Params["ClientCode"].ToString();
                         }
 
+                    }
+
+                    if (DataFor == "SUSPENDED")
+                    {
+                        string SuspendedFollowerId = Helper.GetLawyerId(User.Identity.Name) ?? "0";
+
+                        LawyerId = request.Params["LawyerId"].ToString();
+                        LawyerUser = request.Params["LawyerUser"].ToString();
+                        if (LawyerUser == "Y" && LawyerId == SuspendedFollowerId)
+                            LocationId = "A";
                     }
 
                     data = Helper.GetSessionRollList(sortcoloumnIndex, start, searchvalue, Length, sortDirection, User.Identity.Name, DataFor, LocationId, SessionLevel, DateFrom, DateTo, CountLocationId, LawyerId, ClientCode).ToList();
@@ -2756,12 +2838,39 @@ namespace YandS.UI.Controllers
             {
                 if (CaseId == 0)
                     return new HttpStatusCodeResult(HttpStatusCode.NotFound);
-
+                
                 SessionsRollVM modal = GetPrintFormData(CaseId, "_PrintRequirementForm", SessionRollId);
                 ViewBag.SessionRollId = modal.SessionRollId;
                 ViewBag.HFCaseId = modal.CaseId;
 
                 return PartialView(modal.FormName, modal);
+            }
+            else if (PartialViewName == "_SessionSuspended")
+            {
+                string SuspendedFollowerId = Helper.GetLawyerId(User.Identity.Name) ?? "0";
+
+                ViewBag.Search_SuspendedFollowerId = new SelectList(Helper.GetSessionFollowers(), "Mst_Value", "Mst_Desc", SuspendedFollowerId);
+                return PartialView(PartialViewName);
+            }
+            else if (PartialViewName == "_AfterJudgementEditForm")
+            {
+                if (CaseId == 0)
+                    return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+
+                SessionsRollVM modal = new SessionsRollVM();
+                modal.PartialViewName = PartialViewName;
+                mapSessionRollVM(CaseId, SessionRollId, ref modal);
+
+                ViewBag.SessionRollId = modal.SessionRollId;
+                ViewBag.HFCaseId = modal.CaseId;
+                ViewBag.FrmMode = "E";
+
+                ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterAJP), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                ViewBag.PrimaryIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.PrimaryIsFavorable);
+                ViewBag.AppealIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.AppealIsFavorable);
+                ViewBag.EnforcementIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.EnforcementIsFavorable);
+
+                return PartialView(PartialViewName, modal);
             }
             else
                 return PartialView(PartialViewName);

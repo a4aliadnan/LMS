@@ -1,12 +1,15 @@
 ﻿<script type="text/javascript">
-    var DataTable;
+    var table;
+    var dataForTable = "OFS-13";
+    var SP_NAME = "AFTER_JUDGMENT_PROCEEDINGS-DETAILS";
+
     $(document).ready(function () {
         $('.clsFollowup').removeClass("active").addClass("active");
         $('.clsSessionRoll').removeClass("active");
-        if (typeof DataTable != 'undefined')
-            DataTable.destroy();
-        /*
-        DataTable = $('#HtmlTable').DataTable({
+        if (typeof table != 'undefined')
+            table.destroy();
+
+        table = $('#HtmlTable').DataTable({
             "processing": true,
             "serverSide": true,
             "filter": true,
@@ -15,13 +18,13 @@
             "ordering": true,
             "pageLength": -1,
             //dom: 'Blfrtip',
-            dom: "<'row'<'col-sm-4'l><'col-sm-7 text-right'f><'col-sm-1 text-right'B>>" +
+            dom: "<'row'<'col-sm-1'l><'col-sm-1 text-right'B><'col-sm-10 text-right'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'p>>",
             buttons: [
                 {
                     extend: 'excel',
-                    title: 'MISSING DOCUMENTS  نواقص مستندات',
+                    title: 'COMPLETING DOCS ننتظر مستندات من الموكل',
                     text: '<i class="fa fa-table fainfo" aria-hidden="true" > </i> Print',
                     titleAttr: 'Export Excel',
                     "oSelectorOpts": { filter: 'applied', order: 'current' },
@@ -34,17 +37,42 @@
                 "type": "POST",
                 "datatype": "json",
                 data: function (d) {
-                    d.DataTableName = "MISSINGDOCS";
+                    d.DataTableName = dataForTable;
+                    d.ProcedureName = SP_NAME;
                     d.LocationId = $('#txtUserRole').val() == "VoucherApproval" ? $('input[name="rdoLocation"]:checked').val() : $('#txtLocationId').val();
                 }
             },
             "columns": [
+                { data: 'OfficeFileNo', name: 'OfficeFileNo', autoWidth: true },
+                {
+                    data: 'FJDCounter', name: 'FJDCounter', autoWidth: true, render: function (data, type, row) {
+                        if (parseInt(data) == 1)
+                            return data + " Day";
+                        else if (parseInt(data) > 1)
+                            return data + " Days";
+                        else
+                            return "";
+                    }
+                },
+                { data: 'InvestmentTypeName', name: 'InvestmentTypeName', autoWidth: true },
+                {
+                    data: 'IsFavorable', name: 'IsFavorable', autoWidth: true, render: function (data, type, row) {
+                        if (data == "N")
+                            return "NO";
+                        else if (data == "Y")
+                            return "YES";
+                        else
+                            return "";
+                    }
+                },
                 { data: 'SessionLevelName', name: 'SessionLevelName', autoWidth: true },
                 { data: 'CountLocationName', name: 'CountLocationName', autoWidth: true },
-                { data: 'CourtRefNo', name: 'CourtRefNo', autoWidth: true },
+                { data: 'CourtRefNo', name: 'CourtRefNo', autoWidth: false, render: function (data) { if (data) return data.split("^ ").join("<br/>"); else return ""; } },
                 { data: 'SessionRollClientName', name: 'SessionRollClientName', autoWidth: true },
                 { data: 'SessionRollDefendentName', name: 'SessionRollDefendentName', autoWidth: true },
+                { data: 'AgainstName', name: 'AgainstName', autoWidth: true },
                 { data: 'DisplaySentence', name: 'DisplaySentence', autoWidth: true },
+                { data: 'SessionNote_Remark', name: 'SessionNote_Remark', autoWidth: true },
                 {
                     data: null,
                     render: function (data, type, row) {
@@ -59,31 +87,70 @@
                     },
                     className: "project-actions text-right"
                 }],
-            "order": [[1, "asc"]],
+            "order": [],
             "columnDefs": [
-                { 'orderable': false, 'targets': [-1] },
+                { 'orderable': false, 'targets': '_all' },
                 { "className": "dt-center", "targets": "_all" },
                 {
                     render: function (data, type, full, meta) {
-                        return "<div class='text-wrap width-400'>" + data + "</div>";
+                        if (data)
+                            return "<div class='text-wrap'>" + data + "</div>";
+                        else
+                            return "";
                     },
-                    targets: 5
+                    targets: [2, 3, 4, 5, 6, 7, 8, 9]
+                },
+                {
+                    render: function (data, type, full, meta) {
+                        if (data) {
+                            return "<div dir = 'auto' class='text-right text-wrap'>" + data.replace(/(\r\n|\n|\r)/g, "<br />"); +"</div>";
+                        }
+                        else
+                            return "";
+
+                    },
+                    targets: [10, 11]
                 }
             ],
             "createdRow": function (row, data, dataIndex) {
                 var rowColor = "";
 
-                if (data.CaseDismisses == "Y") {
-                    rowColor = "IsSessionCaseDismissed";
+                if (data.IsFavorable == "N") {
+                    rowColor = "tableColorDarkRed";
                 }
 
                 $(row).addClass(rowColor);
             },
+            "drawCallback": function (settings) {
+                if (SmartFilter) {
+                    SmartFilter = false;
+                    $("#ModificationContainer").empty();
+                }
+            },
             initComplete: function () {
-                console.log("DataTable  Initiated !!");
-                var info = DataTable.page.info();
+                console.log("table  Initiated !!");
+                var info = table.page.info();
 
-                //$('#TTL').text(info.recordsTotal);
+                var MCTTTL = table.column(0).data().filter(function (value, index) {
+                    return value.substring(0, 1) == "M" ? true : false;
+                }).count();
+
+                var SSLTTL = table.column(0).data().filter(function (value, index) {
+                    return value.substring(0, 1) == "S" ? true : false;
+                }).count();
+
+                $('#TTL').text(info.recordsTotal);
+
+                if ($("#txtUserRole").val() == "VoucherApproval") {
+                    $('#MCTTTL').text("MUSCAT : " + MCTTTL);
+                    $('#SLLTTL').text("SALALAH : " + SSLTTL);
+                }
+                else {
+                    if ($('#txtLocationId').val() == "M")
+                        $('#MCTTTL').text("MUSCAT : " + MCTTTL);
+                    else
+                        $('#MCTTTL').text("SALALAH : " + SSLTTL);
+                }
 
                 $("#HtmlTable_filter.dataTables_filter input")
                     .unbind() // Unbind previous default bindings
@@ -92,51 +159,54 @@
                         // this.value.length >= 3 || If the length is 3 or more characters, or the user pressed ENTER, search
                         if (e.keyCode == 13) {
                             // Call the API search function
-                            DataTable.search(this.value).draw();
+                            SmartFilter = true;
+                            table.search(this.value).draw();
                         }
                         // Ensure we clear the search if they backspace far enough
                         if (this.value == "") {
-                            DataTable.search("").draw();
+                            SmartFilter = true;
+                            table.search("").draw();
                         }
                         return;
                     });
             }
         });
-        */
+
     });
     $('.table tbody').on('click', '.btnLink', function () {
         var _Mode = this.id.split('_')[0];
         var _id = parseInt(this.id.split('_')[1]);
 
-        var data = DataTable.row($(this).parents('tr')).data();
-
-        console.log(data);
-        console.log(_id);
-        console.log(data.CaseId);
-        console.log(data.SessionRollId);
+        var data = table.row($(this).parents('tr')).data();
 
         processbtnLinkClick(_Mode, data.SessionRollId, data.CaseId, data);
         return false;
     });
 </script>
 <div style="padding-bottom:0px;padding-top:10px;" class="row SessionMissingDocumentsActive">
-    <div class="col-sm-12 text-center"><h3>MISSING DOCUMENTS  نواقص مستندات</h3></div>
+    <div class="col-sm-3 text-left"><h3><span id="MCTTTL"></span></h3></div>
+    <div class="col-sm-6 text-center"><h3>COMPLETING DOCS ننتظر مستندات من الموكل</h3></div>
+    <div class="col-sm-3 text-right"><h3><span id="SLLTTL"></span></h3></div>
 </div>
 <div style="padding-bottom:0px;padding-top:10px;" class="row SessionMissingDocumentsActive">
     <div class="col-sm-12 text-center"><h3><span id="TTL"></span></h3></div>
 </div>
 <div style="padding-bottom:0px;padding-top:10px;" class="col-sm-12">
-    <table id="HtmlTable" class="table table-bordered table-striped dataTable dt-responsive nowrap" style="width:100%">
+    <table id="HtmlTable" class="table table-bordered table-striped table dt-responsive nowrap" style="width:100%">
         <thead>
             <tr>
-                <th class="all VMiddle text-center">F.N</th>
-                <th class="VMiddle">JUD. C<br />صدر الحكم منذ</th>
-                <th class="VMiddle">LEVEL<br />المرحلة</th>
-                <th class="VMiddle">COURT</th>
-                <th class="VMiddle">CASE NO.<br />رقم القضية</th>
-                <th class="VMiddle">CLIENT الموكل</th>
-                <th class="VMiddle">DEF الخصم</th>
+                <th style="width:50px !important" class="all VMiddle text-center">F.N</th>
+                <th style="width:50px !important" class="VMiddle">JUD. C<br />صدر الحكم منذ</th>
+                <th style="width:70px !important" class="VMiddle">INVESTMENT<br />تبسيط الإجراءات</th>
+                <th style="width:70px !important" class="VMiddle">FAVORABLE<br />مطابقة الحكم</th>
+                <th style="width:70px !important" class="VMiddle">LEVEL<br />المرحلة</th>
+                <th style="width:80px !important" class="VMiddle">COURT</th>
+                <th style="width:100px !important" class="VMiddle">CASE NO.<br />رقم القضية</th>
+                <th style="width:150px !important" class="VMiddle">CLIENT الموكل</th>
+                <th style="width:150px !important" class="VMiddle">DEF الخصم</th>
+                <th style="width:65px !important" class="VMiddle">AGAINST</th>
                 <th class="VMiddle">SENTECE منطوق الحكم</th>
+                <th style="width:150px !important" class="VMiddle">NOTES ملاحظات</th>
                 <th class="all"></th>
             </tr>
         </thead>

@@ -93,6 +93,22 @@
         color: white !important;
         font-weight: bold;
     }
+    .SessionEnfcApproval {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionEnfcApproval:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionEnfcApprovalActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
 
     .SessionPeriodOfAppeal {
         background-color: #57257d !important;
@@ -140,6 +156,23 @@
         }
 
     .SessionMissingDocumentsActive {
+        background-color: #002060 !important;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .SessionFileReview {
+        background-color: #57257d !important;
+        color: white !important;
+    }
+
+        .SessionFileReview:hover {
+            background-color: #002060 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+    .SessionFileReviewActive {
         background-color: #002060 !important;
         color: white !important;
         font-weight: bold;
@@ -728,19 +761,25 @@
             _PartialViewName = "";
             var PartialContainer = $("#ModificationContainer");
 
-            if ($("#txtViewToLoad").val() == "_SessionPauseEnfReq") {
-                _PartialViewName = "_SessionPauseEnfReqDIV";
-                PartialContainer = $("#EditPopupViewContainer");
-                ModalTitle = "STOP ENFC REQUEST. SUP";
-                $("#EditPopupModalTitle").text(ModalTitle);
-                _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: _CaseId, SessionRollId: 0 };
+            var AfterJudgementTables = ["_SessionJudgementFollowup", "_SessionJudgementCorrected", "_SessionPeriodOfAppeal", "_SessionRedStamp", "_SessionEnfcApproval", "_SessionMissingDocuments", "_SessionFileReview", "_SessionRefund34"];
+
+            if (AfterJudgementTables.indexOf($("#txtViewToLoad").val()) == -1) {
+                if ($("#txtViewToLoad").val() == "_SessionPauseEnfReq") {
+                    _PartialViewName = "_SessionPauseEnfReqDIV";
+                    PartialContainer = $("#EditPopupViewContainer");
+                    ModalTitle = "STOP ENFC REQUEST. SUP";
+                    $("#EditPopupModalTitle").text(ModalTitle);
+                    _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: _CaseId, SessionRollId: 0 };
+                }
+                else {
+                    _PartialViewName = "_AllSessionsEditForm";
+                    _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: _CaseId, SessionRollId: _SessionRollId };
+                }
             }
             else {
-                _PartialViewName = "_AllSessionsEditForm";
+                _PartialViewName = "_AfterJudgementEditForm";
                 _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: _CaseId, SessionRollId: _SessionRollId };
             }
-
-
 
             GetTab(PartialContainer, GetSessionRollURL, _parameters);
         }
@@ -1820,7 +1859,7 @@
         submitForm();
     }
     function ShowPreSubmit() {
-        arrDeletePVs = ["_SessionJudgementPrimary", "_SessionJudgementAppeal", "_SessionJudgementSupremeModal", "_SessionJudgementEnforcement", "_TBRAppeal", "_TBRSupreme"];
+        arrDeletePVs = ["_SessionJudgementPrimary", "_SessionJudgementAppeal", "_SessionJudgementSupremeModal", "_SessionJudgementEnforcement", "_TBRAppeal", "_TBRSupreme", "_AfterJudgementEditForm"];
 
         if (arrDeletePVs.indexOf(_PartialViewName) >= 0) {
             arrNoFav = ["_TBRAppeal", "_TBRSupreme"];
@@ -1831,26 +1870,50 @@
                 IsFavorable = "N";
             }
 
-            switch (_PartialViewName) {
-                case "_SessionJudgementPrimary":
-                case "_TBRAppeal":
-                    JudgementReceivedDate = $('#PrimaryJDReceiveDate').val();
-                    IsFavorable = $('#PrimaryIsFavorable').val();
-                    break;
-                case "_SessionJudgementAppeal":
-                case "_TBRSupreme":
-                    JudgementReceivedDate = $('#AppealJDReceiveDate').val();
-                    IsFavorable = $('#AppealIsFavorable').val();
-                    break;
-                case "_SessionJudgementSupremeModal":
-                    JudgementReceivedDate = $('#SupremeJDReceiveDate').val();
-                    IsFavorable = "N";
-                    break;
-                case "_SessionJudgementEnforcement":
-                    IsFavorable = $('#EnforcementIsFavorable').val();
-                    JudgementReceivedDate = IsFavorable == "N" ? "YES" : "";
-                    break;
+            if (_PartialViewName == "_AfterJudgementEditForm") {
+                switch ($('#JudgementLevel').val()) {
+                    case "1":
+                        JudgementReceivedDate = $('#PrimaryJDReceiveDate').val();
+                        IsFavorable = $('#PrimaryIsFavorable').val();
+                        break;
+                    case "2":
+                        JudgementReceivedDate = $('#AppealJDReceiveDate').val();
+                        IsFavorable = $('#AppealIsFavorable').val();
+                        break;
+                    case "3":
+                        JudgementReceivedDate = $('#SupremeJDReceiveDate').val();
+                        IsFavorable = "N";
+                        break;
+                    case "4":
+                        IsFavorable = $('#EnforcementIsFavorable').val();
+                        JudgementReceivedDate = IsFavorable == "N" ? "YES" : "";
+                        break;
+                }
             }
+            else {
+                switch (_PartialViewName) {
+                    case "_SessionJudgementPrimary":
+                    case "_TBRAppeal":
+                        JudgementReceivedDate = $('#PrimaryJDReceiveDate').val();
+                        IsFavorable = $('#PrimaryIsFavorable').val();
+                        break;
+                    case "_SessionJudgementAppeal":
+                    case "_TBRSupreme":
+                        JudgementReceivedDate = $('#AppealJDReceiveDate').val();
+                        IsFavorable = $('#AppealIsFavorable').val();
+                        break;
+                    case "_SessionJudgementSupremeModal":
+                        JudgementReceivedDate = $('#SupremeJDReceiveDate').val();
+                        IsFavorable = "N";
+                        break;
+                    case "_SessionJudgementEnforcement":
+                        IsFavorable = $('#EnforcementIsFavorable').val();
+                        JudgementReceivedDate = IsFavorable == "N" ? "YES" : "";
+                        break;
+                }
+            }
+
+            
 
             console.log("IsFavorable :: " + IsFavorable);
             console.log("JudgementReceivedDate :: " + JudgementReceivedDate);
@@ -1966,18 +2029,22 @@
                         <div class="col">
                             <button type="button" id="btn_SessionJudgementCorrected" style="font-size: 1.1rem !important;" class="btn btn-block SessionJudgementCorrected @ViewBag.SessionJudgementCorrectedActive btn-lg navButton">تصحيح الحكم<br />JUDGMENT CORRECTED</button>
                         </div>
-                        <div class="col">
-                            <button type="button" id="btn_SessionBlueStamp" style="font-size: 1.1rem !important;" class="btn btn-block SessionBlueStamp @ViewBag.SessionBlueStampActive btn-lg navButton">الختم الأزرق<br />BLUE STAMP</button>
-                        </div>
+
                         <div class="col">
                             <button type="button" id="btn_SessionPeriodOfAppeal" style="font-size: 1.1rem !important;" class="btn btn-block SessionPeriodOfAppeal @ViewBag.SessionPeriodOfAppealActive btn-lg navButton">سريان ميعاد الاستئناف<br />PERIOD OF APPEAL</button>
                         </div>
                         <div class="col">
-                            <button type="button" id="btn_SessionRedStamp" style="font-size: 1.1rem !important;" class="btn btn-block SessionRedStamp @ViewBag.SessionRedStampActive btn-lg navButton">طلب الصيغة التنفيذية<br />RED STAMP</button>
+                            <button type="button" id="btn_SessionRedStamp" style="font-size: 1.1rem !important;" class="btn btn-block SessionRedStamp @ViewBag.SessionRedStampActive btn-lg navButton">طلب ختم الصيغة<br />RED STAMP</button>
                         </div>
-
+                        <div class="col">
+                            @*<button type="button" id="btn_SessionBlueStamp" style="font-size: 1.1rem !important;" class="btn btn-block SessionBlueStamp @ViewBag.SessionBlueStampActive btn-lg navButton">الختم الأزرق<br />BLUE STAMP</button>*@
+                            <button type="button" id="btn_SessionEnfcApproval" style="font-size: 1.1rem !important;" class="btn btn-block SessionEnfcApproval @ViewBag.SessionEnfcApprovalActive btn-lg navButton">موافقة على التنفيذ<br />ENFC APPROVALS</button>
+                        </div>
                         <div class="col">
                             <button type="button" id="btn_SessionMissingDocuments" style="font-size: 1.1rem !important;" class="btn btn-block SessionMissingDocuments @ViewBag.SessionMissingDocumentsActive btn-lg navButton">نواقص مستندات<br />MISSING DOC.</button>
+                        </div>
+                        <div class="col">
+                            <button type="button" id="btn_SessionFileReview" style="font-size: 1.1rem !important;" class="btn btn-block SessionFileReview @ViewBag.SessionFileReviewActive btn-lg navButton">دراسة الملف<br />FILE REVIEW</button>
                         </div>
                         <div class="col">
                             <button type="button" id="btn_SessionRefund34" style="font-size: 1.1rem !important;" class="btn btn-block SessionRefund34 @ViewBag.SessionRefund34Active btn-lg navButton">استرداد 3/4 الرسم<br />REFUND 3/4</button>
@@ -2175,6 +2242,7 @@
     <input type="hidden" id="hidCurrentHearingDate" value="" />
     <input type="hidden" id="hidCourtDecisionChange" value="" />
     <input type="hidden" id="hidUserName" value="@User.Identity.Name" />
+    <input type="hidden" id="hidLawyerUser" value="@ViewBag.LawyerUser" />
 
     @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
     {

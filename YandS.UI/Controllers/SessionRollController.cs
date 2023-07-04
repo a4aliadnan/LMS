@@ -70,7 +70,7 @@ namespace YandS.UI.Controllers
                 ViewBag.FormMode = "CREATE";
                 ViewBag.ViewContainer = "#PartialViewContainer";
 
-                if (User.Identity.Name == "10")
+                if (User.Identity.Name.In("10", "51"))
                 {
                     ViewBag.SessionSuspendedActive = "SessionSuspendedActive";
                     ViewBag.ViewToLoad = "_SessionSuspended";
@@ -2865,7 +2865,16 @@ namespace YandS.UI.Controllers
                 ViewBag.HFCaseId = modal.CaseId;
                 ViewBag.FrmMode = "E";
 
-                ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterAJP), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                if(CaseLevel != null)
+                {
+                    if (CaseLevel == "Y")
+                        ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterAJP), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                    else
+                        ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterTBR), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                }
+                else
+                    ViewBag.SessionFileStatus = new SelectList(Helper.GetOfficeFileStatus(OfficeFileFilterAJP), "Mst_Value", "Mst_Desc", modal.SessionFileStatus);
+                
                 ViewBag.PrimaryIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.PrimaryIsFavorable);
                 ViewBag.AppealIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.AppealIsFavorable);
                 ViewBag.EnforcementIsFavorable = new SelectList(Helper.GetYNForSelectAR(), "Mst_Value", "Mst_Desc", modal.EnforcementIsFavorable);

@@ -131,7 +131,7 @@ IF (@DataFor = 'GENERAL')
 						' + @DataForFilter + '
 						and (LEFT(CC.OfficeFileNo,1) = ''' + @Location + ''' OR ''' + @Location + ''' = ''A'')'
 
-		SET @OrderByClause = ' order by 14,15,ReceptionDate OFFSET '+CONVERT(varchar,@From)+' ROWS FETCH NEXT '+CONVERT(varchar,@pagesize)+' ROWS ONLY OPTION (RECOMPILE)'
+		SET @OrderByClause = ' order by ISNULL(CurrentHearingDate,''' + CAST(@MXDate AS VARCHAR(30)) + ''') OFFSET '+CONVERT(varchar,@From)+' ROWS FETCH NEXT '+CONVERT(varchar,@pagesize)+' ROWS ONLY OPTION (RECOMPILE)'
 
 		-- SET ANSI_WARNINGS OFF (FOR CHECKING TRUNCATION
 			INSERT into #T1 execute (@SQLQuery )

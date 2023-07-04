@@ -81,7 +81,7 @@ namespace YandS.UI.Controllers
                 Session["User"] = Employee;
             }
 
-            if (User.Identity.Name.In("22", "10"))
+            if (User.Identity.Name.In("22", "10", "51"))
                 return RedirectToAction("Index", "SessionRoll");
             else
             {

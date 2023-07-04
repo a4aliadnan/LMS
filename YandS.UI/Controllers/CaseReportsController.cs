@@ -88,31 +88,29 @@ namespace YandS.UI.Controllers
                         MemoryStream ResultStream = new MemoryStream();
 
                         string TemplateName = string.Empty;
+                        string FileName = string.Empty;
                         string ExcelResult = string.Empty;
                         string InvoiceREFNO = string.Empty;
 
-                        if (p_modal.ClickedButtonName == "btnNBORep")
+                        if (p_modal.ClickedButtonName.In("btnNBORep", "btnBDRep"))
                         {
-                            TemplateName = "NBO_REPORT.xlsx";
+                            if (p_modal.ClickedButtonName == "btnBDRep")
+                            {
+                                TemplateName = "BD_REPORT.xlsx";
+                                FileName = "BD_REPORT";
+                            }
+                            else if (p_modal.ClickedButtonName == "btnNBORep")
+                            {
+                                TemplateName = "NBO_REPORT.xlsx";
+                                FileName = "NBO_REPORT";
+                            }
 
                             TemplateName = Path.Combine(Helper.GetTemplateRoot, TemplateName);
 
                             using (FileStream file = new FileStream(TemplateName, FileMode.Open, FileAccess.Read))
                                 file.CopyTo(ResultStream);
 
-                            ExcelResult = objDAL.GenerateExcelStream("NBO_REPORT", "Court Case Detail Report", RetResult, ref ResultStream);
-
-                        }
-                        if (p_modal.ClickedButtonName == "btnBDRep")
-                        {
-                            TemplateName = "BD_REPORT.xlsx";
-
-                            TemplateName = Path.Combine(Helper.GetTemplateRoot, TemplateName);
-
-                            using (FileStream file = new FileStream(TemplateName, FileMode.Open, FileAccess.Read))
-                                file.CopyTo(ResultStream);
-
-                            ExcelResult = objDAL.GenerateExcelStream("BD_REPORT", "Court Case Detail Report", RetResult, ref ResultStream);
+                            ExcelResult = objDAL.GenerateExcelStream(FileName, "Court Case Detail Report", RetResult, ref ResultStream);
 
                         }
                         else
@@ -146,19 +144,6 @@ namespace YandS.UI.Controllers
                                 ExcelResult = objDAL.GenerateExcelStream("", "Court Case Detail Report", RetResult, ref ResultStream);
 
                         }
-
-                        //else if (p_modal.ClickedButtonName == "btnUFRep")
-                        //{
-                        //    TemplateName = "UF_REPORT.xlsx";
-
-                        //    TemplateName = Path.Combine(Helper.GetTemplateRoot, TemplateName);
-
-                        //    using (FileStream file = new FileStream(TemplateName, FileMode.Open, FileAccess.Read))
-                        //        file.CopyTo(ResultStream);
-
-                        //    ExcelResult = objDAL.GenerateExcelStream("UF_REPORT", "Court Case Detail Report", RetResult, ref ResultStream);
-
-                        //}
 
                         byte[] fileContents = null;
                         using (ResultStream)

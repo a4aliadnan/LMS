@@ -2,7 +2,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROCEDURE [CASE_MANAGEMENT-GET_CASE_DETAIL]
+ALTER PROCEDURE [dbo].[CASE_MANAGEMENT-GET_CASE_DETAIL]
 @Pageno				INT=1,
 @filter				NVARCHAR(500)='',
 @pagesize			INT=20,  
@@ -36,12 +36,12 @@ BEGIN
 			FROM (
 				  SELECT 
 				  CC.CaseId
-				 ,case when CR.ActionLevel = ''4'' then CR.CaseRegistrationId else CCD.DetailId end  as DetailId
+				 ,CCD.EnforcementId DetailId
 				 ,CC.OfficeFileNo,ClientMas.Mst_Desc as ClientName,CC.Defendant,CC.AccountContractNo,CC.ClientFileNo
-				 ,case when CR.ActionLevel = ''4'' then ''SUPREME DISPUTE'' else ''SUPREME'' end  AS CaseLevelCode
-				 ,case when CR.ActionLevel = ''4'' then ''SUPREME DISPUTE'' else ''SUPREME'' end  AS CaseLevelName
+				 ,case when CCD.CurrentDisputeLevelandType in (''3'',''6'') then ''SUPREME DISPUTE'' else ''SUPREME'' end  AS CaseLevelCode
+				 ,case when CCD.CurrentDisputeLevelandType in (''3'',''6'') then ''SUPREME DISPUTE'' else ''SUPREME'' end  AS CaseLevelName
 				 ,CNW.CASE_NO as CourtRefNo
-				 ,case when ( CC.OfficeFileStatus = ''0'' OR CC.OfficeFileStatus is null) then NULL else FileStatus.Mst_Desc end as FileStatusName
+				 ,case when ISNULL(CC.OfficeFileStatus,''0'') = ''0'' then NULL else FileStatus.Mst_Desc end as FileStatusName
 				 ,CC.CurrentHearingDate, CC.CourtDecision, CC.NextHearingDate, CC.OfficeFileStatus
 				 ,ISNULL(SR.SessionRollId,0) as SessionRollId
 				 from CourtCases as CC
@@ -56,17 +56,22 @@ BEGIN
 					'
 
 			SET @JoinTables	= '
-					Inner Join MASTER_S ClientMas on CC.ClientCode = ClientMas.Mst_Value and ClientMas.MstParentId = 241
-					Left  Join CourtCasesDetails CCD on CCD.CaseId = CC.CaseId and CCD.CaseLevelCode = CC.CaseLevelCode
-					Left  join MASTER_S FileStatus on CC.OfficeFileStatus = FileStatus.Mst_Value and FileStatus.MstParentId = 1573 
-					Left  Join CaseNosVW CNW on CNW.CaseId = CC.CaseId
-					Left  Join SessionsRolls SR on SR.CaseId = CC.CaseId and SR.DeletedOn is null
-					Left  Join CaseRegistrations CR on CR.CaseId = CC.CaseId  and CR.IsDeleted = 0 AND CR.ActionLevel = ''4'' AND   CR.DisputeLevel = ''3''
+				Inner Join MASTER_S ClientMas on CC.ClientCode = ClientMas.Mst_Value and ClientMas.MstParentId = 241
+				Left  Join CourtCasesEnforcements CCD on CCD.CaseId = CC.CaseId and CCD.CurrentDisputeLevelandType in (''3'',''6'')
+				Left  join MASTER_S FileStatus on CC.OfficeFileStatus = FileStatus.Mst_Value and FileStatus.MstParentId = 1573 
+				Left  Join CaseNosVW CNW on CNW.CaseId = CC.CaseId
+				Left  Join SessionsRolls SR on SR.CaseId = CC.CaseId and SR.DeletedOn is null
 					'
 
 			SET	@Where = ' 
 					where CC.CaseStatus = ''1''
-					AND	  1 = case when CR.ActionLevel = ''4'' then 1 when CC.CaseLevelCode = ''5'' then 1 else 0 end
+					AND	  1 = 
+						case 
+							when CC.CaseLevelCode = ''5'' then 1 
+							else 
+								case when CC.OfficeFileStatus = ''OFS-20'' AND CCD.CurrentDisputeLevelandType in (''3'',''6'') then 1 else 0 
+							end
+						end
 					AND   (LEFT(CC.OfficeFileNo,1) = '''+@Location+''' OR '''+@Location+''' = ''A'')
 					'
 		end
@@ -218,4 +223,3 @@ exec (@FinalSummaryQuery)
 END
 
 
-GO

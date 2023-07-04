@@ -522,6 +522,7 @@
             ProcessAgainstCodeChange();
         });
         $('#CaseLevelCode').on("change", function () {
+            CurrentCaseLevel = parseInt($('#CaseLevelCode').val());
             $("#DIV_UPDATE").removeClass("AppHidden").addClass("AppHidden");
             ProcessCaseLevelChange();
         });

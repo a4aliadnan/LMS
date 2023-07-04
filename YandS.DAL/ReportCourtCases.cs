@@ -413,6 +413,7 @@ Kindly debit the legal charges accounts of all of the above customers and credit
 
                         using (ExcelPackage pck = new ExcelPackage(ResultStream, ms))
                         {
+                            //ExcelWorksheet ws = pck.Workbook.Worksheets["NBO_REPORT"];
                             ExcelWorksheet ws = pck.Workbook.Worksheets.First();
 
                             ws.Cells["A3"].LoadFromDataTable(ds.Tables[0], false);
@@ -426,29 +427,12 @@ Kindly debit the legal charges accounts of all of the above customers and credit
                             modelTable.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                             modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                             modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-
-                            ws.Cells[ws.Dimension.Address].AutoFitColumns();
-
-                            //int colNumber = 0;
-                            //foreach (DataColumn col in ds.Tables[0].Columns)
-                            //{
-                            //    colNumber++;
-                            //    if (col.DataType == typeof(DateTime))
-                            //    {
-                            //        ws.Column(colNumber).Style.Numberformat.Format = "dd/MM/yyyy";
-                            //    }
-                            //    else
-                            //    {
-                            //        ws.Column(colNumber).Style.WrapText = true;
-                            //    }
-                            //}
+                            
                             ws.Cells[ws.Dimension.Address].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                             
                             pck.SaveAs(ResultStream);
                             ms = ResultStream;
-                            //pck.Save();
                         }
-
                     }
                     else if (P_TemplateName == "UF_REPORT")
                     {
@@ -637,9 +621,13 @@ Kindly debit the legal charges accounts of all of the above customers and credit
 
                 }
             }
-            catch (Exception e)
+            catch (Exception EX)
             {
-                Result =  e.Message;
+                if (!(EX is System.Threading.ThreadAbortException))
+                {
+                    System.Web.HttpContext.Current.Response.Write(EX.ToString());
+                }
+                Result = EX.Message;
             }
             return Result;
         }

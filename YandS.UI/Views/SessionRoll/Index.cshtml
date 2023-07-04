@@ -777,8 +777,9 @@
                 }
             }
             else {
+                var IsFavorable = data.IsFavorable;
                 _PartialViewName = "_AfterJudgementEditForm";
-                _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: _CaseId, SessionRollId: _SessionRollId };
+                _parameters = { Mode: _Mode, PartialViewName: _PartialViewName, CaseId: _CaseId, SessionRollId: _SessionRollId, CaseLevel: IsFavorable };
             }
 
             GetTab(PartialContainer, GetSessionRollURL, _parameters);
